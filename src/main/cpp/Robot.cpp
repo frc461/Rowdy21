@@ -5,6 +5,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
+    arduino = new Arduino();
     driveTrain = new DriveTrain();
 }
 
