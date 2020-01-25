@@ -2,40 +2,49 @@
 #include <ctre/Phoenix.h>
 #include <cmath>
 #include <frc/SmartDashboard/SmartDashboard.h>
-///Sendable.h>
+
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include <networktables/NetworkTableInstance.h>
 
 #include "CanStuff.h"
-#include "XboxJoystickMap.h"
+#include "ThrustMasters.h"
 
 #include "PID.h"
 
+#include <iostream>
+
 class DriveTrain {
-    public:
-        DriveTrain();
+public:
+    DriveTrain();
 
-        void Periodic();
-    private:
-        WPI_TalonSRX *RMotor0;
-        WPI_VictorSPX *RMotor1;
+    void Periodic();
+private:
+    WPI_VictorSPX *right2, *left2;
+    WPI_TalonSRX *right1, *left1;
+    WPI_VictorSPX *intakeMotor;
 
-        WPI_TalonSRX *LMotor0;
-        WPI_VictorSPX *LMotor1;
+    frc::SpeedControllerGroup *left;
+    frc::SpeedControllerGroup *right;
 
-        frc::SpeedControllerGroup *DTLeft;
-        frc::SpeedControllerGroup *DTRight;
+    frc::DifferentialDrive *driveTrain;
+    
+    frc::Joystick *leftJoystick;
+    frc::Joystick *rightJoystick;
 
-        frc::DifferentialDrive *driveTrain;
+    nt::NetworkTableEntry leftSide;
+    nt::NetworkTableEntry rightSide;
+    nt::NetworkTableEntry ntTick;
+    std::shared_ptr<nt::NetworkTable> table;
 
-        std::shared_ptr<NetworkTable> table;
-        float tx;
-        float ta;
+    int tick;
 
-        frc::Joystick *xbox;
+    bool tankDrive, arcadeDrive;
+    float tx;
+    float ta;
 
-        PID *forwardPID;
-        PID *outputPID;
+    PID *forwardPID;
+    PID *outputPID;
 
-        float fDistance;
-
-        //SmartDashboard *smartDashboard;
+    float fDistance;
 };

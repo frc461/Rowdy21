@@ -6,6 +6,8 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "networkTables/NetworkTableInstance.h"
+#include "networktables/NetworkTable.h"
+#include "networkTables/NetworkTableEntry.h"
 
 #include "DriveTrain.h"
 
