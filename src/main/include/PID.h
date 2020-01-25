@@ -1,5 +1,7 @@
 #pragma once
 
+#include <frc/SmartDashboard/SmartDashboard.h>
+
 class PID
 {
 public:
@@ -9,6 +11,8 @@ public:
     double kp, ki, kd;
 
     double OutputPID(double val, double ideal);
+
+    void getPIDvalues();
 
 private:
     double error, errorSum, lastError;
