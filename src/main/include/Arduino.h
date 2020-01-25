@@ -1,7 +1,8 @@
-#include <frc/WPILib.h>
+#include <frc/I2C.h>
 
 #include <iostream>
 #include <vector>
+
 
 #define ARD_RED 0x01
 #define ARD_GREEN 0x03
@@ -12,7 +13,7 @@
 #define ON_AND_COM 0x07
 #define AUTO 0x08
 #define TELEOP 0x09
-#define COS
+#define COLOR 0x0A
 #define SPIN_THE_WHEEL 0x0B
 #define FLY_WHEEL 0x0C
 #define SHOOTING 0x0D
@@ -24,6 +25,7 @@
 #define LIME_LIGHT 0x13
 #define INTAKE_OUT 0x14
 #define INTAKE_IN 0x15
+
 class Arduino
 {
 public:

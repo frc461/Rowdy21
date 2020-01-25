@@ -7,7 +7,11 @@
 
 #include "networkTables/NetworkTableInstance.h"
 
+#include <frc/DriverStation.h>
+
 #include "DriveTrain.h"
+#include "Arduino.h"
+#include <frc/PowerDistributionPanel.h>
 
 class Robot : public frc::TimedRobot {
 public:
@@ -21,4 +25,10 @@ public:
 
 private:
     DriveTrain* driveTrain;
+    Arduino *arduino;
+
+    bool connection;
+
+    std::string colorData;
+    frc::PowerDistributionPanel* pdp;
 };

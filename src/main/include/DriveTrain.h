@@ -1,8 +1,9 @@
-#include <frc/WPILib.h>
+#include <frc/SpeedControllerGroup.h>
+#include <frc/drive/DifferentialDrive.h>
+#include <frc/Joystick.h>
 #include <ctre/Phoenix.h>
 #include <cmath>
 #include <frc/SmartDashboard/SmartDashboard.h>
-///Sendable.h>
 
 #include "CanStuff.h"
 #include "XboxJoystickMap.h"
