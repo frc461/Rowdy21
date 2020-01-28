@@ -47,7 +47,7 @@ private:
 
     int tick;
 
-    bool tankDrive, arcadeDrive;
+    bool intakeForeward;
     float tx;
     float ta;
 
@@ -55,4 +55,7 @@ private:
     PID *outputPID;
 
     float fDistance;
+    double throttleCap;
+    bool driveMode;
+
 };

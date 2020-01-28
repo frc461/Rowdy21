@@ -1,6 +1,9 @@
 #include "DriveTrain.h"
 
 DriveTrain::DriveTrain(){
+    frc::SmartDashboard::PutNumber("ThrottleCap", 1);
+    frc::SmartDashboard::PutBoolean("Arcade", false);
+    
     left1 = new WPI_TalonSRX(1);
     right1 = new WPI_TalonSRX(4);
 
@@ -24,8 +27,7 @@ DriveTrain::DriveTrain(){
     // leftSide = table->GetEntry("left");
     // rightSide = table->GetEntry("right");
 
-    tankDrive = true;
-    arcadeDrive = false;
+    intakeForeward = true;
 
     auto instance = nt::NetworkTableInstance::GetDefault();
     table = instance.GetTable("limelight");
@@ -42,7 +44,8 @@ DriveTrain::DriveTrain(){
 }
 
 void DriveTrain::Periodic() {
-
+    throttleCap = frc::SmartDashboard::GetNumber("ThrottleCap", 1);
+    driveMode = frc::SmartDashboard::GetBoolean("Arcade", false);
     frc::SmartDashboard::PutNumber("Distance", fDistance);
 
     if(rightJoystick->GetRawButton(8)){
@@ -70,19 +73,26 @@ void DriveTrain::Periodic() {
         rightSide.SetDouble(right1->GetSelectedSensorPosition());
         ntTick.SetDouble(tick);
 
-        if (leftJoystick->GetRawButton(thumbSwitch) && tankDrive && !arcadeDrive) {
-            tankDrive = false;;
-            arcadeDrive = true;
+        if (leftJoystick->GetRawButton(thumbSwitch)) {
+            intakeForeward = 1;
         }
-        else if (leftJoystick->GetRawButton(thumbSwitch) && !tankDrive && arcadeDrive) {
-            arcadeDrive = false;
-            tankDrive = true;
+        else if (rightJoystick->GetRawButton(thumbSwitch)){
+            intakeForeward = 0;
         }
-        if (tankDrive && !arcadeDrive)
-            driveTrain->TankDrive(rightJoystick->GetRawAxis(yAxisJS), leftJoystick->GetRawAxis(yAxisJS));
-        else if (arcadeDrive && !tankDrive)
-            driveTrain->ArcadeDrive(rightJoystick->GetRawAxis(yAxisJS), leftJoystick->GetRawAxis(xAxisJS));
 
+        if (intakeForeward){
+            if (!driveMode)
+                driveTrain->TankDrive(throttleCap*rightJoystick->GetRawAxis(yAxisJS), throttleCap*leftJoystick->GetRawAxis(yAxisJS));
+            else 
+                driveTrain->ArcadeDrive(throttleCap*rightJoystick->GetRawAxis(yAxisJS), throttleCap*leftJoystick->GetRawAxis(xAxisJS));
+        }
+        else{
+            if (!driveMode)
+                driveTrain->TankDrive(-throttleCap*leftJoystick->GetRawAxis(yAxisJS), -throttleCap*rightJoystick->GetRawAxis(yAxisJS));
+            else 
+                driveTrain->ArcadeDrive(-throttleCap*rightJoystick->GetRawAxis(yAxisJS), throttleCap*leftJoystick->GetRawAxis(xAxisJS));
+        }
+        // i like pee pee
         if (leftJoystick->GetRawButton(rightButton)) {
             intakeMotor->Set(0.8);
         }

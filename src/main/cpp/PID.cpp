@@ -20,7 +20,7 @@ double PID::OutputPID(double value, double ideal)
 
     lastError = error;
 
-    frc::SmartDashboard::PutNumber("pid", kp * error + ki * errorSum + kd * errorRate);
+    //frc::SmartDashboard::PutNumber("pid", kp * error + ki * errorSum + kd * errorRate);
 
     return (kp * error + ki * errorSum + kd * errorRate);
 }
@@ -30,5 +30,4 @@ void PID::getPIDvalues() {
     ki = frc::SmartDashboard::GetNumber("ki", 0);
     kd = frc::SmartDashboard::GetNumber("kd", 0);
 
-    frc::SmartDashboard::PutNumber("kpp", kp);
 }
