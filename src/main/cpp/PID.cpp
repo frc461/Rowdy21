@@ -29,5 +29,4 @@ void PID::getPIDvalues() {
     kp = frc::SmartDashboard::GetNumber("kp", 0);
     ki = frc::SmartDashboard::GetNumber("ki", 0);
     kd = frc::SmartDashboard::GetNumber("kd", 0);
-
 }

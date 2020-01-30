@@ -1,7 +1,6 @@
 #include <frc/WPILib.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/SpeedControllerGroup.h>
-#include <frc/Joystick.h>
 #include <ctre/Phoenix.h>
 #include <cmath>
 
@@ -15,6 +14,8 @@
 
 #include "CanStuff.h"
 #include "ThrustMasters.h"
+
+#include "Controls.h"
 
 #include "PID.h"
 
@@ -35,15 +36,14 @@ private:
 
     frc::DifferentialDrive *driveTrain;
 
-    frc::Joystick *leftJoystick;
-    frc::Joystick *rightJoystick;
-
     nt::NetworkTableEntry leftSide;
     nt::NetworkTableEntry rightSide;
     nt::NetworkTableEntry ntTick;
     std::shared_ptr<nt::NetworkTable> table;
 
     frc::SmartDashboard *smartDashboard;
+
+    Control *control;
 
     int tick;
 
