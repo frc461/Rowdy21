@@ -33,6 +33,8 @@ DriveTrain::DriveTrain(){
     outputPID = new PID(-1, 0, 0);
 
     fDistance = 0.0f;
+    switchState = 0;
+    prevSwitchState = 0;
 }
 
 void DriveTrain::Periodic() {
@@ -72,8 +74,6 @@ void DriveTrain::Periodic() {
             intakeForeward = 0;
         }
         */
-        bool switchState;
-        bool prevSwitchState;
         switchState = control->IntakeForward();
         if (switchState != prevSwitchState && switchState == 1){
             intakeForeward = !intakeForeward;
