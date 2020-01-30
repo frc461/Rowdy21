@@ -44,7 +44,8 @@ private:
     frc::SmartDashboard *smartDashboard;
 
     Control *control;
-
+    bool switchState;
+    bool prevSwitchState;
     int tick;
 
     bool intakeForeward;
