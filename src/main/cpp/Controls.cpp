@@ -11,7 +11,7 @@ double Control::rightJoystickX() { return rightJoystick->GetRawAxis(xAxisJS); }
 double Control::rightJoystickY() { return rightJoystick->GetRawAxis(yAxisJS); }
 
 bool Control::IntakeIn() { return leftJoystick->GetRawButton(rightButton); }
-bool Control::IntakeOut() { return leftJoystick->GetRawButton(rightButton); }
+bool Control::IntakeOut() { return rightJoystick->GetRawButton(leftButton); }
 bool Control::IntakeForward() { return leftJoystick->GetRawButton(thumbSwitch); }
 
 bool Control::LimelightAiming() { return rightJoystick->GetRawButton(8); }

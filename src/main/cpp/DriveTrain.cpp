@@ -15,8 +15,6 @@ DriveTrain::DriveTrain(){
 
     driveTrain = new frc::DifferentialDrive(*left, *right);
 
-    intakeMotor = new WPI_VictorSPX(3);
-
     intakeForeward = true;
 
     auto instance = nt::NetworkTableInstance::GetDefault();
@@ -28,6 +26,7 @@ DriveTrain::DriveTrain(){
     frc::SmartDashboard::PutNumber("kd", 0);
 
     control = new Control();
+    intake = new Intake();
 
     forwardPID = new PID(-0.07, 0.0, 0.0);
     outputPID = new PID(-1, 0, 0);
@@ -92,14 +91,6 @@ void DriveTrain::Periodic() {
             else 
                 driveTrain->ArcadeDrive(-throttleCap*control->rightJoystickY(), throttleCap*control->leftJoystickX());
         }
-        if (control->IntakeIn()) {
-            intakeMotor->Set(0.8);
-        }
-        else if (control->IntakeOut()) {
-            intakeMotor->Set(-0.8);
-        }
-        else {
-            intakeMotor->Set(0);
-        }
+        intake->Periodic();
     }
 }

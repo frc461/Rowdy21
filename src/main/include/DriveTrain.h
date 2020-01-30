@@ -1,4 +1,3 @@
-#include <frc/WPILib.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/SpeedControllerGroup.h>
 #include <ctre/Phoenix.h>
@@ -16,6 +15,7 @@
 #include "ThrustMasters.h"
 
 #include "Controls.h"
+#include "Intake.h"
 
 #include "PID.h"
 
@@ -29,7 +29,6 @@ public:
 private:
     WPI_VictorSPX *right2, *left2;
     WPI_TalonSRX *right1, *left1;
-    WPI_VictorSPX *intakeMotor;
 
     frc::SpeedControllerGroup *left;
     frc::SpeedControllerGroup *right;
@@ -42,6 +41,8 @@ private:
     std::shared_ptr<nt::NetworkTable> table;
 
     frc::SmartDashboard *smartDashboard;
+
+    Intake *intake;
 
     Control *control;
     bool switchState;
