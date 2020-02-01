@@ -30,8 +30,7 @@ void Robot::RobotInit() {
 
   straightPID = new PID(0.0004,0,0.00001);
 
-  CSVReader reader("example.csv");
-
+  
   // arduino = new Arduino();
 }
 
@@ -39,7 +38,22 @@ void Robot::RobotPeriodic() {
  
 }
 
+std::vector<std::string> Robot::split(std::string splitMe, char delimiter) {
+    std::stringstream ss(splitMe);
+    std::vector<std::string> final;
+    std::string item;
+    while(std::getline(ss, item, delimiter)) {
+      final.push_back(item);
+    }
+    return final;
+}
+
 void Robot::AutonomousInit() {
+  std::string autoString = "straight,10";
+  std::vector<std::string> autonomous = split(autoString, ';');
+  for(std::string statement : autonomous) {
+    std::cout << statement << std::endl;
+  }
 }
 
 void Robot::AutonomousPeriodic() {
@@ -48,6 +62,14 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
   right1->SetSelectedSensorPosition(0,0);
   left1->SetSelectedSensorPosition(0,0);
+
+  // std::string autoString = "test,1,2;test2,1,2,3";
+  // std::istringstream iss(autoString);
+  // std::vector<std::string> result {
+  //   std::istream_iterator<std::string>(iss), {}  
+  // };
+
+  // std::vector<std::string> result = split(autoString, ';');
 }
 
 double lastEncoder;
@@ -63,7 +85,7 @@ void Robot::TeleopPeriodic() {
   } 
   if(xbox->GetRawButton(XboxButtonA)){
     double pidpos = -straightPID->OutputPID(right1->GetSelectedSensorPosition(), -3140) + ((pidpos > 0) ? -0.09 : 0.09);
-    std::cout << "PID output " << pidpos << std::endl;
+    // std::cout << "PID output " << pidpos << std::endl;
     if(pidpos != 0) {
       driveTrain->ArcadeDrive(pidpos, 0);
     } else {

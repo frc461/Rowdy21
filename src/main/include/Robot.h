@@ -9,12 +9,11 @@
 
 #include <ctre/Phoenix.h>
 
-#include "CSV.h"
-
 #include "XboxJoystickMap.h"
 #include "ThrustMasters.h"
 #include "Arduino.h"
 #include "PID.h"
+
 
 class Robot : public frc::TimedRobot {
  public:
@@ -49,4 +48,6 @@ class Robot : public frc::TimedRobot {
   Arduino *arduino;
 
   PID *straightPID;
+
+  std::vector<std::string> split(std::string toSplit, char delimiter);
 };
