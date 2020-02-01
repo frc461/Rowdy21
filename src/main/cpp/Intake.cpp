@@ -4,6 +4,8 @@ Intake::Intake() {
     intakePush = new frc::Solenoid(INTAKE_SOLENOID_ADDRESS);
     control = new Control();
     intakeMotor = new WPI_VictorSPX(3);
+    conveyor = new WPI_TalonSRX(0);
+    hopper = new WPI_TalonSRX(1);
 }
 
 void Intake::Periodic() {
@@ -18,5 +20,13 @@ void Intake::Periodic() {
     }
     else {
         intakeMotor->Set(0);
+    }
+    if(control->ConveyAndHopperForward()){
+        conveyor->Set(1);
+        hopper->Set(1);
+    }
+    else if(control->ConveyAndHopperReverse()){
+        conveyor->Set(1);
+        hopper->Set(1);
     }
 }

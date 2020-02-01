@@ -16,4 +16,5 @@ private:
     Control *control;
     frc::Solenoid *intakePush;
     WPI_VictorSPX *intakeMotor;
+    WPI_TalonSRX *conveyor, *hopper;
 };

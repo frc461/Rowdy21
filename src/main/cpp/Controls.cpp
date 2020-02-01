@@ -24,7 +24,7 @@ double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(Xb
 bool Control::PresetPosition1() { return xboxController->GetRawButton(XboxButtonY); } // Y
 bool Control::PresetPosition2() { return xboxController->GetRawButton(XboxButtonB); } // B
 double Control::ClimberUp() { return xboxController->GetRawAxis(XboxAxisLeftTrigger); } // Left trigger
-double Control::ClimberDown() { return xboxController->GetRawButton(XboxButtonA); } // A
+double Control::ClimberDown() { return xboxController->GetRawAxis(XboxAxisRightTrigger); } // A
 bool Control::IntakeExtend() { return xboxController->GetRawButton(XboxDPadUp); } // Up D-Pad
 double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); } // y Axix left ohystikv
 double Control::WheelOfFortune() { return xboxController->GetRawAxis(XboxAxisLeftStickX); } // X-axis left joyistivk
