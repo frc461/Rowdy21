@@ -6,6 +6,7 @@
 
 void Robot::RobotInit() {
     driveTrain = new DriveTrain();
+    control = new Control();
 }
 
 void Robot::RobotPeriodic() {}
