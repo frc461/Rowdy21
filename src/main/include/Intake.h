@@ -1,5 +1,5 @@
 #pragma once
-
+#include <frc/Solenoid.h>
 #include "Controls.h"
 
 #include <ctre/Phoenix.h>
@@ -14,6 +14,6 @@ public:
 
 private:
     Control *control;
-    
+    frc::Solenoid *intakePush;
     WPI_VictorSPX *intakeMotor;
 };
