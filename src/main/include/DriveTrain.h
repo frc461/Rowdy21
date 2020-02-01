@@ -56,8 +56,6 @@ private:
 
     frc::SmartDashboard *smartDashboard;
 
-    Intake *intake;
-
     Control *control;
     bool switchState;
     bool prevSwitchState;

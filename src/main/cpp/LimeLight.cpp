@@ -1,7 +1,7 @@
 #include "Limelight.h"
 
 Limelight::Limelight(Control *control, DriveTrain *driveTrain) {
-    control = this->control;
+    this->control = control;
     drTrain = driveTrain;
 
     auto instance = nt::NetworkTableInstance::GetDefault();

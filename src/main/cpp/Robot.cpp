@@ -8,7 +8,7 @@ void Robot::RobotInit() {
     control = new Control();
 
     driveTrain = new DriveTrain(control);
-    intake = new Intake();
+    intake = new Intake(control);
     limelight = new Limelight(control, driveTrain);
 }
 

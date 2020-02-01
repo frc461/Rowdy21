@@ -1,7 +1,7 @@
 #include "DriveTrain.h"
 
 DriveTrain::DriveTrain(Control *control){
-    control = this->control;
+    this->control = control;
     frc::SmartDashboard::PutNumber("ThrottleCap", 1);
     frc::SmartDashboard::PutBoolean("Arcade", false);
     
@@ -21,8 +21,6 @@ DriveTrain::DriveTrain(Control *control){
     frc::SmartDashboard::PutNumber("kp", 0);
     frc::SmartDashboard::PutNumber("ki", 0);
     frc::SmartDashboard::PutNumber("kd", 0);
-
-    intake = new Intake();
 
     fDistance = 0.0f;
     switchState = 0;
