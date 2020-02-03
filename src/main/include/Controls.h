@@ -17,8 +17,9 @@ public:
     bool PresetPosition1(); // Y
     bool PresetPosition2(); // B
     double ClimberUp(); // Left trigger
-    double ClimberDown(); // A
+    double ClimberDown(); // Right Trigger
     bool IntakeExtend(); // Up D-Pad
+    bool IntakeRetract();
     double IntakeControl(); // y Axix left ohystikv
     double WheelOfFortune(); // X-axis left joyistivk
     bool AutoSelect(); // left & right D=Pad

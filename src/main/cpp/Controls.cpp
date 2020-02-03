@@ -3,6 +3,7 @@
 Control::Control() {
     leftJoystick = new frc::Joystick(2);
     rightJoystick = new frc::Joystick(3);
+    xboxController = new frc::Joystick(1);
 }
 
 double Control::leftJoystickX() { return leftJoystick->GetRawAxis(xAxisJS); }
@@ -10,7 +11,7 @@ double Control::leftJoystickY() { return leftJoystick->GetRawAxis(yAxisJS); }
 double Control::rightJoystickX() { return rightJoystick->GetRawAxis(xAxisJS); }
 double Control::rightJoystickY() { return rightJoystick->GetRawAxis(yAxisJS); }
 
-bool Control::IntakeIn() { return leftJoystick->GetRawButton(rightButton); }
+bool Control::IntakeIn() { return leftJoystick->GetRawAxis(yAxisJS); }
 bool Control::IntakeOut() { return rightJoystick->GetRawButton(leftButton); }
 bool Control::IntakeForward() { return leftJoystick->GetRawButton(thumbSwitch); }
 
@@ -24,8 +25,9 @@ double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(Xb
 bool Control::PresetPosition1() { return xboxController->GetRawButton(XboxButtonY); } // Y
 bool Control::PresetPosition2() { return xboxController->GetRawButton(XboxButtonB); } // B
 double Control::ClimberUp() { return xboxController->GetRawAxis(XboxAxisLeftTrigger); } // Left trigger
-double Control::ClimberDown() { return xboxController->GetRawButton(XboxButtonA); } // A
-bool Control::IntakeExtend() { return xboxController->GetRawButton(XboxDPadUp); } // Up D-Pad
+double Control::ClimberDown() { return xboxController->GetRawAxis(XboxAxisRightTrigger); } // A
+bool Control::IntakeExtend() { return (xboxController->GetPOV() == XboxDPadUp) ? 1 : 0; }
+bool Control::IntakeRetract() { return xboxController->GetPOV() == XboxDPadDown; }
 double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); } // y Axix left ohystikv
 double Control::WheelOfFortune() { return xboxController->GetRawAxis(XboxAxisLeftStickX); } // X-axis left joyistivk
 bool Control::AutoSelect() { return 0; } // left & right dpad 

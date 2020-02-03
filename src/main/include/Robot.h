@@ -10,6 +10,8 @@
 #include "networkTables/NetworkTableEntry.h"
 
 #include "DriveTrain.h"
+#include "Intake.h"
+#include "Limelight.h"
 
 class Robot : public frc::TimedRobot {
 public:
@@ -23,4 +25,7 @@ public:
 
 private:
     DriveTrain* driveTrain;
+    Control *control;
+    Intake *intake;
+    Limelight *limelight;
 };

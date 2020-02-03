@@ -1,3 +1,5 @@
+#pragma once
+
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/SpeedControllerGroup.h>
 #include <ctre/Phoenix.h>
@@ -23,9 +25,24 @@
 
 class DriveTrain {
 public:
-    DriveTrain();
+    DriveTrain(Control *control);
+
+    enum DriveMode {
+        Tank,
+        Arcade,
+        Disabled
+    };
+
+    void ToggleDriveMode();
+    void SetDriveMode(DriveMode mode);
+    void ToggleDirection();
 
     void Periodic();
+
+    DriveMode driveMode;
+
+    frc::DifferentialDrive *driveTrain;
+
 private:
     WPI_VictorSPX *right2, *left2;
     WPI_TalonSRX *right1, *left1;
@@ -33,16 +50,11 @@ private:
     frc::SpeedControllerGroup *left;
     frc::SpeedControllerGroup *right;
 
-    frc::DifferentialDrive *driveTrain;
-
     nt::NetworkTableEntry leftSide;
     nt::NetworkTableEntry rightSide;
     nt::NetworkTableEntry ntTick;
-    std::shared_ptr<nt::NetworkTable> table;
 
     frc::SmartDashboard *smartDashboard;
-
-    Intake *intake;
 
     Control *control;
     bool switchState;
@@ -50,14 +62,8 @@ private:
     int tick;
 
     bool intakeForeward;
-    float tx;
-    float ta;
-
-    PID *forwardPID;
-    PID *outputPID;
 
     float fDistance;
     double throttleCap;
-    bool driveMode;
-
+    int direction;
 };
