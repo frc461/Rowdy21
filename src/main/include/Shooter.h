@@ -23,9 +23,9 @@ public:
     void VerticalAdjust();
 
 private:
-   // WPI_TalonFX *shooterMotor1, *shooterMotor2;
+    WPI_TalonFX *shooterMotor1, *shooterMotor2;
 
-    //WPI_TalonFX *adjustingMotor;
+    WPI_TalonFX *adjustingMotor;
 
     float motorValue1, motorValue2;
     float joyValue;
