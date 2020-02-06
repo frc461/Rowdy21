@@ -12,7 +12,7 @@
 #include "DriveTrain.h"
 #include "Intake.h"
 #include "Limelight.h"
-
+#include "Shooter.h"
 class Robot : public frc::TimedRobot {
 public:
     void RobotInit() override;
@@ -28,4 +28,5 @@ private:
     Control *control;
     Intake *intake;
     Limelight *limelight;
+    Shooter *shooter;
 };

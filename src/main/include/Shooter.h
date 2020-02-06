@@ -5,8 +5,8 @@
 #include "PID.h"
 #include "Controls.h"
 
-#define SHOOTER_MOTOR_1 9
-#define SHOOTER_MOTOR_2 1
+#define SHOOTER_MOTOR_1 12
+#define SHOOTER_MOTOR_2 13
 #define ADJUSTING_MOTOR 2
 
 #define PITCH_SPEED_CONTROL 0.5

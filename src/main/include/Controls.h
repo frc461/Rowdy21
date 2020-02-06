@@ -18,8 +18,9 @@ public:
     bool PresetPosition2(); // B
     double ClimberUp(); // Left trigger
     double ClimberDown(); // Right Trigger
-    bool IntakeExtend(); // Up D-Pad
-    bool IntakeRetract();
+    bool IntakeIn(); // Up D-Pad
+    bool IntakeOut(); // Down D-Pad
+    bool JustIntakeMotor(); // TODO: JUST THE INTAKE MROORT AM  
     double IntakeControl(); // y Axix left ohystikv
     double WheelOfFortune(); // X-axis left joyistivk
     bool AutoSelect(); // left & right D=Pad
@@ -28,10 +29,6 @@ public:
     double leftJoystickY();
     double rightJoystickX();
     double rightJoystickY();
-
-    bool IntakeIn();
-    bool IntakeOut();
-    bool IntakeForward();
 
     bool LimelightAiming();
     bool LimelightLightActivate();

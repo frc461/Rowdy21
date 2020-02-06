@@ -57,10 +57,10 @@ void DriveTrain::Periodic() {
     //     }
     // }
 
-    switchState = control->IntakeForward();
-    if (switchState != prevSwitchState && switchState == 1){
-        ToggleDirection();
-    }
+    // switchState = control->IntakeForward();
+    // if (switchState != prevSwitchState && switchState == 1){
+    //     ToggleDirection();
+    // }
     prevSwitchState = switchState;
 
     if(driveMode == DriveMode::Tank){

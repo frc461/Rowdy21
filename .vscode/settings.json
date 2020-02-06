@@ -97,6 +97,7 @@
     "*.tcc": "cpp",
     "memory_resource": "cpp",
     "string_view": "cpp",
-    "cinttypes": "cpp"
+    "cinttypes": "cpp",
+    "xmemory0": "cpp"
   }
 }

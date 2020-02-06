@@ -11,10 +11,6 @@ double Control::leftJoystickY() { return leftJoystick->GetRawAxis(yAxisJS); }
 double Control::rightJoystickX() { return rightJoystick->GetRawAxis(xAxisJS); }
 double Control::rightJoystickY() { return rightJoystick->GetRawAxis(yAxisJS); }
 
-bool Control::IntakeIn() { return leftJoystick->GetRawAxis(yAxisJS); }
-bool Control::IntakeOut() { return rightJoystick->GetRawButton(leftButton); }
-bool Control::IntakeForward() { return leftJoystick->GetRawButton(thumbSwitch); }
-
 bool Control::LimelightAiming() { return rightJoystick->GetRawButton(8); }
 bool Control::LimelightLightActivate() { return rightJoystick->GetRawButton(9); }
 
@@ -26,8 +22,8 @@ bool Control::PresetPosition1() { return xboxController->GetRawButton(XboxButton
 bool Control::PresetPosition2() { return xboxController->GetRawButton(XboxButtonB); } // B
 double Control::ClimberUp() { return xboxController->GetRawAxis(XboxAxisLeftTrigger); } // Left trigger
 double Control::ClimberDown() { return xboxController->GetRawAxis(XboxAxisRightTrigger); } // A
-bool Control::IntakeExtend() { return (xboxController->GetPOV() == XboxDPadUp) ? 1 : 0; }
-bool Control::IntakeRetract() { return xboxController->GetPOV() == XboxDPadDown; }
+bool Control::IntakeIn() { return (xboxController->GetPOV() >= XboxDPadUp) ? 1 : 0; }
+bool Control::IntakeOut() { return (xboxController->GetPOV() >= XboxDPadDown) ? 1 : 0; }//willium likes pp
 double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); } // y Axix left ohystikv
 double Control::WheelOfFortune() { return xboxController->GetRawAxis(XboxAxisLeftStickX); } // X-axis left joyistivk
 bool Control::AutoSelect() { return 0; } // left & right dpad 

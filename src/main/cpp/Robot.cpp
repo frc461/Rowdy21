@@ -10,6 +10,7 @@ void Robot::RobotInit() {
     driveTrain = new DriveTrain(control);
     intake = new Intake(control);
     limelight = new Limelight(control, driveTrain);
+    shooter = new Shooter(control);
 }
 
 void Robot::RobotPeriodic() {}
@@ -26,6 +27,7 @@ void Robot::TeleopPeriodic() {
     driveTrain->Periodic();
     intake->Periodic();
     limelight->Periodic();
+    shooter->Periodic();
 }
 
 void Robot::TestPeriodic() {}
