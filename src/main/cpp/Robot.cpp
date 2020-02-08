@@ -27,7 +27,7 @@ void Robot::TeleopPeriodic() {
     driveTrain->Periodic();
     intake->Periodic();
     limelight->Periodic();
-    shooter->Periodic();
+    //shooter->Periodic();
 }
 
 void Robot::TestPeriodic() {}

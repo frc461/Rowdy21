@@ -19,9 +19,11 @@ private:
     Control *control;
     frc::DoubleSolenoid *intakePush;
     WPI_VictorSPX *intakeMotor;
-    WPI_TalonSRX *conveyor, *hopper;
+    WPI_TalonSRX *hopper;
 
     frc::DigitalInput *retractionLimit;
 
     bool switchState, prevSwitchState;
+
+    double intakeMotorSpeed;
 };
