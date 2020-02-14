@@ -13,8 +13,8 @@ Shooter::Shooter(Control *control) {
 
 void Shooter::Periodic() {
     if (control->ShooterLoadUp()) {
-        shooterMotor1->Set(-0.8); // x !> 0.6
-        shooterMotor2->Set(0.8); // x !> 0.6
+        shooterMotor1->Set(0.6);
+        shooterMotor2->Set(-0.6);
         //motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), 10000);
         //motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), -10000);
     }

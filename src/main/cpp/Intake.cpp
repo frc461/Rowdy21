@@ -1,18 +1,21 @@
 #include "Intake.h"
 
-#define INTAKE_SOLENOID_ADDRESS 0
-
+#define INTAKE_SOLENOID_CHANNEL 1
+#define ROLLER_PORT 11
+#define LIMIT_SWITCH 2
 Intake::Intake(Control *control) {
-    intakePush = new frc::DoubleSolenoid(0, INTAKE_SOLENOID_ADDRESS, 1);
+    // push = new frc::DoubleSolenoid(0, INTAKE_SOLENOID_ADDRESS, 1);
+    push = new frc::Solenoid(INTAKE_SOLENOID_CHANNEL);
     this->control = control;
-    intakeMotor = new WPI_VictorSPX(3);
+    roller = new WPI_VictorSPX(ROLLER_PORT);
     // hopper = new WPI_TalonSRX(1);
 
-    retractionLimit = new frc::DigitalInput(0);
+    retractionLimit = new frc::DigitalInput(LIMIT_SWITCH);
 
     switchState = prevSwitchState = 0;
 
-    intakeMotorSpeed = 0;
+    rollerSpeed = 0;
+    timeOut = 0;
 }
 
 void Intake::Periodic() {
@@ -22,38 +25,54 @@ void Intake::Periodic() {
     // }
     // prevSwitchState = switchState;
     if (control->IntakeIn()){
-        intakePush->Set(frc::DoubleSolenoid::Value::kForward);
-        intakeMotorSpeed = 0.8;
+        timeOut = 0;
+        // push->Set(1);
+        rollerSpeed = -0.8;
     }
     else if (control->IntakeOut()){
-        intakePush->Set(frc::DoubleSolenoid::Value::kForward);
-        intakeMotorSpeed = -0.8;
+        timeOut = 0;
+        // push->Set(1);
+        rollerSpeed = 0.8;
     } 
-    else {
-        intakePush->Set(frc::DoubleSolenoid::Value::kReverse);
-        if(!retractionLimit->Get()){
-            intakeMotorSpeed = 0;
+    else{
+        timeOut++;
+        if(timeOut > 10){
+            // push->Set(0);
         }
     }
 
-    intakeMotor->Set(intakeMotorSpeed);
+    std::cout << control->ToggleIntake() << std::endl;
+    
 
+    if(control->ToggleIntake()){
+        ToggleState();
+    }
+
+    if(!retractionLimit->Get()){
+        rollerSpeed = 0;
+    }
+    roller->Set(rollerSpeed);
+
+    /*
     if(control->ConveyAndHopperForward()){
-       // hopper->Set(1);
+       hopper->Set(1);
+       convey->Set(1);
     }
     else if(control->ConveyAndHopperReverse()){
-       // hopper->Set(-1);
+       hopper->Set(-1);
+       convey->Set(-1);
     }
+    */
 }
 
 void Intake::ToggleState() {
-    if (intakePush->Get() == frc::DoubleSolenoid::Value::kForward) {
-        intakePush->Set(frc::DoubleSolenoid::Value::kReverse);
+    if (!push->Get()) {
+        push->Set(1);
     }
-    else if (intakePush->Get() == frc::DoubleSolenoid::Value::kReverse) {
-        intakePush->Set(frc::DoubleSolenoid::Value::kForward);
+    else if (push->Get()) {
+        push->Set(0);
     }
     else {
-        intakePush->Set(frc::DoubleSolenoid::Value::kOff);
+        push->Set(0);
     }
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
 #include <frc/DigitalInput.h>
 #include "Controls.h"
 
@@ -17,13 +17,12 @@ public:
 
 private:
     Control *control;
-    frc::DoubleSolenoid *intakePush;
-    WPI_VictorSPX *intakeMotor;
-    WPI_TalonSRX *hopper;
+    frc::Solenoid *push;
+    WPI_VictorSPX *roller;
 
     frc::DigitalInput *retractionLimit;
 
     bool switchState, prevSwitchState;
-
-    double intakeMotorSpeed;
+    int timeOut;
+    double rollerSpeed;
 };

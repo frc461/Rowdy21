@@ -13,6 +13,8 @@
 #include "Intake.h"
 #include "Limelight.h"
 #include "Shooter.h"
+#include "Conveyor.h"
+
 class Robot : public frc::TimedRobot {
 public:
     void RobotInit() override;
@@ -29,4 +31,5 @@ private:
     Intake *intake;
     Limelight *limelight;
     Shooter *shooter;
+    Conveyor *conveyor;
 };

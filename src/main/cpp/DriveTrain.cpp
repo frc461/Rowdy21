@@ -5,11 +5,11 @@ DriveTrain::DriveTrain(Control *control){
     frc::SmartDashboard::PutNumber("ThrottleCap", 1);
     frc::SmartDashboard::PutBoolean("Arcade", false);
     
-    left1 = new WPI_TalonSRX(1);
-    right1 = new WPI_TalonSRX(4);
+    left1 = new WPI_TalonSRX(DTL1);
+    right1 = new WPI_TalonSRX(DTR1);
 
-    left2 = new WPI_VictorSPX(2);
-    right2 = new WPI_VictorSPX(5);
+    left2 = new WPI_TalonSRX(DTL2);
+    right2 = new WPI_TalonSRX(DTR2);
 
     left = new frc::SpeedControllerGroup(*left1, *left2);
     right = new frc::SpeedControllerGroup(*right1, *right2);
@@ -26,7 +26,7 @@ DriveTrain::DriveTrain(Control *control){
     switchState = 0;
     prevSwitchState = 0;
 
-    direction = 1;
+    direction = -1;
 }
 
 void DriveTrain::Periodic() {
@@ -64,7 +64,7 @@ void DriveTrain::Periodic() {
     prevSwitchState = switchState;
 
     if(driveMode == DriveMode::Tank){
-        driveTrain->TankDrive(direction * throttleCap*control->rightJoystickY(), direction * throttleCap*control->leftJoystickY());
+        driveTrain->TankDrive(direction * throttleCap*control->leftJoystickY(), direction * throttleCap*control->rightJoystickY());
     } else if(driveMode == DriveMode::Arcade) {
         driveTrain->ArcadeDrive(direction * throttleCap*control->rightJoystickY(), throttleCap*control->leftJoystickX());
     } else if(driveMode == DriveMode::Disabled){

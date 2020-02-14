@@ -1,5 +1,11 @@
 #pragma once
 
+#define DTR1 3
+#define DTR2 4
+
+#define DTL1 1
+#define DTL2 2
+
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/SpeedControllerGroup.h>
 #include <ctre/Phoenix.h>
@@ -44,7 +50,7 @@ public:
     frc::DifferentialDrive *driveTrain;
 
 private:
-    WPI_VictorSPX *right2, *left2;
+    WPI_TalonSRX *right2, *left2;
     WPI_TalonSRX *right1, *left1;
 
     frc::SpeedControllerGroup *left;
