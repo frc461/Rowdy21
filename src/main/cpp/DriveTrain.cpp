@@ -2,8 +2,7 @@
 
 DriveTrain::DriveTrain(Control *control){
     this->control = control;
-    frc::SmartDashboard::PutNumber("ThrottleCap", 1);
-    frc::SmartDashboard::PutBoolean("Arcade", false);
+    frc::SmartDashboard::PutBoolean("Arcade", true);
     
     left1 = new WPI_TalonSRX(DTL1);
     right1 = new WPI_TalonSRX(DTR1);
@@ -16,52 +15,28 @@ DriveTrain::DriveTrain(Control *control){
 
     driveTrain = new frc::DifferentialDrive(*left, *right);
 
-    intakeForeward = true;
-
-    frc::SmartDashboard::PutNumber("kp", 0);
-    frc::SmartDashboard::PutNumber("ki", 0);
-    frc::SmartDashboard::PutNumber("kd", 0);
-
-    fDistance = 0.0f;
-    switchState = 0;
-    prevSwitchState = 0;
-
     direction = -1;
 }
 
+void DriveTrain::ResetEncoders() {
+    right1->SetSelectedSensorPosition(0, 0);
+    left1->SetSelectedSensorPosition(0, 0);
+}
+
+double DriveTrain::GetEncoderValueL() {
+    return left1->GetSelectedSensorPosition();
+}
+double DriveTrain::GetEncoderValueR() {
+    return right1->GetSelectedSensorPosition();
+}
+
 void DriveTrain::Periodic() {
-    throttleCap = frc::SmartDashboard::GetNumber("ThrottleCap", 1);
+    throttleCap = 1;
     if(frc::SmartDashboard::GetBoolean("Arcade", false)) {
         driveMode = DriveMode::Arcade;
     } else {
         driveMode = DriveMode::Tank;
     }
-    // else {
-    //     table->PutNumber("ledMode", 1);
-    //     tick++;
-    //     leftSide.SetDouble(left1->GetSelectedSensorPosition());
-    //     rightSide.SetDouble(right1->GetSelectedSensorPosition());
-    //     ntTick.SetDouble(tick);
-
-    //     if (intakeForeward){
-    //         if (!driveMode)
-    //             driveTrain->TankDrive(throttleCap*control->rightJoystickY(), throttleCap*control->leftJoystickY());
-    //         else
-    //             driveTrain->ArcadeDrive(throttleCap*control->rightJoystickY(), throttleCap*control->leftJoystickX());
-    //     }
-    //     else{
-    //         if (!driveMode)
-    //             driveTrain->TankDrive(-throttleCap*control->leftJoystickY(), -throttleCap*control->rightJoystickY());
-    //         else 
-    //             driveTrain->ArcadeDrive(-throttleCap*control->rightJoystickY(), throttleCap*control->leftJoystickX());
-    //     }
-    // }
-
-    // switchState = control->IntakeForward();
-    // if (switchState != prevSwitchState && switchState == 1){
-    //     ToggleDirection();
-    // }
-    prevSwitchState = switchState;
 
     if(driveMode == DriveMode::Tank){
         driveTrain->TankDrive(direction * throttleCap*control->leftJoystickY(), direction * throttleCap*control->rightJoystickY());
@@ -87,13 +62,5 @@ void DriveTrain::ToggleDriveMode() {
         driveMode = DriveMode::Arcade;
     } else {
         driveMode = DriveMode::Tank;
-    }
-}
-
-void DriveTrain::ToggleDirection() {
-    if(direction == 1) {
-        direction = -1;
-    } else if(direction == -1) {
-        direction = 1;
     }
 }

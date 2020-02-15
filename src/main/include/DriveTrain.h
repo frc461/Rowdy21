@@ -43,6 +43,11 @@ public:
     void SetDriveMode(DriveMode mode);
     void ToggleDirection();
 
+    void ResetEncoders();
+
+    double GetEncoderValueL();
+    double GetEncoderValueR();
+
     void Periodic();
 
     DriveMode driveMode;

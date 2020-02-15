@@ -5,6 +5,9 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
+#include <iostream>
+#include <algorithm>
+
 #include "networkTables/NetworkTableInstance.h"
 #include "networktables/NetworkTable.h"
 #include "networkTables/NetworkTableEntry.h"
@@ -15,6 +18,10 @@
 #include "Shooter.h"
 #include "Conveyor.h"
 #include "Climber.h"
+#include "PID.h"
+
+#define ENCODER_INCH 111
+#define AUTONOMOUS_LENGTH 50
 
 class Robot : public frc::TimedRobot {
 public:
@@ -34,4 +41,6 @@ private:
     Shooter *shooter;
     Conveyor *conveyor;
     Climber *climber;
+
+    PID *autoPIDLeft, *autoPIDRight;
 };

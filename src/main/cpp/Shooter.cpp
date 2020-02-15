@@ -6,12 +6,17 @@ Shooter::Shooter(Control *control) {
     shooterMotor2 = new WPI_TalonFX(SHOOTER_MOTOR_2);
     adjustingMotor = new WPI_VictorSPX(ADJUSTING_MOTOR);
 
-    pid = new PID(0.0001, 0, 0);
+    encoder = new frc::Encoder(0, 1);
+
+    limit = new frc::DigitalInput(LIMIT_SW);
+
+    pid = new PID(0.0001, 0, 0, "Shooter");
 
     motorValue1 = motorValue2 = joyValue = 0;
 }
 
 void Shooter::Periodic() {
+    std::cout << encoder->Get() << std::endl;
     if (control->ShooterLoadUp()) {
         shooterMotor1->Set(0.6);
         shooterMotor2->Set(-0.6);
@@ -28,4 +33,19 @@ void Shooter::Periodic() {
 
 void Shooter::VerticalAdjust() {
     adjustingMotor->Set(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
+}
+
+void Shooter::SetAdj(double speed) {
+    adjustingMotor->Set(speed);
+}
+
+bool Shooter::GetLimit() {
+    return limit->Get();
+}
+
+void Shooter::ZeroAlign() {
+    SetAdj(-0.5);
+    while(GetLimit()) {}
+    encoder->Reset();std::cout << "reset brah" << std::endl;
+    SetAdj(0);
 }

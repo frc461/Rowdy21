@@ -14,14 +14,25 @@ void Robot::RobotInit() {
     shooter = new Shooter(control);
     conveyor = new Conveyor(control);
     climber = new Climber(control);
+
+    autoPIDLeft = new PID(-0.000125, 0, 0, "autoTest_L");
+    autoPIDRight = new PID(-0.000125, 0, 0, "autoTest_R");
 }
 
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
+    shooter->ZeroAlign();
+    driveTrain->ResetEncoders();
 }
 
 void Robot::AutonomousPeriodic() {
+    if (driveTrain->GetEncoderValueL() >= -AUTONOMOUS_LENGTH*ENCODER_INCH) {
+        driveTrain->driveTrain->TankDrive(std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), -AUTONOMOUS_LENGTH*ENCODER_INCH)), std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH)));
+    } else {
+        driveTrain->driveTrain->TankDrive(0, 0);
+    }
+
 }
 
 void Robot::TeleopInit() {}

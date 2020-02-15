@@ -10,8 +10,8 @@ Limelight::Limelight(Control *control, DriveTrain *driveTrain) {
 
     Output = Forward = 0;
 
-    forwardPID = new PID(-0.07, 0.0, 0.0);
-    outputPID = new PID(-0.07, 0.00075, 0);
+    forwardPID = new PID(-0.07, 0.0, 0.0, "LL fd");
+    outputPID = new PID(-0.07, 0.00075, 0, "LL aim");
 }
 
 void Limelight::Periodic() {

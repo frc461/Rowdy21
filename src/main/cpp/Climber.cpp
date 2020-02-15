@@ -9,9 +9,6 @@ Climber::Climber(Control *control) {
     brake = new frc::Solenoid(0);
 }
 void Climber::Periodic() {
-    
-    std::cout << control->ClimberUp() << std::endl;
-
     if(control->ClimberUp() > 0.1 && control->ClimberDown() > 0.1){
     }
     else if(control->ClimberUp() > 0.1){// && !limitTop->Get()){

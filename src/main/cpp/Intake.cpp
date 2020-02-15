@@ -5,11 +5,9 @@
 #define LIMIT_SWITCH 2
 
 Intake::Intake(Control *control) {
-    // push = new frc::DoubleSolenoid(0, INTAKE_SOLENOID_ADDRESS, 1);
     push = new frc::Solenoid(INTAKE_SOLENOID_CHANNEL);
     this->control = control;
     roller = new WPI_VictorSPX(ROLLER_PORT);
-    // hopper = new WPI_TalonSRX(1);
 
     retractionLimit = new frc::DigitalInput(LIMIT_SWITCH);
 
