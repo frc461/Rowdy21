@@ -16,7 +16,7 @@ Shooter::Shooter(Control *control) {
 }
 
 void Shooter::Periodic() {
-    std::cout << encoder->Get() << std::endl;
+    //std::cout << encoder->Get() << std::endl;
     if (control->ShooterLoadUp()) {
         shooterMotor1->Set(0.6);
         shooterMotor2->Set(-0.6);
