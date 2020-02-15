@@ -4,7 +4,7 @@ Shooter::Shooter(Control *control) {
     this->control = control;
     shooterMotor1 = new WPI_TalonFX(SHOOTER_MOTOR_1);
     shooterMotor2 = new WPI_TalonFX(SHOOTER_MOTOR_2);
-    //adjustingMotor = new WPI_TalonFX(ADJUSTING_MOTOR);
+    adjustingMotor = new WPI_VictorSPX(ADJUSTING_MOTOR);
 
     pid = new PID(0.0001, 0, 0);
 
@@ -23,9 +23,9 @@ void Shooter::Periodic() {
         shooterMotor2->Set(0);
         motorValue1 = motorValue2 = 0;
     }
-    //VerticalAdjust();
+    VerticalAdjust();
 }
 
-/*void Shooter::VerticalAdjust() {
+void Shooter::VerticalAdjust() {
     adjustingMotor->Set(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
-}*/
+}

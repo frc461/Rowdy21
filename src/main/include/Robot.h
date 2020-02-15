@@ -14,6 +14,7 @@
 #include "Limelight.h"
 #include "Shooter.h"
 #include "Conveyor.h"
+#include "Climber.h"
 
 class Robot : public frc::TimedRobot {
 public:
@@ -32,4 +33,5 @@ private:
     Limelight *limelight;
     Shooter *shooter;
     Conveyor *conveyor;
+    Climber *climber;
 };

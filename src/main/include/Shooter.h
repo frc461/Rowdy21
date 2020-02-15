@@ -7,7 +7,7 @@
 
 #define SHOOTER_MOTOR_1 5
 #define SHOOTER_MOTOR_2 6
-#define ADJUSTING_MOTOR 2
+#define ADJUSTING_MOTOR 12
 
 #define PITCH_SPEED_CONTROL 0.5
 
@@ -25,7 +25,7 @@ public:
 private:
     WPI_TalonFX *shooterMotor1, *shooterMotor2;
 
-    WPI_TalonFX *adjustingMotor;
+    WPI_VictorSPX *adjustingMotor;
 
     float motorValue1, motorValue2;
     float joyValue;

@@ -1,9 +1,9 @@
 #pragma once
 #include <frc/Solenoid.h>
 #include <frc/DigitalInput.h>
-#include "Controls.h"
-
 #include <ctre/Phoenix.h>
+
+#include "Controls.h"
 
 class Intake 
 {
@@ -22,7 +22,6 @@ private:
 
     frc::DigitalInput *retractionLimit;
 
-    bool switchState, prevSwitchState;
-    int timeOut;
     double rollerSpeed;
+    bool bIntake;
 };

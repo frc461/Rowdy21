@@ -2,6 +2,7 @@
 #include "Controls.h"
 #include <iostream>
 #include <ctre/Phoenix.h>
+
 #define TOWER_MOTOR 10
 #define HOPPER_MOTOR 9
 
@@ -11,8 +12,8 @@ class Conveyor {
         ~Conveyor();
 
         void Periodic();
+        
     private:
-        int deBounce;
         Control *control;
         WPI_VictorSPX *hopper;
         WPI_VictorSPX *tower;

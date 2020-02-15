@@ -3,6 +3,7 @@
 #define INTAKE_SOLENOID_CHANNEL 1
 #define ROLLER_PORT 11
 #define LIMIT_SWITCH 2
+
 Intake::Intake(Control *control) {
     // push = new frc::DoubleSolenoid(0, INTAKE_SOLENOID_ADDRESS, 1);
     push = new frc::Solenoid(INTAKE_SOLENOID_CHANNEL);
@@ -12,60 +13,32 @@ Intake::Intake(Control *control) {
 
     retractionLimit = new frc::DigitalInput(LIMIT_SWITCH);
 
-    switchState = prevSwitchState = 0;
-
     rollerSpeed = 0;
-    timeOut = 0;
+    bIntake = false;
 }
 
 void Intake::Periodic() {
-    // switchState = control->IntakeExtend();
-    // if(switchState != prevSwitchState && switchState == 1){
-    //     ToggleState();
-    // }
-    // prevSwitchState = switchState;
     if (control->IntakeIn()){
-        timeOut = 0;
-        // push->Set(1);
         rollerSpeed = -0.8;
     }
     else if (control->IntakeOut()){
-        timeOut = 0;
-        // push->Set(1);
         rollerSpeed = 0.8;
-    } 
-    else{
-        timeOut++;
-        if(timeOut > 10){
-            // push->Set(0);
-        }
     }
-
-    std::cout << control->ToggleIntake() << std::endl;
-    
+    else if (!bIntake && retractionLimit->Get()){
+        rollerSpeed = -0.8;
+    }
+    else {
+        rollerSpeed = 0;
+    }
 
     if(control->ToggleIntake()){
         ToggleState();
     }
-
-    if(!retractionLimit->Get()){
-        rollerSpeed = 0;
-    }
     roller->Set(rollerSpeed);
-
-    /*
-    if(control->ConveyAndHopperForward()){
-       hopper->Set(1);
-       convey->Set(1);
-    }
-    else if(control->ConveyAndHopperReverse()){
-       hopper->Set(-1);
-       convey->Set(-1);
-    }
-    */
 }
 
 void Intake::ToggleState() {
+    bIntake = !bIntake;
     if (!push->Get()) {
         push->Set(1);
     }

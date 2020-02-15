@@ -12,14 +12,14 @@ public:
     Control();
 
     class ButtonDebounce {
-        public:
-            ButtonDebounce();
-            bool Get(bool input);
-        private:
-            int timeout;
-            double latest;
+    public:
+        ButtonDebounce();
+        bool Get(bool input);
+        double latest;
+    private:
+        int timeout;
     };
-    
+
     bool ShooterLoadUp(); // right bumper
     bool ConveyForward(); // Left bumper
     bool ConveyReverse(); // X
@@ -45,6 +45,7 @@ public:
     bool LimelightLightActivate();
 
     Control::ButtonDebounce *BToggleIntake;
+    Control::ButtonDebounce *BPresetPos1, *BPresetPos2;
 
 private:
     frc::Joystick *leftJoystick;

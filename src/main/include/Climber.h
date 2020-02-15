@@ -1,8 +1,9 @@
 #pragma once
+
 #include "Controls.h"
 #include <ctre/Phoenix.h>
 #include <frc/DigitalInput.h>
-
+#include <frc/Solenoid.h>
 class Climber {
 public:
     Climber(Control *control);
@@ -13,4 +14,5 @@ private:
     Control *control;
     frc::DigitalInput *limitTop;
     frc::DigitalInput *limitDown;
+    frc::Solenoid *brake;
 };
