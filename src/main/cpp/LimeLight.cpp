@@ -20,6 +20,8 @@ void Limelight::Periodic() {
         SetLimelightLight(1);
         LimelightAiming();
         drTrain->driveTrain->ArcadeDrive(/*Forward*/0, Output);
+    } else if(control->LimelightLightActivate()){
+        SetLimelightLight(1);
     }
     else {
         SetLimelightLight(0);

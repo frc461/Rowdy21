@@ -33,11 +33,12 @@ void Intake::Periodic() {
         ToggleState();
     }
     roller->Set(rollerSpeed);
+    std::cout<<rollerSpeed<<std::endl;
 }
 
 void Intake::ToggleState() {
     bIntake = !bIntake;
-    if (!push->Get()) {
+    if (!push->Get()) { 
         push->Set(1);
     }
     else if (push->Get()) {

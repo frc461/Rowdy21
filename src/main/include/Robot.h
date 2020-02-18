@@ -19,7 +19,6 @@
 #include "Conveyor.h"
 #include "Climber.h"
 #include "PID.h"
-
 #define ENCODER_INCH 111
 #define AUTONOMOUS_LENGTH 50
 
@@ -43,4 +42,5 @@ private:
     Climber *climber;
 
     PID *autoPIDLeft, *autoPIDRight;
+    int completeness;
 };

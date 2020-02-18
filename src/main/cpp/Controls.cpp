@@ -17,7 +17,7 @@ double Control::rightJoystickY() { return rightJoystick->GetRawAxis(yAxisJS); }
 bool Control::LimelightAiming() { return rightJoystick->GetRawButton(8); }
 bool Control::LimelightLightActivate() { return rightJoystick->GetRawButton(9); }
 
-bool Control::ShooterLoadUp() { return (xboxController->GetRawButton(XboxButtonLeftBumper)); } // left bumper
+bool Control::ShooterLoadUp() { return (xboxController->GetRawButton(XboxButtonRightBumper)); } // Right bumper
 bool Control::ConveyForward() { return (xboxController->GetRawButton(XboxButtonLeftBumper)); } // Left bumper
 bool Control::ConveyReverse() { return (xboxController->GetRawButton(XboxButtonX)); } // X
 double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(XboxAxisRightStickY); } // right joysitkc
