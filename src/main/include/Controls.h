@@ -28,6 +28,7 @@ public:
     bool PresetPosition2(); // B
     double ClimberUp(); // Left trigger
     double ClimberDown(); // Right Trigger
+    bool ClimberBrake();
     bool IntakeIn(); // Up D-Pad
     bool IntakeOut(); // Down D-Pad
     bool JustIntakeMotor(); // TODO: JUST THE INTAKE MROORT AM  
@@ -35,6 +36,7 @@ public:
     double WheelOfFortune(); // X-axis left joyist
     bool ToggleIntake();
     bool AutoSelect(); // left & right D=Pad
+    bool ShooterReset();//start
 
     double leftJoystickX();
     double leftJoystickY();
@@ -46,6 +48,7 @@ public:
 
     Control::ButtonDebounce *BToggleIntake;
     Control::ButtonDebounce *BPresetPos1, *BPresetPos2;
+    Control::ButtonDebounce *BClimberBrake;
 
 private:
     frc::Joystick *leftJoystick;

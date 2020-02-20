@@ -13,6 +13,7 @@ class Conveyor {
 
         void Periodic();
         
+        void Lift();
     private:
         Control *control;
         WPI_VictorSPX *hopper;

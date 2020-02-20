@@ -7,6 +7,7 @@
 
 #include <frc/DigitalInput.h>
 #include <frc/Encoder.h>
+#include <frc/Timer.h>
 
 #define SHOOTER_MOTOR_1 5
 #define SHOOTER_MOTOR_2 6
@@ -33,6 +34,9 @@ public:
 
     void ZeroAlign();
 
+    int GetAdj();
+
+    void Rev(double speed);
 private:
     WPI_TalonFX *shooterMotor1, *shooterMotor2;
 

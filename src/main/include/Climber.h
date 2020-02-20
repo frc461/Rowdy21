@@ -9,6 +9,11 @@ public:
     Climber(Control *control);
     void Periodic();
 
+    void ClimberBrakeOff();
+    void ClimberBrakeOn();
+
+    void ToggleBrake();
+
 private:
     WPI_TalonSRX *lifter1, *lifter2;
     Control *control;

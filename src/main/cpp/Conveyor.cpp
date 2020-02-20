@@ -5,6 +5,9 @@ Conveyor::Conveyor(Control *control){
     tower = new WPI_VictorSPX(TOWER_MOTOR);
     hopper = new WPI_VictorSPX(HOPPER_MOTOR);
 }
+void Conveyor::Lift(){
+    tower->Set(1);
+}
 void Conveyor::Periodic(){
     if(control->ConveyForward()){
         hopper->Set(-1);

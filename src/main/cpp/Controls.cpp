@@ -8,7 +8,9 @@ Control::Control() {
     BToggleIntake = new Control::ButtonDebounce();
     BPresetPos1 = new Control::ButtonDebounce();
     BPresetPos2 = new Control::ButtonDebounce();
+    BClimberBrake = new Control::ButtonDebounce();
 }
+
 double Control::leftJoystickX() { return leftJoystick->GetRawAxis(xAxisJS); }
 double Control::leftJoystickY() { return leftJoystick->GetRawAxis(yAxisJS); }
 double Control::rightJoystickX() { return rightJoystick->GetRawAxis(xAxisJS); }
@@ -20,18 +22,20 @@ bool Control::LimelightLightActivate() { return rightJoystick->GetRawButton(9); 
 bool Control::ShooterLoadUp() { return (xboxController->GetRawButton(XboxButtonRightBumper)); } // Right bumper
 bool Control::ConveyForward() { return (xboxController->GetRawButton(XboxButtonLeftBumper)); } // Left bumper
 bool Control::ConveyReverse() { return (xboxController->GetRawButton(XboxButtonX)); } // X
-double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(XboxAxisRightStickY); } // right joysitkc
+double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(XboxAxisRightStickY); } // right joystick
 bool Control::PresetPosition1() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonY)); } // Y
 bool Control::PresetPosition2() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonB)); } // B
 double Control::ClimberUp() { return xboxController->GetRawAxis(XboxAxisLeftTrigger); } // Left trigger
 double Control::ClimberDown() { return xboxController->GetRawAxis(XboxAxisRightTrigger); }
+bool Control::ClimberBrake() { return BClimberBrake->Get(xboxController->GetRawButton(XboxButtonBack)); }
 bool Control::IntakeIn() { return (xboxController->GetPOV() == XboxDPadUp); }
 bool Control::IntakeOut() { return (xboxController->GetPOV() == XboxDPadDown); }
 bool Control::JustIntakeMotor() { return (xboxController->GetRawAxis(XboxAxisLeftStickY) < -0.1 || xboxController->GetRawAxis(XboxAxisLeftStickY) > 0.1); }
-double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); } // y Axix left ohystikv
-double Control::WheelOfFortune() { return xboxController->GetRawAxis(XboxAxisLeftStickX); } // X-axis left joyistivk
+//double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); } // y Axix left joystick 
+double Control::WheelOfFortune() { return xboxController->GetRawAxis(XboxAxisLeftStickX); } // X-axis left joystick
 bool Control::ToggleIntake() { return BToggleIntake->Get(xboxController->GetRawButton(XboxButtonA));}
 bool Control::AutoSelect() { return 0; } // left & right dpad 
+bool Control::ShooterReset() { return xboxController->GetRawButton(XboxButtonStart); }
 
 Control::ButtonDebounce::ButtonDebounce() {
     latest = 0;

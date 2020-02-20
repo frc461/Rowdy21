@@ -31,8 +31,8 @@ double DriveTrain::GetEncoderValueR() {
 }
 
 void DriveTrain::Periodic() {
-    std::cout << "left en: " << left1->GetSelectedSensorPosition() << std::endl;
-    std::cout << "right en: " << right1->GetSelectedSensorPosition() << std::endl;
+    //std::cout << "left en: " << left1->GetSelectedSensorPosition() << std::endl;
+    //std::cout << "right en: " << right1->GetSelectedSensorPosition() << std::endl;
 
     throttleCap = 1;
     if(frc::SmartDashboard::GetBoolean("Arcade", false)) {

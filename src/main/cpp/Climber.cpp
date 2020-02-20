@@ -8,6 +8,7 @@ Climber::Climber(Control *control) {
     lifter2 = new WPI_TalonSRX(8);
     brake = new frc::Solenoid(0);
 }
+
 void Climber::Periodic() {
     if(control->ClimberUp() > 0.1 && control->ClimberDown() > 0.1){
     }
@@ -23,4 +24,24 @@ void Climber::Periodic() {
         lifter1->Set(0);
         lifter2->Set(0);
     }
+
+    if (control->ClimberBrake()) {
+        ToggleBrake();
+    }
+}
+
+void Climber::ToggleBrake() {
+    if (brake->Get()) {
+        brake->Set(0);
+    }
+    else if (!brake->Get()) {
+        brake->Set(1);
+    }
+}
+
+void Climber::ClimberBrakeOff() {
+    brake->Set(0);
+}
+void Climber::ClimberBrakeOn() {
+    brake->Set(1);
 }

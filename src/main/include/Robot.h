@@ -19,8 +19,11 @@
 #include "Conveyor.h"
 #include "Climber.h"
 #include "PID.h"
-#define ENCODER_INCH 111
-#define AUTONOMOUS_LENGTH 50
+#include <Math.h>
+
+#define ENCODER_INCH 111.0
+#define AUTONOMOUS_LENGTH 14.0
+#define PITCH_ENCODER_IDEAL 968
 
 class Robot : public frc::TimedRobot {
 public:
@@ -31,7 +34,7 @@ public:
     void TeleopInit() override;
     void TeleopPeriodic() override;
     void TestPeriodic() override;
-
+    void DisabledInit() override;
 private:
     DriveTrain* driveTrain;
     Control *control;

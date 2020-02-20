@@ -33,7 +33,7 @@ void Intake::Periodic() {
         ToggleState();
     }
     roller->Set(rollerSpeed);
-    std::cout<<rollerSpeed<<std::endl;
+    //std::cout<<rollerSpeed<<std::endl;
 }
 
 void Intake::ToggleState() {
@@ -47,4 +47,9 @@ void Intake::ToggleState() {
     else {
         push->Set(0);
     }
+}
+
+void Intake::Reset(){
+    bIntake = false;
+    push->Set(0);
 }
