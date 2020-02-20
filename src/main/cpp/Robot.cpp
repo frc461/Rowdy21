@@ -47,7 +47,9 @@ void Robot::AutonomousPeriodic() {
     }
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+    climber->ClimberBrakeOff();
+}
 
 void Robot::TeleopPeriodic() {
     driveTrain->Periodic();
