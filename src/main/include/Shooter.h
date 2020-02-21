@@ -37,6 +37,8 @@ public:
     int GetAdj();
 
     void Rev(double speed);
+
+    void Angle(double angle);
 private:
     WPI_TalonFX *shooterMotor1, *shooterMotor2;
 
@@ -52,4 +54,7 @@ private:
 
     frc::Encoder *encoder;
 
+    PID *anglePID;
+
+    int shooterPos;
 };

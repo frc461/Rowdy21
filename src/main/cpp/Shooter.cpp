@@ -12,8 +12,9 @@ Shooter::Shooter(Control *control) {
     limit = new frc::DigitalInput(LIMIT_SW);
 
     pid = new PID(0.0001, 0, 0, "Shooter");
-
+    anglePID = new PID(0.0001, 0, 0, "anglePID");
     motorValue1 = motorValue2 = joyValue = 0;
+    shooterPos = 0;
 }
 void Shooter::Rev(double speed){
         shooterMotor1->Set(speed);
@@ -32,9 +33,22 @@ void Shooter::Periodic() {
         shooterMotor2->Set(0);
         motorValue1 = motorValue2 = 0;
     }
-    VerticalAdjust();
+   // VerticalAdjust();
+   if(control->PresetPosition1()){
+       shooterPos = HALF_IN_TRENCH;
+   }
+   else if(control->PresetPosition2()){
+       shooterPos = DISCO;
+   }
     if(control->ShooterReset()){
         ZeroAlign();
+    }
+    if(abs(control->ManualShooterAdjustment())>0.1){
+        VerticalAdjust();
+        shooterPos = encoder->Get();
+    }
+    else{
+        Angle(shooterPos);
     }
 }
 
@@ -51,6 +65,10 @@ void Shooter::SetAdj(double speed) {
         adjustingMotor->Set(speed);
     }
     frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
+}
+
+void Shooter::Angle(double angle){
+    adjustingMotor->Set(anglePID->OutputPID(encoder->Get(), angle));
 }
 
 bool Shooter::GetLimit() {
