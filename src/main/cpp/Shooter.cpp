@@ -8,11 +8,11 @@ Shooter::Shooter(Control *control) {
     adjustingMotor = new WPI_VictorSPX(ADJUSTING_MOTOR);
 
     encoder = new frc::Encoder(0, 1);
-
+    flashlight = new frc::Relay(0);
     limit = new frc::DigitalInput(LIMIT_SW);
 
     pid = new PID(0.0001, 0, 0, "Shooter");
-    anglePID = new PID(0.0001, 0, 0, "anglePID");
+    anglePID = new PID(0.001, 0, 0, "anglePID");
     motorValue1 = motorValue2 = joyValue = 0;
     shooterPos = 0;
 }
@@ -25,10 +25,12 @@ void Shooter::Periodic() {
     if (control->ShooterLoadUp()) {
         shooterMotor1->Set(0.6);
         shooterMotor2->Set(-0.6);
+        flashlight->Set(frc::Relay::Value::kReverse);
         //motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), 10000);
         //motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), -10000);
     }
     else {
+        flashlight->Set(frc::Relay::Value::kOff);
         shooterMotor1->Set(0);
         shooterMotor2->Set(0);
         motorValue1 = motorValue2 = 0;

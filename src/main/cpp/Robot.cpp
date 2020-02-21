@@ -25,6 +25,7 @@ void Robot::RobotPeriodic() {}
 void Robot::AutonomousInit() {
     shooter->ZeroAlign();
     driveTrain->ResetEncoders();
+    autoStart = frc::Timer::GetFPGATimestamp();
 }
 
 void Robot::DisabledInit(){
@@ -32,11 +33,14 @@ void Robot::DisabledInit(){
 }
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
+    
     autoPIDLeft->getPIDvalues();
     autoPIDRight->getPIDvalues();
-    driveTrain->driveTrain->TankDrive(std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH)), std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH)));
+    if(frc::Timer::GetFPGATimestamp() - autoStart > 5){
+        driveTrain->driveTrain->TankDrive(std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH)), std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH)));
+    }
     shooter->Rev(0.6);
-    if (abs((double)driveTrain->GetEncoderValueL() - AUTONOMOUS_LENGTH*ENCODER_INCH) <= 1.0*ENCODER_INCH && shooter->GetAdj() - PITCH_ENCODER_IDEAL <= 60) {
+    if (shooter->GetAdj() - PITCH_ENCODER_IDEAL <= 60) {
         conveyor->Lift();
     }
     if(shooter->GetAdj() < PITCH_ENCODER_IDEAL){

@@ -8,7 +8,8 @@
 #include <frc/DigitalInput.h>
 #include <frc/Encoder.h>
 #include <frc/Timer.h>
-
+#include <frc/DigitalOutput.h>
+#include <frc/Relay.h>
 #define SHOOTER_MOTOR_1 5
 #define SHOOTER_MOTOR_2 6
 #define ADJUSTING_MOTOR 12
@@ -57,4 +58,6 @@ private:
     PID *anglePID;
 
     int shooterPos;
+
+    frc::Relay *flashlight;
 };
