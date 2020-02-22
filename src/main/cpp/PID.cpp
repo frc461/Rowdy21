@@ -36,3 +36,7 @@ void PID::getPIDvalues() {
     ki = frc::SmartDashboard::GetNumber(pidName + " ki", 0);
     kd = frc::SmartDashboard::GetNumber(pidName + " kd", 0);
 }
+
+void PID::ResetSum(){
+    errorSum = 0;
+}

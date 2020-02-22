@@ -16,7 +16,10 @@ Intake::Intake(Control *control) {
 }
 
 void Intake::Periodic() {
-    if (control->IntakeIn()){
+    if (control->ConveyForward()) {
+        rollerSpeed = 0.8;
+    }
+    else if (control->IntakeIn()){
         rollerSpeed = -0.8;
     }
     else if (control->IntakeOut()){
@@ -33,7 +36,6 @@ void Intake::Periodic() {
         ToggleState();
     }
     roller->Set(rollerSpeed);
-    //std::cout<<rollerSpeed<<std::endl;
 }
 
 void Intake::ToggleState() {

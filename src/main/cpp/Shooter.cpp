@@ -12,19 +12,21 @@ Shooter::Shooter(Control *control) {
     limit = new frc::DigitalInput(LIMIT_SW);
 
     pid = new PID(0.0001, 0, 0, "Shooter");
-    anglePID = new PID(0.001, 0, 0, "anglePID");
+    anglePID = new PID(0.002, 0, 0, "anglePID");
     motorValue1 = motorValue2 = joyValue = 0;
     shooterPos = 0;
+    shooterSpeed = 0;
+    frc::SmartDashboard::PutBoolean("Shooter Speed", shooterSpeed);
 }
 void Shooter::Rev(double speed){
         shooterMotor1->Set(speed);
         shooterMotor2->Set(-speed);
 }
 void Shooter::Periodic() {
-    //std::cout << encoder->Get() << std::endl;
+    shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
     if (control->ShooterLoadUp()) {
-        shooterMotor1->Set(0.6);
-        shooterMotor2->Set(-0.6);
+        shooterMotor1->Set(shooterSpeed ? 0.8 : 0.6);
+        shooterMotor2->Set(shooterSpeed ? -0.8 : -0.6);
         flashlight->Set(frc::Relay::Value::kReverse);
         //motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), 10000);
         //motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), -10000);
@@ -35,16 +37,16 @@ void Shooter::Periodic() {
         shooterMotor2->Set(0);
         motorValue1 = motorValue2 = 0;
     }
-   // VerticalAdjust();
-   if(control->PresetPosition1()){
-       shooterPos = HALF_IN_TRENCH;
-   }
-   else if(control->PresetPosition2()){
-       shooterPos = DISCO;
-   }
-    if(control->ShooterReset()){
+    if(control->PresetPosition1()){
+        shooterPos = HALF_IN_TRENCH;
+    }
+    else if(control->PresetPosition2()){
+        shooterPos = DISCO;
+    }
+    else if(control->ShooterReset()){
         ZeroAlign();
     }
+
     if(abs(control->ManualShooterAdjustment())>0.1){
         VerticalAdjust();
         shooterPos = encoder->Get();

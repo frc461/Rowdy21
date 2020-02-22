@@ -5,9 +5,11 @@
 
 #include <frc/Joystick.h>
 #include <frc/Timer.h>
-#define HALF_IN_TRENCH 794
-#define DISCO 832
+
+#define HALF_IN_TRENCH 300
+#define DISCO 500
 #define ON_INIT_LINE 1012
+
 class Control
 {
 public:

@@ -38,11 +38,14 @@ void Robot::AutonomousPeriodic() {
     autoPIDRight->getPIDvalues();
     if(frc::Timer::GetFPGATimestamp() - autoStart > 5){
         driveTrain->driveTrain->TankDrive(std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH)), std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH)));
+        shooter->Rev(0);
     }
+
     shooter->Rev(0.6);
-    if (shooter->GetAdj() - PITCH_ENCODER_IDEAL <= 60) {
+    if (abs(shooter->GetAdj() - PITCH_ENCODER_IDEAL) <= 30) {
         conveyor->Lift();
     }
+
     if(shooter->GetAdj() < PITCH_ENCODER_IDEAL){
         shooter->SetAdj(0.8);
     }

@@ -19,12 +19,14 @@ void Limelight::Periodic() {
         drTrain->driveMode = drTrain->DriveMode::Disabled;
         SetLimelightLight(1);
         LimelightAiming();
-        drTrain->driveTrain->ArcadeDrive(/*Forward*/0, Output);
+        drTrain->driveTrain->ArcadeDrive(0, Output);
     } else if(control->LimelightLightActivate()){
         SetLimelightLight(1);
+        outputPID->ResetSum();
     }
     else {
         SetLimelightLight(0);
+        outputPID->ResetSum();
     }
 }
 
@@ -42,10 +44,7 @@ void Limelight::LimelightAiming() {
 
     outputPID->getPIDvalues();
 
-    //frc::SmartDashboard::PutNumber("Distance", fDistance);
-    //fDistance = (9.68* pow(ta, 2)) - (53.1*ta) + 123;
     Output = outputPID->OutputPID(tx, 0.0);
-
     Forward = forwardPID->OutputPID(ta, 0.9);
 }
 

@@ -14,6 +14,8 @@ public:
 
     void getPIDvalues();
 
+    void ResetSum();
+
 private:
     double error, errorSum, lastError;
     std::string pidName;

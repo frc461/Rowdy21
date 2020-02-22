@@ -10,6 +10,7 @@
 #include <frc/Timer.h>
 #include <frc/DigitalOutput.h>
 #include <frc/Relay.h>
+
 #define SHOOTER_MOTOR_1 5
 #define SHOOTER_MOTOR_2 6
 #define ADJUSTING_MOTOR 12
@@ -60,4 +61,6 @@ private:
     int shooterPos;
 
     frc::Relay *flashlight;
+
+    bool shooterSpeed;
 };

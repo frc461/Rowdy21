@@ -16,6 +16,7 @@ public:
     void ToggleState();
 
     void Reset();
+
 private:
     Control *control;
     frc::Solenoid *push;

@@ -31,7 +31,6 @@ bool Control::ClimberBrake() { return BClimberBrake->Get(xboxController->GetRawB
 bool Control::IntakeIn() { return (xboxController->GetPOV() == XboxDPadUp); }
 bool Control::IntakeOut() { return (xboxController->GetPOV() == XboxDPadDown); }
 bool Control::JustIntakeMotor() { return (xboxController->GetRawAxis(XboxAxisLeftStickY) < -0.1 || xboxController->GetRawAxis(XboxAxisLeftStickY) > 0.1); }
-//double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); } // y Axix left joystick 
 double Control::WheelOfFortune() { return xboxController->GetRawAxis(XboxAxisLeftStickX); } // X-axis left joystick
 bool Control::ToggleIntake() { return BToggleIntake->Get(xboxController->GetRawButton(XboxButtonA));}
 bool Control::AutoSelect() { return 0; } // left & right dpad 

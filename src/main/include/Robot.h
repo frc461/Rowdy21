@@ -23,7 +23,7 @@
 
 #define ENCODER_INCH 111.0
 #define AUTONOMOUS_LENGTH 14.0
-#define PITCH_ENCODER_IDEAL 968
+#define PITCH_ENCODER_IDEAL 900
 
 class Robot : public frc::TimedRobot {
 public:
@@ -35,6 +35,7 @@ public:
     void TeleopPeriodic() override;
     void TestPeriodic() override;
     void DisabledInit() override;
+
 private:
     DriveTrain* driveTrain;
     Control *control;
