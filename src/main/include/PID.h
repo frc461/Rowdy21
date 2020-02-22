@@ -5,7 +5,7 @@
 class PID
 {
 public:
-    PID(double kp, double ki, double kd);
+    PID(double kp, double ki, double kd, std::string name);
     ~PID();
 
     double kp, ki, kd;
@@ -14,6 +14,9 @@ public:
 
     void getPIDvalues();
 
+    void ResetSum();
+
 private:
     double error, errorSum, lastError;
+    std::string pidName;
 };

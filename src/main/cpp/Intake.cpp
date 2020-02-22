@@ -5,11 +5,9 @@
 #define LIMIT_SWITCH 2
 
 Intake::Intake(Control *control) {
-    // push = new frc::DoubleSolenoid(0, INTAKE_SOLENOID_ADDRESS, 1);
     push = new frc::Solenoid(INTAKE_SOLENOID_CHANNEL);
     this->control = control;
     roller = new WPI_VictorSPX(ROLLER_PORT);
-    // hopper = new WPI_TalonSRX(1);
 
     retractionLimit = new frc::DigitalInput(LIMIT_SWITCH);
 
@@ -18,7 +16,10 @@ Intake::Intake(Control *control) {
 }
 
 void Intake::Periodic() {
-    if (control->IntakeIn()){
+    if (control->ConveyForward()) {
+        rollerSpeed = 0.8;
+    }
+    else if (control->IntakeIn()){
         rollerSpeed = -0.8;
     }
     else if (control->IntakeOut()){
@@ -39,7 +40,7 @@ void Intake::Periodic() {
 
 void Intake::ToggleState() {
     bIntake = !bIntake;
-    if (!push->Get()) {
+    if (!push->Get()) { 
         push->Set(1);
     }
     else if (push->Get()) {
@@ -48,4 +49,9 @@ void Intake::ToggleState() {
     else {
         push->Set(0);
     }
+}
+
+void Intake::Reset(){
+    bIntake = false;
+    push->Set(0);
 }

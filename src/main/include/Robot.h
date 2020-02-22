@@ -5,6 +5,9 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
+#include <iostream>
+#include <algorithm>
+
 #include "networkTables/NetworkTableInstance.h"
 #include "networktables/NetworkTable.h"
 #include "networkTables/NetworkTableEntry.h"
@@ -15,6 +18,12 @@
 #include "Shooter.h"
 #include "Conveyor.h"
 #include "Climber.h"
+#include "PID.h"
+#include <Math.h>
+
+#define ENCODER_INCH 111.0
+#define AUTONOMOUS_LENGTH 14.0
+#define PITCH_ENCODER_IDEAL 900
 
 class Robot : public frc::TimedRobot {
 public:
@@ -25,6 +34,7 @@ public:
     void TeleopInit() override;
     void TeleopPeriodic() override;
     void TestPeriodic() override;
+    void DisabledInit() override;
 
 private:
     DriveTrain* driveTrain;
@@ -34,4 +44,8 @@ private:
     Shooter *shooter;
     Conveyor *conveyor;
     Climber *climber;
+
+    PID *autoPIDLeft, *autoPIDRight;
+    int completeness;
+    double autoStart;
 };

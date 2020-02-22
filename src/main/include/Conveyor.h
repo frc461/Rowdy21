@@ -1,5 +1,6 @@
 #include "CanStuff.h"
 #include "Controls.h"
+
 #include <iostream>
 #include <ctre/Phoenix.h>
 
@@ -13,6 +14,7 @@ class Conveyor {
 
         void Periodic();
         
+        void Lift();
     private:
         Control *control;
         WPI_VictorSPX *hopper;
