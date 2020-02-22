@@ -20,4 +20,6 @@ private:
     frc::DigitalInput *limitTop;
     frc::DigitalInput *limitDown;
     frc::Solenoid *brake;
+
+    double speed;
 };

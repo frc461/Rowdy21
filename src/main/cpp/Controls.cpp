@@ -25,8 +25,8 @@ bool Control::ConveyReverse() { return (xboxController->GetRawButton(XboxButtonX
 double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(XboxAxisRightStickY); } // right joystick
 bool Control::PresetPosition1() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonY)); } // Y
 bool Control::PresetPosition2() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonB)); } // B
-double Control::ClimberUp() { return xboxController->GetRawAxis(XboxAxisLeftTrigger); } // Left trigger
-double Control::ClimberDown() { return xboxController->GetRawAxis(XboxAxisRightTrigger); }
+double Control::ClimberUp() { return leftJoystick->GetRawButton(thumbSwitch); } // Left thumb
+double Control::ClimberDown() { return leftJoystick->GetRawButton(thumbSwitch); } // right thumb
 bool Control::ClimberBrake() { return BClimberBrake->Get(xboxController->GetRawButton(XboxButtonBack)); }
 bool Control::IntakeIn() { return (xboxController->GetPOV() == XboxDPadUp); }
 bool Control::IntakeOut() { return (xboxController->GetPOV() == XboxDPadDown); }

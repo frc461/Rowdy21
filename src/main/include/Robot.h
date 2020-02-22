@@ -18,6 +18,7 @@
 #include "Shooter.h"
 #include "Conveyor.h"
 #include "Climber.h"
+#include "DJ_Spinner.h"
 #include "PID.h"
 #include <Math.h>
 
@@ -44,6 +45,7 @@ private:
     Shooter *shooter;
     Conveyor *conveyor;
     Climber *climber;
+    DJ_Spinner *djSpinner;
 
     PID *autoPIDLeft, *autoPIDRight;
     int completeness;

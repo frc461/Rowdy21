@@ -13,6 +13,7 @@ void Robot::RobotInit() {
     shooter = new Shooter(control);
     conveyor = new Conveyor(control);
     climber = new Climber(control);
+    djSpinner = new DJ_Spinner(control);
 
     autoPIDLeft = new PID(-0.000175, 0, 0, "autoTest_L");
     autoPIDRight = new PID(0.000175, 0, 0, "autoTest_R");
@@ -65,6 +66,7 @@ void Robot::TeleopPeriodic() {
     shooter->Periodic();
     conveyor->Periodic();
     climber->Periodic();
+    djSpinner->Periodic();
 }
 
 void Robot::TestPeriodic() {}

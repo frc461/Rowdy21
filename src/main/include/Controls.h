@@ -30,8 +30,8 @@ public:
     double ManualShooterAdjustment(); // right joysitkc
     bool PresetPosition1(); // Y
     bool PresetPosition2(); // B
-    double ClimberUp(); // Left trigger
-    double ClimberDown(); // Right Trigger
+    double ClimberUp(); // Thumbbutton left
+    double ClimberDown(); // Thumbbutton left
     bool ClimberBrake();
     bool IntakeIn(); // Up D-Pad
     bool IntakeOut(); // Down D-Pad
