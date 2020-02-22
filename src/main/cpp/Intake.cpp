@@ -1,11 +1,11 @@
 #include "Intake.h"
 
 #define INTAKE_SOLENOID_CHANNEL 1
-#define ROLLER_PORT 11
-#define LIMIT_SWITCH 2
+#define ROLLER_PORT 30
+#define LIMIT_SWITCH 0
 
 Intake::Intake(Control *control) {
-    push = new frc::Solenoid(INTAKE_SOLENOID_CHANNEL);
+    push = new frc::DoubleSolenoid(0, 1);
     this->control = control;
     roller = new WPI_VictorSPX(ROLLER_PORT);
 
@@ -17,15 +17,12 @@ Intake::Intake(Control *control) {
 
 void Intake::Periodic() {
     if (control->ConveyForward()) {
-        rollerSpeed = 0.8;
-    }
-    else if (control->IntakeIn()){
         rollerSpeed = -0.8;
     }
-    else if (control->IntakeOut()){
+    else if (control->IntakeIn()){
         rollerSpeed = 0.8;
     }
-    else if (!bIntake && retractionLimit->Get()){
+    else if (control->IntakeOut()){
         rollerSpeed = -0.8;
     }
     else {
@@ -40,18 +37,18 @@ void Intake::Periodic() {
 
 void Intake::ToggleState() {
     bIntake = !bIntake;
-    if (!push->Get()) { 
-        push->Set(1);
+    if (push->Get() == frc::DoubleSolenoid::Value::kReverse) { 
+        push->Set(frc::DoubleSolenoid::Value::kForward);
     }
-    else if (push->Get()) {
-        push->Set(0);
+    else if (push->Get() == frc::DoubleSolenoid::Value::kForward) {
+        push->Set(frc::DoubleSolenoid::Value::kReverse);
     }
     else {
-        push->Set(0);
+        push->Set(frc::DoubleSolenoid::Value::kReverse);
     }
 }
 
 void Intake::Reset(){
     bIntake = false;
-    push->Set(0);
+    push->Set(frc::DoubleSolenoid::Value::kReverse);
 }

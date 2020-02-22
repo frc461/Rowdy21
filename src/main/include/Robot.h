@@ -40,10 +40,8 @@ private:
     DriveTrain* driveTrain;
     Control *control;
     Intake *intake;
-    Limelight *limelight;
     Shooter *shooter;
     Conveyor *conveyor;
-    Climber *climber;
 
     PID *autoPIDLeft, *autoPIDRight;
     int completeness;

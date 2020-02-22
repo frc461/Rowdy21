@@ -7,8 +7,8 @@ DriveTrain::DriveTrain(Control *control){
     left1 = new WPI_TalonSRX(DTL1);
     right1 = new WPI_TalonSRX(DTR1);
 
-    left2 = new WPI_TalonSRX(DTL2);
-    right2 = new WPI_TalonSRX(DTR2);
+    left2 = new WPI_VictorSPX(DTL2);
+    right2 = new WPI_VictorSPX(DTR2);
 
     left = new frc::SpeedControllerGroup(*left1, *left2);
     right = new frc::SpeedControllerGroup(*right1, *right2);

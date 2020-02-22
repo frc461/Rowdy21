@@ -7,8 +7,8 @@ Shooter::Shooter(Control *control) {
     shooterMotor2 = new WPI_TalonFX(SHOOTER_MOTOR_2);
     adjustingMotor = new WPI_VictorSPX(ADJUSTING_MOTOR);
 
-    encoder = new frc::Encoder(0, 1);
-    flashlight = new frc::Relay(0);
+    encoder = new frc::Encoder(1, 2);
+    //flashlight = new frc::Relay(0);
     limit = new frc::DigitalInput(LIMIT_SW);
 
     pid = new PID(0.0001, 0, 0, "Shooter");
@@ -25,16 +25,17 @@ void Shooter::Rev(double speed){
 void Shooter::Periodic() {
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
     if (control->ShooterLoadUp()) {
-        shooterMotor1->Set(shooterSpeed ? 0.8 : 0.6);
-        shooterMotor2->Set(shooterSpeed ? -0.8 : -0.6);
-        flashlight->Set(frc::Relay::Value::kReverse);
+        shooterMotor2->Set(shooterSpeed ? 0.8 : 0.9);
+        shooterMotor1->Set(shooterSpeed ? -0.8 : -0.9);
+        //flashlight->Set(frc::Relay::Value::kReverse);
         //motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), 10000);
         //motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), -10000);
     }
     else {
-        flashlight->Set(frc::Relay::Value::kOff);
+        //flashlight->Set(frc::Relay::Value::kOff);
         shooterMotor1->Set(0);
         shooterMotor2->Set(0);
+        
         motorValue1 = motorValue2 = 0;
     }
     if(control->PresetPosition1()){
@@ -49,6 +50,7 @@ void Shooter::Periodic() {
 
     if(abs(control->ManualShooterAdjustment())>0.1){
         VerticalAdjust();
+        std::cout << limit->Get();
         shooterPos = encoder->Get();
     }
     else{
@@ -57,12 +59,11 @@ void Shooter::Periodic() {
 }
 
 void Shooter::VerticalAdjust() {
-    SetAdj(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
-    frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
+    SetAdj(control->ManualShooterAdjustment()*-PITCH_SPEED_CONTROL);
 }
-//pee pee
+
 void Shooter::SetAdj(double speed) {
-    if (!limit->Get() && speed < 0) {
+    if (limit->Get() && speed < 0) {
         adjustingMotor->Set(0);
     }
     else {
@@ -90,7 +91,6 @@ void Shooter::ZeroAlign() {
     while(GetLimit() && frc::Timer::GetFPGATimestamp() - time < 5) {
     }
     SetAdj(0);
-    encoder->Reset();std::cout << "reset brah" << std::endl;
+    encoder->Reset();
     frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
-
 }

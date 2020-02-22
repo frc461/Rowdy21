@@ -17,7 +17,7 @@
 
 #define PITCH_SPEED_CONTROL 0.5
 
-#define LIMIT_SW 6
+#define LIMIT_SW 0
 
 class Shooter
 {

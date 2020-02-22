@@ -1,5 +1,5 @@
 #pragma once
-#include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
 #include <frc/DigitalInput.h>
 #include <ctre/Phoenix.h>
 
@@ -19,7 +19,7 @@ public:
 
 private:
     Control *control;
-    frc::Solenoid *push;
+    frc::DoubleSolenoid *push;
     WPI_VictorSPX *roller;
 
     frc::DigitalInput *retractionLimit;

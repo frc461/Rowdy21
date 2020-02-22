@@ -6,7 +6,7 @@ Climber::Climber(Control *control) {
     //limitDown = new frc::DigitalInput(2);
     lifter1 = new WPI_TalonSRX(7);
     lifter2 = new WPI_TalonSRX(8);
-    brake = new frc::Solenoid(0);
+    brake = new frc::DoubleSolenoid(0, 1);
 }
 
 void Climber::Periodic() {
@@ -31,17 +31,17 @@ void Climber::Periodic() {
 }
 
 void Climber::ToggleBrake() {
-    if (brake->Get()) {
-        brake->Set(0);
+    if (brake->Get() == frc::DoubleSolenoid::Value::kReverse) {
+        brake->Set(frc::DoubleSolenoid::Value::kForward);
     }
-    else if (!brake->Get()) {
-        brake->Set(1);
+    else if (brake->Get() == frc::DoubleSolenoid::Value::kForward) {
+        brake->Set(frc::DoubleSolenoid::Value::kReverse);
     }
 }
 
 void Climber::ClimberBrakeOff() {
-    brake->Set(0);
+    brake->Set(frc::DoubleSolenoid::Value::kOff);
 }
 void Climber::ClimberBrakeOn() {
-    brake->Set(1);
+    brake->Set(frc::DoubleSolenoid::Value::kForward);
 }

@@ -55,7 +55,7 @@ public:
     frc::DifferentialDrive *driveTrain;
 
 private:
-    WPI_TalonSRX *right2, *left2;
+    WPI_VictorSPX *right2, *left2;
     WPI_TalonSRX *right1, *left1;
 
     frc::SpeedControllerGroup *left;
