@@ -1,6 +1,8 @@
-#include <ctre/Phoenix.h>
+#include <frc/PWMVictorSPX.h>
 
 #include "Controls.h"
+
+#include <cmath>
 
 class DJ_Spinner
 {
@@ -10,6 +12,6 @@ public:
     void Periodic();
 
 private:
-    WPI_VictorSPX *wheel;
+    frc::PWMVictorSPX *wheel;
     Control *control;
 };

@@ -26,7 +26,7 @@ double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(Xb
 bool Control::PresetPosition1() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonY)); } // Y
 bool Control::PresetPosition2() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonB)); } // B
 double Control::ClimberUp() { return leftJoystick->GetRawButton(thumbSwitch); } // Left thumb
-double Control::ClimberDown() { return leftJoystick->GetRawButton(thumbSwitch); } // right thumb
+double Control::ClimberDown() { return rightJoystick->GetRawButton(thumbSwitch); } // right thumb
 bool Control::ClimberBrake() { return BClimberBrake->Get(xboxController->GetRawButton(XboxButtonBack)); }
 bool Control::IntakeIn() { return (xboxController->GetPOV() == XboxDPadUp); }
 bool Control::IntakeOut() { return (xboxController->GetPOV() == XboxDPadDown); }
