@@ -43,6 +43,12 @@ void Robot::AutonomousPeriodic() {
         if (abs(shooter->GetAdj() - PITCH_ENCODER_IDEAL) <= 30) {
             conveyor->Lift();
         }
+        if(shooter->GetAdj() < PITCH_ENCODER_IDEAL){
+            shooter->SetAdj(0.8);
+        } 
+        else {
+            shooter->SetAdj(-0.8);
+        }
     }
     else if(frc::Timer::GetFPGATimestamp() - autoStart > 5) {
         double targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH));
@@ -54,12 +60,6 @@ void Robot::AutonomousPeriodic() {
         conveyor->Stop();
     }
 
-    if(shooter->GetAdj() < PITCH_ENCODER_IDEAL){
-        shooter->SetAdj(0.8);
-    }
-    else{
-        shooter->SetAdj(-0.8);
-    }
 }
 
 void Robot::TeleopInit() {
