@@ -23,6 +23,7 @@ void Shooter::Rev(double speed){
         shooterMotor2->Set(-speed);
 }
 void Shooter::Periodic() {
+    std::cout<<encoder->Get()<<std::endl;
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
     if (control->ShooterLoadUp()) {
         shooterMotor1->Set(shooterSpeed ? 0.8 : 0.6);
@@ -60,7 +61,6 @@ void Shooter::VerticalAdjust() {
     SetAdj(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
     frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
 }
-//pee pee
 void Shooter::SetAdj(double speed) {
     if (!limit->Get() && speed < 0) {
         adjustingMotor->Set(0);

@@ -34,7 +34,7 @@ public:
     double ClimberDown(); // Thumbbutton left
     bool ClimberBrake();
     bool IntakeIn(); // Up D-Pad
-    bool IntakeOut(); // Down D-Pad
+    bool IntakeOut(); // Down D-Pad  
     bool JustIntakeMotor(); // TODO: JUST THE INTAKE MROORT AM  
     double IntakeControl(); // y Axix left ohystikv
     double WheelOfFortune(); // X-axis left joyist

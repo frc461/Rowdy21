@@ -11,7 +11,7 @@ Limelight::Limelight(Control *control, DriveTrain *driveTrain) {
     Output = Forward = 0;
 
     forwardPID = new PID(-0.07, 0.0, 0.0, "LL fd");
-    outputPID = new PID(-0.07, 0.00075, 0, "LL aim");
+    outputPID = new PID(-0.071, -0.002, -0.0003, "LL aim");
 }
 
 void Limelight::Periodic() {
@@ -20,6 +20,7 @@ void Limelight::Periodic() {
         SetLimelightLight(1);
         LimelightAiming();
         drTrain->driveTrain->ArcadeDrive(0, Output);
+
     } else if(control->LimelightLightActivate()){
         SetLimelightLight(1);
         outputPID->ResetSum();
@@ -29,6 +30,18 @@ void Limelight::Periodic() {
         outputPID->ResetSum();
     }
 }
+
+void Limelight::LimelightReset(){
+    outputPID->ResetSum();
+}
+
+void Limelight::AutoLimelight(){
+        SetLimelightLight(1);
+        LimelightAiming();
+        drTrain->driveTrain->ArcadeDrive(0, Output);
+}
+
+
 
 void Limelight::LimelightActivate() {
     if(control->LimelightLightActivate()) {
@@ -51,7 +64,9 @@ void Limelight::LimelightAiming() {
 void Limelight::SetLimelightLight(bool state) {
     if(state) {
         table->PutNumber("ledMode", 3);
+        table->PutNumber("camMode", 0);
     } else {
         table->PutNumber("ledMode", 1);
+        table->PutNumber("camMode", 1);
     }
 }

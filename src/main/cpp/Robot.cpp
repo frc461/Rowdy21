@@ -15,8 +15,8 @@ void Robot::RobotInit() {
     climber = new Climber(control);
     djSpinner = new DJ_Spinner(control);
 
-    autoPIDLeft = new PID(-0.000175, 0, 0, "autoTest_L");
-    autoPIDRight = new PID(0.000175, 0, 0, "autoTest_R");
+    autoPIDLeft = new PID(-0.0003, 0, 0, "autoTest_L");
+    autoPIDRight = new PID(0.0003 , 0, 0, "autoTest_R");
 
     climber->ClimberBrakeOff();
 }
@@ -27,6 +27,7 @@ void Robot::AutonomousInit() {
     shooter->ZeroAlign();
     driveTrain->ResetEncoders();
     autoStart = frc::Timer::GetFPGATimestamp();
+    limelight->LimelightReset();
 }
 
 void Robot::DisabledInit(){
@@ -34,17 +35,23 @@ void Robot::DisabledInit(){
 }
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
-    
     autoPIDLeft->getPIDvalues();
     autoPIDRight->getPIDvalues();
-    if(frc::Timer::GetFPGATimestamp() - autoStart > 5){
-        driveTrain->driveTrain->TankDrive(std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH)), std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH)));
-        shooter->Rev(0);
+    if(frc::Timer::GetFPGATimestamp() - autoStart < 5){
+        limelight->AutoLimelight();
+        shooter->Rev(0.6);
+        if (abs(shooter->GetAdj() - PITCH_ENCODER_IDEAL) <= 30) {
+            conveyor->Lift();
+        }
     }
-
-    shooter->Rev(0.6);
-    if (abs(shooter->GetAdj() - PITCH_ENCODER_IDEAL) <= 30) {
-        conveyor->Lift();
+    else if(frc::Timer::GetFPGATimestamp() - autoStart > 5) {
+        double targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH));
+        double targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
+        driveTrain->driveTrain->TankDrive(targetLeft, targetRight);
+        //std::cout << "Right Target" << targetRight << std::endl;
+        shooter->Rev(0);
+        limelight->LimelightReset();
+        conveyor->Stop();
     }
 
     if(shooter->GetAdj() < PITCH_ENCODER_IDEAL){

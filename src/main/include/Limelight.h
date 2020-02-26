@@ -22,6 +22,9 @@ public:
 
     void SetLimelightLight(bool state);
 
+    void AutoLimelight();
+
+    void LimelightReset();
 private:
     std::shared_ptr<nt::NetworkTable> table;
 

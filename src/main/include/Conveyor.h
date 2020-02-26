@@ -15,6 +15,8 @@ class Conveyor {
         void Periodic();
         
         void Lift();
+
+        void Stop();
     private:
         Control *control;
         WPI_VictorSPX *hopper;

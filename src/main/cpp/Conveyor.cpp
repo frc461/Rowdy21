@@ -22,3 +22,8 @@ void Conveyor::Periodic(){
         tower->Set(0);
     }
 }
+
+void Conveyor::Stop(){
+    hopper->Set(0);
+    tower->Set(0);
+}

@@ -23,8 +23,8 @@
 #include <Math.h>
 
 #define ENCODER_INCH 111.0
-#define AUTONOMOUS_LENGTH 14.0
-#define PITCH_ENCODER_IDEAL 900
+#define AUTONOMOUS_LENGTH 36.0
+#define PITCH_ENCODER_IDEAL 820
 
 class Robot : public frc::TimedRobot {
 public:
