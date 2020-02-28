@@ -11,26 +11,31 @@ Shooter::Shooter(Control *control) {
     flashlight = new frc::Relay(0);
     limit = new frc::DigitalInput(LIMIT_SW);
 
-    pid = new PID(0.0001, 0, 0, "Shooter");
+    pid = new PID(0.000001, 0, 0, "Shooter");
     anglePID = new PID(0.002, 0, 0, "anglePID");
     motorValue1 = motorValue2 = joyValue = 0;
     shooterPos = 0;
     shooterSpeed = 0;
     frc::SmartDashboard::PutBoolean("Shooter Speed", shooterSpeed);
+    frc::SmartDashboard::PutNumber("Shoot RPM", minShootRPM);
 }
 void Shooter::Rev(double speed){
         shooterMotor1->Set(speed);
         shooterMotor2->Set(-speed);
 }
 void Shooter::Periodic() {
-    std::cout<<encoder->Get()<<std::endl;
+    pid->getPIDvalues();
+    // std::cout<<encoder->Get()<<std::endl;
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
+    minShootRPM = frc::SmartDashboard::GetNumber("Shoot RPM", minShootRPM);
     if (control->ShooterLoadUp()) {
-        shooterMotor1->Set(shooterSpeed ? 0.8 : 0.6);
-        shooterMotor2->Set(shooterSpeed ? -0.8 : -0.6);
+        // shooterMotor1->Set(shooterSpeed ? 0.8 : 0.6);
+        // shooterMotor2->Set(shooterSpeed ? -0.8 : -0.6);
         flashlight->Set(frc::Relay::Value::kReverse);
-        //motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), 10000);
-        //motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), -10000);
+        motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), shooterSpeed ? minShootRPM : 0);
+        motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), shooterSpeed ? -minShootRPM : 0);
+        shooterMotor1->Set(motorValue1);
+        shooterMotor2->Set(motorValue2);
     }
     else {
         flashlight->Set(frc::Relay::Value::kOff);
@@ -43,6 +48,9 @@ void Shooter::Periodic() {
     }
     else if(control->PresetPosition2()){
         shooterPos = DISCO;
+    }
+    else if (control->PresetPosition3()) {
+        shooterPos = THIRD_PRESET; // TODO: THIRD PRESET not set to any value rn
     }
     else if(control->ShooterReset()){
         ZeroAlign();

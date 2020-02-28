@@ -19,11 +19,18 @@ void Robot::RobotInit() {
     autoPIDRight = new PID(0.0003 , 0, 0, "autoTest_R");
 
     climber->ClimberBrakeOff();
+    frc::SmartDashboard::PutNumber("auto( ͡° ͜ʖ ͡°)delay", autoDelay);
 }
 
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
+    autoDelay = frc::SmartDashboard::GetNumber("auto( ͡° ͜ʖ ͡°)delay", autoDelay);
+    //dont fkng move
+    delayStart = frc::Timer::GetFPGATimestamp();
+    while(frc::Timer::GetFPGATimestamp() - delayStart < autoDelay){
+        //do absolutley nothing  
+    }
     shooter->ZeroAlign();
     driveTrain->ResetEncoders();
     autoStart = frc::Timer::GetFPGATimestamp();
@@ -59,7 +66,6 @@ void Robot::AutonomousPeriodic() {
         limelight->LimelightReset();
         conveyor->Stop();
     }
-
 }
 
 void Robot::TeleopInit() {

@@ -8,6 +8,7 @@ Control::Control() {
     BToggleIntake = new Control::ButtonDebounce();
     BPresetPos1 = new Control::ButtonDebounce();
     BPresetPos2 = new Control::ButtonDebounce();
+    BPresetPos3 = new Control::ButtonDebounce();
     BClimberBrake = new Control::ButtonDebounce();
 }
 
@@ -25,6 +26,7 @@ bool Control::ConveyReverse() { return (xboxController->GetRawButton(XboxButtonX
 double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(XboxAxisRightStickY); } // right joystick
 bool Control::PresetPosition1() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonY)); } // Y
 bool Control::PresetPosition2() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonB)); } // B
+bool Control::PresetPosition3() { return xboxController->GetRawAxis(XboxAxisLeftTrigger) > 0.2; } // TODO: put it on button
 double Control::ClimberUp() { return leftJoystick->GetRawButton(thumbSwitch); } // Left thumb
 double Control::ClimberDown() { return rightJoystick->GetRawButton(thumbSwitch); } // right thumb
 bool Control::ClimberBrake() { return BClimberBrake->Get(xboxController->GetRawButton(XboxButtonBack)); }

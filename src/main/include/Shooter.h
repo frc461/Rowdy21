@@ -42,6 +42,7 @@ public:
 
     void Angle(double angle);
 private:
+    double minShootRPM;
     WPI_TalonFX *shooterMotor1, *shooterMotor2;
 
     WPI_VictorSPX *adjustingMotor;

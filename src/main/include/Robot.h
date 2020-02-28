@@ -50,4 +50,6 @@ private:
     PID *autoPIDLeft, *autoPIDRight;
     int completeness;
     double autoStart;
+    int autoDelay;
+    int delayStart;
 };

@@ -8,6 +8,7 @@
 
 #define HALF_IN_TRENCH 300
 #define DISCO 500
+#define THIRD_PRESET 0
 #define ON_INIT_LINE 1012
 
 class Control
@@ -30,6 +31,8 @@ public:
     double ManualShooterAdjustment(); // right joysitkc
     bool PresetPosition1(); // Y
     bool PresetPosition2(); // B
+    bool PresetPosition3(); // TODO button
+
     double ClimberUp(); // Thumbbutton left
     double ClimberDown(); // Thumbbutton left
     bool ClimberBrake();
@@ -51,7 +54,7 @@ public:
     bool LimelightLightActivate();
 
     Control::ButtonDebounce *BToggleIntake;
-    Control::ButtonDebounce *BPresetPos1, *BPresetPos2;
+    Control::ButtonDebounce *BPresetPos1, *BPresetPos2, *BPresetPos3;
     Control::ButtonDebounce *BClimberBrake;
 
 private:
