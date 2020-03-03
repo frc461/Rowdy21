@@ -4,6 +4,7 @@
 #include <ctre/Phoenix.h>
 #include <frc/DigitalInput.h>
 #include <frc/Solenoid.h>
+#include <frc/SmartDashboard/SmartDashboard.h>
 class Climber {
 public:
     Climber(Control *control);

@@ -18,6 +18,15 @@ Shooter::Shooter(Control *control) {
     shooterSpeed = 0;
     frc::SmartDashboard::PutBoolean("Shooter Speed", shooterSpeed);
     frc::SmartDashboard::PutNumber("Shoot RPM", minShootRPM);
+
+    shooterMotor1->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
+    shooterMotor2->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
+
+    shooterMotor1->ConfigMotionCruiseVelocity(1500, 10);
+    shooterMotor1->ConfigMotionAcceleration(1500, 10);
+
+    shooterMotor1->SetSelectedSensorPosition(0,0,10);
+    shooterMotor2->SetSelectedSensorPosition(0,0,10);
 }
 void Shooter::Rev(double speed){
         shooterMotor1->Set(speed);
@@ -29,13 +38,13 @@ void Shooter::Periodic() {
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
     minShootRPM = frc::SmartDashboard::GetNumber("Shoot RPM", minShootRPM);
     if (control->ShooterLoadUp()) {
-        // shooterMotor1->Set(shooterSpeed ? 0.8 : 0.6);
-        // shooterMotor2->Set(shooterSpeed ? -0.8 : -0.6);
+        shooterMotor1->Set(ControlMode::PercentOutput, shooterSpeed ? 0.7 : 0.5);
+        shooterMotor2->Set(ControlMode::PercentOutput, shooterSpeed ? -0.7 : -0.5);
         flashlight->Set(frc::Relay::Value::kReverse);
-        motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), shooterSpeed ? minShootRPM : 0);
-        motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), shooterSpeed ? -minShootRPM : 0);
-        shooterMotor1->Set(motorValue1);
-        shooterMotor2->Set(motorValue2);
+        // motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), shooterSpeed ? minShootRPM : 0);
+        // motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), shooterSpeed ? -minShootRPM : 0);
+        // shooterMotor1->Set(motorValue1);
+        // shooterMotor2->Set(motorValue2);
     }
     else {
         flashlight->Set(frc::Relay::Value::kOff);
@@ -56,7 +65,7 @@ void Shooter::Periodic() {
         ZeroAlign();
     }
 
-    if(abs(control->ManualShooterAdjustment())>0.1){
+    if(abs(control->ManualShooterAdjustment())>0.1||abs(control->ManualShooterAdjustment() < -0.1)){
         VerticalAdjust();
         shooterPos = encoder->Get();
     }
