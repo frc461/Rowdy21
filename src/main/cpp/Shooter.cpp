@@ -21,8 +21,29 @@ Shooter::Shooter(Control *control) {
     frc::SmartDashboard::PutNumber("Shoot RPM", minShootRPM);
     frc::SmartDashboard::PutNumber("shooterPower", shooterPower);
 
+    shooterMotor1->ConfigFactoryDefault();
+    shooterMotor2->ConfigFactoryDefault();
+
     shooterMotor1->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
     shooterMotor2->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
+
+    shooterMotor1->SetStatusFramePeriod(StatusFrameEnhanced::Status_13_Base_PIDF0, 10, 10);
+    shooterMotor1->SetStatusFramePeriod(StatusFrameEnhanced::Status_10_MotionMagic, 10, 10);
+
+    shooterMotor2->SetStatusFramePeriod(StatusFrameEnhanced::Status_13_Base_PIDF0, 10, 10);
+    shooterMotor2->SetStatusFramePeriod(StatusFrameEnhanced::Status_10_MotionMagic, 10, 10);
+
+    shooterMotor1->SelectProfileSlot(0, 0);
+    shooterMotor1->Config_kF(0, 0.3, 10);
+    shooterMotor1->Config_kP(0, 0.1, 10);
+    shooterMotor1->Config_kI(0, 0.0, 10);
+    shooterMotor1->Config_kD(0, 0.0, 10);
+
+    shooterMotor2->SelectProfileSlot(0, 0);
+    shooterMotor2->Config_kF(0, 0.3, 10);
+    shooterMotor2->Config_kP(0, 0.1, 10);
+    shooterMotor2->Config_kI(0, 0.0, 10);
+    shooterMotor2->Config_kD(0, 0.0, 10);
 
     shooterMotor1->ConfigMotionCruiseVelocity(1500, 10);
     shooterMotor1->ConfigMotionAcceleration(1500, 10);
@@ -47,8 +68,10 @@ void Shooter::Periodic() {
         flashlight->Set(frc::Relay::Value::kReverse);
         // motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), shooterSpeed ? minShootRPM : 0);
         // motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), shooterSpeed ? -minShootRPM : 0);
-         shooterMotor1->Set(0.8);
-         shooterMotor2->Set(-0.8);
+        //  shooterMotor1->Set(0.8);
+        //  shooterMotor2->Set(-0.8);
+        shooterMotor1->Set(ControlMode::Velocity, 0.8 * 500 * 4096 / 600);
+        shooterMotor2->Set(ControlMode::Velocity, -0.8 * 500 * 4096 / 600);
     }
     else {
         //frc::SmartDashboard::PutNumber("encoderVal", autoDelay);

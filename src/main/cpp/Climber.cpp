@@ -13,19 +13,21 @@ Climber::Climber(Control *control) {
 
 void Climber::Periodic() {
     frc::SmartDashboard::PutBoolean("BreakStatus", brake->Get());
-    if(control->ClimberUp() > 0.1 && control->ClimberDown() > 0.1){
-    }
-    else if(control->ClimberUp()){// && !limitTop->Get()){
-        lifter1->Set(-speed);
-        lifter2->Set(-speed);
-    }
-    else if(control->ClimberDown()){// && !limitDown->Get()){
-        lifter1->Set(speed);
-        lifter2->Set(speed);
-    }
-    else {
-        lifter1->Set(0);
-        lifter2->Set(0);
+    if(brake->Get()) {
+        if(control->ClimberUp() > 0.1 && control->ClimberDown() > 0.1){
+        }
+        else if(control->ClimberUp()){// && !limitTop->Get()){
+            lifter1->Set(-speed);
+            lifter2->Set(-speed);
+        }
+        else if(control->ClimberDown()){// && !limitDown->Get()){
+            lifter1->Set(speed);
+            lifter2->Set(speed);
+        }
+        else {
+            lifter1->Set(0);
+            lifter2->Set(0);
+        }
     }
 
     if (control->ClimberBrake()) {
