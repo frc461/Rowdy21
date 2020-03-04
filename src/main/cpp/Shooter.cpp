@@ -56,8 +56,10 @@ void Shooter::Rev(double speed){
         shooterMotor2->Set(-speed);
 }
 void Shooter::Periodic() {
+    frc::SmartDashboard::PutNumber("idealShooterPos", shooterPos);
     frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
     frc::SmartDashboard::GetNumber("shooterPower", shooterPower);
+    frc::SmartDashboard::PutNumber("angle PID", anglePID->OutputPID(encoder->Get());
     pid->getPIDvalues();
     // std::cout<<encoder->Get()<<std::endl;
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
