@@ -2,8 +2,9 @@
 
 Climber::Climber(Control *control) {
     this->control = control;
-    //limitTop = new frc::DigitalInput(1);
-    //limitDown = new frc::DigitalInput(2);
+    limitTop = new frc::DigitalInput(3);
+    limitDown = new frc::DigitalInput(4);
+    ///thank you willium
     lifter1 = new WPI_TalonSRX(7);
     lifter2 = new WPI_TalonSRX(8);
     brake = new frc::Solenoid(0);
@@ -16,11 +17,11 @@ void Climber::Periodic() {
     if(brake->Get()) {
         if(control->ClimberUp() > 0.1 && control->ClimberDown() > 0.1){
         }
-        else if(control->ClimberUp()){// && !limitTop->Get()){
+        else if(control->ClimberUp() && !limitTop->Get()){
             lifter1->Set(-speed);
             lifter2->Set(-speed);
         }
-        else if(control->ClimberDown()){// && !limitDown->Get()){
+        else if(control->ClimberDown() && !limitDown->Get()){
             lifter1->Set(speed);
             lifter2->Set(speed);
         }
