@@ -6,9 +6,9 @@
 #include <frc/Joystick.h>
 #include <frc/Timer.h>
 
-#define HALF_IN_TRENCH 300
-#define DISCO 500
-#define THIRD_PRESET 0
+#define HALF_IN_TRENCH 683
+#define DISCO 883 //angle is shy of target 0.6 power
+#define THIRD_PRESET 39
 #define ON_INIT_LINE 1012
 
 class Control

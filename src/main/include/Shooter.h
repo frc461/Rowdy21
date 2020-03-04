@@ -64,4 +64,6 @@ private:
     frc::Relay *flashlight;
 
     bool shooterSpeed;
+
+    int shooterPower;
 };

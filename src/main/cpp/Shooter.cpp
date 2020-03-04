@@ -16,8 +16,10 @@ Shooter::Shooter(Control *control) {
     motorValue1 = motorValue2 = joyValue = 0;
     shooterPos = 0;
     shooterSpeed = 0;
+    shooterPower = 0;
     frc::SmartDashboard::PutBoolean("Shooter Speed", shooterSpeed);
     frc::SmartDashboard::PutNumber("Shoot RPM", minShootRPM);
+    frc::SmartDashboard::PutNumber("shooterPower", shooterPower);
 
     shooterMotor1->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
     shooterMotor2->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
@@ -33,20 +35,23 @@ void Shooter::Rev(double speed){
         shooterMotor2->Set(-speed);
 }
 void Shooter::Periodic() {
+    frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
+    frc::SmartDashboard::GetNumber("shooterPower", shooterPower);
     pid->getPIDvalues();
     // std::cout<<encoder->Get()<<std::endl;
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
     minShootRPM = frc::SmartDashboard::GetNumber("Shoot RPM", minShootRPM);
     if (control->ShooterLoadUp()) {
-        shooterMotor1->Set(ControlMode::PercentOutput, shooterSpeed ? 0.7 : 0.5);
-        shooterMotor2->Set(ControlMode::PercentOutput, shooterSpeed ? -0.7 : -0.5);
+        //shooterMotor1->Set(ControlMode::PercentOutput, shooterSpeed ? (shooterPower)*-1 : (shooterPower - 0.2)*-1);
+        //shooterMotor2->Set(ControlMode::PercentOutput, shooterSpeed ? shooterPower : shooterPower - 0.2);
         flashlight->Set(frc::Relay::Value::kReverse);
         // motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), shooterSpeed ? minShootRPM : 0);
         // motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), shooterSpeed ? -minShootRPM : 0);
-        // shooterMotor1->Set(motorValue1);
-        // shooterMotor2->Set(motorValue2);
+         shooterMotor1->Set(0.8);
+         shooterMotor2->Set(-0.8);
     }
     else {
+        //frc::SmartDashboard::PutNumber("encoderVal", autoDelay);
         flashlight->Set(frc::Relay::Value::kOff);
         shooterMotor1->Set(0);
         shooterMotor2->Set(0);

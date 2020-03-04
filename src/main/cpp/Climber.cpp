@@ -12,7 +12,7 @@ Climber::Climber(Control *control) {
 }
 
 void Climber::Periodic() {
-    frc::SmartDashboard::PutBoolean("BreakStatus", !brake->Get());
+    frc::SmartDashboard::PutBoolean("BreakStatus", brake->Get());
     if(control->ClimberUp() > 0.1 && control->ClimberDown() > 0.1){
     }
     else if(control->ClimberUp()){// && !limitTop->Get()){
