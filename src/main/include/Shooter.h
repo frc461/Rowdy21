@@ -51,7 +51,6 @@ private:
     float joyValue;
 
     Control *control;
-    PID *pid;
 
     frc::DigitalInput *limit;
 

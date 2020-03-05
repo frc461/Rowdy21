@@ -11,7 +11,6 @@ Shooter::Shooter(Control *control) {
     flashlight = new frc::Relay(0);
     limit = new frc::DigitalInput(LIMIT_SW);
 
-    pid = new PID(0.000001, 0, 0, "Shooter");
     anglePID = new PID(0.002, 0, 0, "anglePID");
     motorValue1 = motorValue2 = joyValue = 0;
     shooterPos = 0;
@@ -75,7 +74,6 @@ void Shooter::Periodic() {
 
     frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
     frc::SmartDashboard::GetNumber("shooterPower", shooterPower);
-    pid->getPIDvalues();
     // std::cout<<encoder->Get()<<std::endl;
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
     minShootRPM = frc::SmartDashboard::GetNumber("Shoot RPM", minShootRPM);
