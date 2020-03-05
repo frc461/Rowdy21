@@ -66,4 +66,8 @@ private:
     bool shooterSpeed;
 
     int shooterPower;
+
+    std::string _sb;
+    int _loops;
+
 };
