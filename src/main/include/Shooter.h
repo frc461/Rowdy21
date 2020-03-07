@@ -9,6 +9,7 @@
 #include <frc/Encoder.h>
 #include <frc/Timer.h>
 #include <frc/DigitalOutput.h>
+#include <frc/AnalogInput.h>
 #include <frc/Relay.h>
 
 #define SHOOTER_MOTOR_1 5
@@ -49,10 +50,13 @@ public:
             void SetAngle(double speed);
 
             double GetEncoder();
+            double GetPotVal();
+            double baseVal;
         private:
             WPI_VictorSPX *AdjMotor;
             frc::Encoder *encoder;
             frc::DigitalInput *limit;
+            frc::AnalogInput *triPot;
             PID *angle;
 
             bool GetLimit();

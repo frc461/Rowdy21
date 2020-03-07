@@ -82,11 +82,14 @@ Shooter::Tilt::Tilt() {
     encoder = new frc::Encoder(0, 1);
     limit = new frc::DigitalInput(LIMIT_SW);
 
-    frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
+    frc::SmartDashboard::PutNumber("pitch Val", (encoder->Get() - baseVal));
 
-    angle = new PID(0.002, 0, 0, "anglePID");
+    angle = new PID(8, 0, 0, "anglePID");
+
+    triPot = new frc::AnalogInput(0);
 
     AdjMotor = new WPI_VictorSPX(ADJUSTING_MOTOR);
+    baseVal = 0.327;
 
     /*
         Setup dashboard with values for presets
@@ -98,6 +101,10 @@ Shooter::Tilt::Tilt() {
 
 bool Shooter::Tilt::GetLimit() {
     return limit->Get();
+}
+
+double Shooter::Tilt::GetPotVal() {
+    return triPot->GetVoltage();
 }
 
 /*
@@ -112,7 +119,7 @@ void Shooter::Tilt::RunSafe(double speed) {
     else {
         AdjMotor->Set(speed);
     }
-    frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
+    frc::SmartDashboard::PutNumber("pitch Val", (triPot->GetVoltage() - baseVal));
 }
 
 /*
@@ -120,15 +127,18 @@ void Shooter::Tilt::RunSafe(double speed) {
 */
 
 void Shooter::Tilt::SetAngle(double val) {
-   RunSafe(angle->OutputPID(encoder->Get(), val));
+   RunSafe(angle->OutputPID(triPot->GetVoltage(), (val + baseVal)));
 }
 
 void Shooter::Tilt::ZeroAlign() {
     double time = frc::Timer::GetFPGATimestamp();
     while(GetLimit() && frc::Timer::GetFPGATimestamp() - time < 5) {
+        RunSafe(-0.3);
     }
     RunSafe(0);
-    frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
+    baseVal = triPot->GetVoltage();
+    // encoder->Reset();
+    // frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
 }
 
 
@@ -141,9 +151,11 @@ void Shooter::Periodic() {
         Control Portion
     */
 
+   frc::SmartDashboard::PutNumber("Shooter Angle Tri Pot", tilt->GetPotVal());
+
    if(control->PresetPosition1()) {
        VelocityTarget = frc::SmartDashboard::GetNumber("Shoot V Preset 1", 16000);
-       shooterPos = HALF_IN_TRENCH;
+       shooterPos = 0.4;
    } else if (control->PresetPosition2()) {
        VelocityTarget = frc::SmartDashboard::GetNumber("Shooter V Preset 2", 16000);
        shooterPos = DISCO;
@@ -151,12 +163,13 @@ void Shooter::Periodic() {
        VelocityTarget = frc::SmartDashboard::GetNumber("Shooter V Preset 3", 16000);
        shooterPos = THIRD_PRESET;
    } else if(control->ShooterReset()) {
-       tilt->ZeroAlign();
-   } else if(abs(control->ManualShooterAdjustment())>0.1||abs(control->ManualShooterAdjustment() < -0.1)) {
+      tilt->ZeroAlign();
+   } else if(fabs(control->ManualShooterAdjustment())>0.1) {
+       std::cout << control->ManualShooterAdjustment() << std::endl;
        tilt->RunSafe(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
-       shooterPos = tilt->GetEncoder();
+       shooterPos = tilt->GetPotVal() - tilt->baseVal;
    } else {
-       tilt->SetAngle(shooterPos);
+        tilt->SetAngle(shooterPos);
    }
 
    /* 

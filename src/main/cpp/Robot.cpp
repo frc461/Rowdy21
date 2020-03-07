@@ -20,19 +20,19 @@ void Robot::RobotInit() {
     autoPIDRight = new PID(0.0003 , 0, 0, "autoTest_R");
 
     climber->ClimberBrakeOff();
-    frc::SmartDashboard::PutNumber("auto( ͡° ͜ʖ ͡°)delay", autoDelay);
+    frc::SmartDashboard::PutNumber("auto delay", autoDelay);
 }
 
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
-    autoDelay = frc::SmartDashboard::GetNumber("auto( ͡° ͜ʖ ͡°)delay", autoDelay);
+    autoDelay = frc::SmartDashboard::GetNumber("auto delay", autoDelay);
     //dont fkng move
     delayStart = frc::Timer::GetFPGATimestamp();
     while(frc::Timer::GetFPGATimestamp() - delayStart < autoDelay){
         //do absolutley nothing  
     }
-    // shooter->ZeroAlign();
+    shooter->tilt->ZeroAlign();
     driveTrain->ResetEncoders();
     autoStart = frc::Timer::GetFPGATimestamp();
     limelight->LimelightReset();
@@ -47,16 +47,18 @@ void Robot::AutonomousPeriodic() {
     autoPIDLeft->getPIDvalues();
     autoPIDRight->getPIDvalues();
     if(frc::Timer::GetFPGATimestamp() - autoStart < 5){
-        limelight->AutoLimelight();
-        // shooter->Rev(0.6);
-        if (abs(shooter->tilt->GetEncoder() - PITCH_ENCODER_IDEAL) <= 30) {
-            // conveyor->Lift();
+        //limelight->AutoLimelight();
+        shooter->RunAtVelocity(16000);
+        std::cout << fabs((shooter->tilt->GetPotVal() - shooter->tilt->baseVal)) << std::endl;
+        if (fabs((shooter->tilt->GetPotVal() - shooter->tilt->baseVal) - PITCH_POT_IDEAL) <= 0.01) {
+            conveyor->Lift();
         }
-        if(shooter->tilt->GetEncoder() < PITCH_ENCODER_IDEAL){
-            // shooter->SetAdj(0.8);
-        } 
+        /*if(shooter->tilt->GetPotVal() < PITCH_POT_IDEAL){
+            shooter->tilt->SetAngle(PITCH_POT_IDEAL);
+        }*/
         else {
-            // shooter->SetAdj(-0.8);
+            shooter->tilt->SetAngle(PITCH_POT_IDEAL);
+            //shooter->RunAtVelocity(pow(sqrt(0.0*(10^256)-2*0.00000), 2.0000));
         }
     }
     else if(frc::Timer::GetFPGATimestamp() - autoStart > 5) {
@@ -64,8 +66,8 @@ void Robot::AutonomousPeriodic() {
         double targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
         driveTrain->driveTrain->TankDrive(targetLeft, targetRight);
         //std::cout << "Right Target" << targetRight << std::endl;
-        // shooter->Rev(0);
-        limelight->LimelightReset();
+        shooter->RunAtVelocity(0);
+        //limelight->LimelightReset();
         conveyor->Stop();
     }
 }
