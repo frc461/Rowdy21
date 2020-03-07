@@ -14,6 +14,7 @@ void Robot::RobotInit() {
     conveyor = new Conveyor(control);
     climber = new Climber(control);
     djSpinner = new DJ_Spinner(control);
+    arduino = new Arduino();
 
     autoPIDLeft = new PID(-0.0003, 0, 0, "autoTest_L");
     autoPIDRight = new PID(0.0003 , 0, 0, "autoTest_R");
@@ -42,6 +43,7 @@ void Robot::DisabledInit(){
 }
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
+    arduino->SendData(AUTO);
     autoPIDLeft->getPIDvalues();
     autoPIDRight->getPIDvalues();
     if(frc::Timer::GetFPGATimestamp() - autoStart < 5){
@@ -73,6 +75,7 @@ void Robot::TeleopInit() {
 } 
 
 void Robot::TeleopPeriodic() {
+    arduino->SendData(TELEOP);
     driveTrain->Periodic();
     intake->Periodic();
     limelight->Periodic();

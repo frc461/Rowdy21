@@ -6,8 +6,8 @@ DJ_Spinner::DJ_Spinner(Control *control) {
 }
 
 void DJ_Spinner::Periodic() {
-    if (abs(control->WheelOfFortune()) > 0.05) {
-        wheel->Set(control->WheelOfFortune());
+    if (fabs(control->WheelOfFortune()) > 0.1000000000000) {
+        wheel->Set(control->WheelOfFortune()*0.5);
     }
     else {
         wheel->Set(0);

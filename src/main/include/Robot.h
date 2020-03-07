@@ -20,6 +20,7 @@
 #include "Climber.h"
 #include "DJ_Spinner.h"
 #include "PID.h"
+#include "Arduino.h"
 #include <Math.h>
 
 #define ENCODER_INCH 111.0
@@ -46,6 +47,7 @@ private:
     Conveyor *conveyor;
     Climber *climber;
     DJ_Spinner *djSpinner;
+    Arduino *arduino;
 
     PID *autoPIDLeft, *autoPIDRight;
     int completeness;
