@@ -24,49 +24,44 @@ class Shooter
 public:
     Shooter(Control *control);
 
-    void Periodic();
-
-    void RunShooterAt(double LMotorSpeed, double RMotorSpeed);
-
-    void VerticalAdjust();
-
-    void SetAdj(double speed);
-
-    bool GetLimit();
-
-    void ZeroAlign();
-
-    int GetAdj();
-
-    void Rev(double speed);
-
-    void Angle(double angle);
-private:
-    double minShootRPM;
-    WPI_TalonFX *shooterMotor1, *shooterMotor2;
-
-    WPI_VictorSPX *adjustingMotor;
-
-    float motorValue1, motorValue2;
-    float joyValue;
-
     Control *control;
 
-    frc::DigitalInput *limit;
-
-    frc::Encoder *encoder;
-
-    PID *anglePID;
-
-    int shooterPos;
+    WPI_TalonFX *motor1;
+    WPI_TalonFX *motor2;
 
     frc::Relay *flashlight;
 
-    bool shooterSpeed;
+    void Periodic();
 
-    int shooterPower;
+    void SetFlashlight(bool value);
 
-    std::string _sb;
-    int _loops;
+    void RunAtVelocity(double velocity);
+    void RunAtSpeed(double speed);
+
+    double shooterPos;
+
+    class Tilt {
+        public:
+            Tilt();
+
+            void ZeroAlign();
+            void RunSafe(double speed);
+            void SetAngle(double speed);
+
+            double GetEncoder();
+        private:
+            WPI_VictorSPX *AdjMotor;
+            frc::Encoder *encoder;
+            frc::DigitalInput *limit;
+            PID *angle;
+
+            bool GetLimit();
+    };
+
+    Tilt *tilt;
+
+   
+private:
+    double VelocityTarget;
 
 };

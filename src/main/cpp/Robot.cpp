@@ -32,7 +32,7 @@ void Robot::AutonomousInit() {
     while(frc::Timer::GetFPGATimestamp() - delayStart < autoDelay){
         //do absolutley nothing  
     }
-    shooter->ZeroAlign();
+    // shooter->ZeroAlign();
     driveTrain->ResetEncoders();
     autoStart = frc::Timer::GetFPGATimestamp();
     limelight->LimelightReset();
@@ -48,15 +48,15 @@ void Robot::AutonomousPeriodic() {
     autoPIDRight->getPIDvalues();
     if(frc::Timer::GetFPGATimestamp() - autoStart < 5){
         limelight->AutoLimelight();
-        shooter->Rev(0.6);
-        if (abs(shooter->GetAdj() - PITCH_ENCODER_IDEAL) <= 30) {
-            conveyor->Lift();
+        // shooter->Rev(0.6);
+        if (abs(shooter->tilt->GetEncoder() - PITCH_ENCODER_IDEAL) <= 30) {
+            // conveyor->Lift();
         }
-        if(shooter->GetAdj() < PITCH_ENCODER_IDEAL){
-            shooter->SetAdj(0.8);
+        if(shooter->tilt->GetEncoder() < PITCH_ENCODER_IDEAL){
+            // shooter->SetAdj(0.8);
         } 
         else {
-            shooter->SetAdj(-0.8);
+            // shooter->SetAdj(-0.8);
         }
     }
     else if(frc::Timer::GetFPGATimestamp() - autoStart > 5) {
@@ -64,7 +64,7 @@ void Robot::AutonomousPeriodic() {
         double targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
         driveTrain->driveTrain->TankDrive(targetLeft, targetRight);
         //std::cout << "Right Target" << targetRight << std::endl;
-        shooter->Rev(0);
+        // shooter->Rev(0);
         limelight->LimelightReset();
         conveyor->Stop();
     }
