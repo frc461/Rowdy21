@@ -25,8 +25,8 @@ void Shooter::Rev(double speed){
 void Shooter::Periodic() {
     shooterSpeed = frc::SmartDashboard::GetBoolean("Shooter Speed", shooterSpeed);
     if (control->ShooterLoadUp()) {
-        shooterMotor2->Set(shooterSpeed ? 0.8 : 0.9);
-        shooterMotor1->Set(shooterSpeed ? -0.8 : -0.9);
+        shooterMotor2->Set(shooterSpeed ? 0.6: 0.8);
+        shooterMotor1->Set(shooterSpeed ? -0.6 : -0.8);
         //flashlight->Set(frc::Relay::Value::kReverse);
         //motorValue1 += pid->OutputPID(shooterMotor1->GetSelectedSensorVelocity(), 10000);
         //motorValue2 += pid->OutputPID(shooterMotor2->GetSelectedSensorVelocity(), -10000);
