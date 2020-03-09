@@ -89,7 +89,7 @@ Shooter::Tilt::Tilt() {
     triPot = new frc::AnalogInput(0);
 
     AdjMotor = new WPI_VictorSPX(ADJUSTING_MOTOR);
-    baseVal = 0.327;
+    baseVal = 2.5;
 
     /*
         Setup dashboard with values for presets
@@ -155,7 +155,7 @@ void Shooter::Periodic() {
 
    if(control->PresetPosition1()) {
        VelocityTarget = frc::SmartDashboard::GetNumber("Shoot V Preset 1", 16000);
-       shooterPos = 0.4;
+       shooterPos = HALF_IN_TRENCH;
    } else if (control->PresetPosition2()) {
        VelocityTarget = frc::SmartDashboard::GetNumber("Shooter V Preset 2", 16000);
        shooterPos = DISCO;
@@ -165,7 +165,6 @@ void Shooter::Periodic() {
    } else if(control->ShooterReset()) {
       tilt->ZeroAlign();
    } else if(fabs(control->ManualShooterAdjustment())>0.1) {
-       std::cout << control->ManualShooterAdjustment() << std::endl;
        tilt->RunSafe(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
        shooterPos = tilt->GetPotVal() - tilt->baseVal;
    } else {

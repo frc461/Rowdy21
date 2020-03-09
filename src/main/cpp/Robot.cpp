@@ -20,7 +20,9 @@ void Robot::RobotInit() {
     autoPIDRight = new PID(0.0003 , 0, 0, "autoTest_R");
 
     climber->ClimberBrakeOff();
+    autoDirection = 0;
     frc::SmartDashboard::PutNumber("auto delay", autoDelay);
+    frc::SmartDashboard::PutBoolean("Front/Back Auto", autoDirection);
 }
 
 void Robot::RobotPeriodic() {}
@@ -62,13 +64,20 @@ void Robot::AutonomousPeriodic() {
         }
     }
     else if(frc::Timer::GetFPGATimestamp() - autoStart > 5) {
-        double targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH));
-        double targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
+        double targetLeft;
+        double targetRight;
+        if(!frc::SmartDashboard::GetBoolean("Front/Back Auto", autoDirection)) {
+            targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH));
+            targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
+        } else {
+            targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
+            targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), AUTONOMOUS_LENGTH*ENCODER_INCH));
+        }
         driveTrain->driveTrain->TankDrive(targetLeft, targetRight);
         //std::cout << "Right Target" << targetRight << std::endl;
         shooter->RunAtVelocity(0);
         //limelight->LimelightReset();
-        conveyor->Stop();
+        conveyor->Stop(); 
     }
 }
 

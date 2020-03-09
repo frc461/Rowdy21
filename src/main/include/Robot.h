@@ -55,4 +55,5 @@ private:
     double autoStart;
     int autoDelay;
     int delayStart;
+    bool autoDirection;
 };
