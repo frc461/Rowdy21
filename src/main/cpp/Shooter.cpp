@@ -84,7 +84,7 @@ Shooter::Tilt::Tilt() {
 
     frc::SmartDashboard::PutNumber("pitch Val", (encoder->Get() - baseVal));
 
-    angle = new PID(8, 0, 0, "anglePID");
+    angle = new PID(3.2, 0.02, 0, "anglePID");
 
     triPot = new frc::AnalogInput(0);
 
@@ -124,10 +124,23 @@ void Shooter::Tilt::RunSafe(double speed) {
 
 /*
     Angle the shooter to the given position
+    NOTE: Needs to be repeated
 */
 
 void Shooter::Tilt::SetAngle(double val) {
-   RunSafe(angle->OutputPID(triPot->GetVoltage(), (val + baseVal)));
+    if(val < MAX_ANGLE) {
+        // if((triPot->GetVoltage() - (val + baseVal)) < 0.07) {
+        //     std::cout << "up" << std::endl;
+        //     RunSafe(0.2);
+        // }
+        // else if((triPot->GetVoltage() - (val + baseVal)) > 0.07) {
+        //     std::cout << "down" << std::endl;
+        //     RunSafe(-0.2);
+        // }else {
+        //     RunSafe(0);
+        // }
+        RunSafe(angle->OutputPID(triPot->GetVoltage(), (val + baseVal)));
+    }
 }
 
 void Shooter::Tilt::ZeroAlign() {
@@ -165,11 +178,12 @@ void Shooter::Periodic() {
    } else if(control->ShooterReset()) {
       tilt->ZeroAlign();
    } else if(fabs(control->ManualShooterAdjustment())>0.1) {
-       tilt->RunSafe(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
-       shooterPos = tilt->GetPotVal() - tilt->baseVal;
-   } else {
-        tilt->SetAngle(shooterPos);
-   }
+    //    tilt->RunSafe(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
+       shooterPos = (-control->ManualShooterAdjustment() * 0.01) + shooterPos;
+   } 
+
+   tilt->SetAngle(shooterPos);
+   std::cout << (shooterPos + tilt->baseVal) << " " << tilt->GetPotVal() << " " << tilt->AdjMotor->Get() << std::endl;
 
    /* 
         Running Shooter Motors

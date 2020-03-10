@@ -50,10 +50,11 @@ void Robot::AutonomousPeriodic() {
     autoPIDRight->getPIDvalues();
     if(frc::Timer::GetFPGATimestamp() - autoStart < 5){
         //limelight->AutoLimelight();
-        shooter->RunAtVelocity(16000);
+        shooter->RunAtVelocity(13000);
         std::cout << fabs((shooter->tilt->GetPotVal() - shooter->tilt->baseVal)) << std::endl;
         if (fabs((shooter->tilt->GetPotVal() - shooter->tilt->baseVal) - PITCH_POT_IDEAL) <= 0.01) {
             conveyor->Lift();
+            shooter->tilt->RunSafe(0);
         }
         /*if(shooter->tilt->GetPotVal() < PITCH_POT_IDEAL){
             shooter->tilt->SetAngle(PITCH_POT_IDEAL);
@@ -66,7 +67,7 @@ void Robot::AutonomousPeriodic() {
     else if(frc::Timer::GetFPGATimestamp() - autoStart > 5) {
         double targetLeft;
         double targetRight;
-        if(!frc::SmartDashboard::GetBoolean("Front/Back Auto", autoDirection)) {
+        if(frc::SmartDashboard::GetBoolean("Front/Back Auto", autoDirection)) {
             targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH));
             targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
         } else {

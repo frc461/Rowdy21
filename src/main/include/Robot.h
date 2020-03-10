@@ -26,7 +26,10 @@
 #define ENCODER_INCH 111.0
 #define AUTONOMOUS_LENGTH 36.0
 #define PITCH_ENCODER_IDEAL 820
-#define PITCH_POT_IDEAL 0.31
+/*
+    Here is the autonomous preset value!!!
+*/
+#define PITCH_POT_IDEAL 0.305
 
 class Robot : public frc::TimedRobot {
 public:

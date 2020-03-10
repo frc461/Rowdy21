@@ -20,6 +20,21 @@
 
 #define LIMIT_SW 6
 
+#define MAX_ANGLE 0.314
+
+/*
+    HERE ARE THE PRESETS!!!!
+*/
+
+#define HALF_IN_TRENCH 0.205
+#define DISCO 1//angle is shy of target 0.6 power
+#define THIRD_PRESET 1
+
+
+
+
+#define ON_INIT_LINE 1012
+
 class Shooter
 {
 public:
@@ -52,8 +67,8 @@ public:
             double GetEncoder();
             double GetPotVal();
             double baseVal;
-        private:
             WPI_VictorSPX *AdjMotor;
+        private:
             frc::Encoder *encoder;
             frc::DigitalInput *limit;
             frc::AnalogInput *triPot;
