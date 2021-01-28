@@ -13,9 +13,38 @@ DriveTrain::DriveTrain(Control *control){
     left = new frc::SpeedControllerGroup(*left1, *left2);
     right = new frc::SpeedControllerGroup(*right1, *right2);
 
+    gyro = new frc::ADXRS450_Gyro(frc::SPI::Port::kOnboardCS0);
+
     driveTrain = new frc::DifferentialDrive(*left, *right);
 
+    autoPIDLeft = new PID(-0.0003, 0, 0, "D: autoTest_L");
+    autoPIDRight = new PID(0.0003 , 0, 0, "D: autoTest_R");
+
+    ResetEncoders();
+
     direction = -1;
+}
+
+void DriveTrain::EnableBreakMode(){
+    left1->SetNeutralMode(NeutralMode::Brake);
+    left2->SetNeutralMode(NeutralMode::Brake);
+    right1->SetNeutralMode(NeutralMode::Brake);
+    right2->SetNeutralMode(NeutralMode::Brake);
+}
+
+void DriveTrain::DisableBreakMode() {
+    left1->SetNeutralMode(NeutralMode::Coast);
+    left2->SetNeutralMode(NeutralMode::Coast);
+    right1->SetNeutralMode(NeutralMode::Coast);
+    right2->SetNeutralMode(NeutralMode::Coast);
+}
+
+void DriveTrain::ResetGyro() {
+    gyro->Reset();
+}
+
+double DriveTrain::GetAngle() {
+    return gyro->GetAngle();
 }
 
 void DriveTrain::ResetEncoders() {
@@ -33,14 +62,12 @@ double DriveTrain::GetEncoderValueR() {
 void DriveTrain::Periodic() {
     //std::cout << "left en: " << left1->GetSelectedSensorPosition() << std::endl;
     //std::cout << "right en: " << right1->GetSelectedSensorPosition() << std::endl;
-
     throttleCap = 1;
     if(frc::SmartDashboard::GetBoolean("Arcade", false)) {
         driveMode = DriveMode::Arcade;
     } else {
         driveMode = DriveMode::Tank;
     }
-
     if(driveMode == DriveMode::Tank){
         driveTrain->TankDrive(direction * throttleCap*control->leftJoystickY(), direction * throttleCap*control->rightJoystickY());
     } else if(driveMode == DriveMode::Arcade) {
@@ -48,6 +75,7 @@ void DriveTrain::Periodic() {
     } else if(driveMode == DriveMode::Disabled){
         driveTrain->TankDrive(0,0);
     }
+    //std::cout << gyro->GetAngle() << std::endl;
 }
 
 void DriveTrain::SetDriveMode(DriveMode mode) {

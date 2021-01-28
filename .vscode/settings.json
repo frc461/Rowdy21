@@ -99,5 +99,6 @@
     "string_view": "cpp",
     "cinttypes": "cpp",
     "xmemory0": "cpp"
-  }
+  },
+  "C_Cpp.errorSquiggles": "Disabled"
 }

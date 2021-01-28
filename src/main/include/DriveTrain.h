@@ -11,6 +11,8 @@
 #include <ctre/Phoenix.h>
 #include <cmath>
 
+#include <frc/ADXRS450_Gyro.h>
+
 #include <frc/SmartDashboard/SmartDashboard.h>
 
 #include <networktables/NetworkTable.h>
@@ -39,16 +41,23 @@ public:
         Disabled
     };
 
+    void EnableBreakMode();
+    void DisableBreakMode();
+
     void ToggleDriveMode();
     void SetDriveMode(DriveMode mode);
     void ToggleDirection();
 
     void ResetEncoders();
 
+    void ResetGyro();
+    double GetAngle();
+
     double GetEncoderValueL();
     double GetEncoderValueR();
 
     void Periodic();
+    void AutonomousPeriodic(int movenum);
 
     DriveMode driveMode;
 
@@ -58,6 +67,8 @@ private:
     WPI_TalonSRX *right2, *left2;
     WPI_TalonSRX *right1, *left1;
 
+    frc::ADXRS450_Gyro *gyro;
+
     frc::SpeedControllerGroup *left;
     frc::SpeedControllerGroup *right;
 
@@ -66,6 +77,8 @@ private:
     nt::NetworkTableEntry ntTick;
 
     frc::SmartDashboard *smartDashboard;
+
+    PID *autoPIDLeft, *autoPIDRight;
 
     Control *control;
     bool switchState;

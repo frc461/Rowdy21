@@ -21,16 +21,17 @@
 #define LIMIT_SW 6
 
 #define MAX_ANGLE 0.314
+// #define MAX_ANGLE 
 
 /*
     HERE ARE THE PRESETS!!!!
 */
 
 #define HALF_IN_TRENCH 0.205
-#define DISCO 1//angle is shy of target 0.6 power
-#define THIRD_PRESET 1
+#define DISCO .1//angle is shy of target 0.6 power
+#define THIRD_PRESET 0.3
 
-
+#define ENC_MAX 897
 
 
 #define ON_INIT_LINE 1012
@@ -65,16 +66,18 @@ public:
             void SetAngle(double speed);
 
             double GetEncoder();
-            double GetPotVal();
+            bool GetLimit();
             double baseVal;
             WPI_VictorSPX *AdjMotor;
-        private:
-            frc::Encoder *encoder;
-            frc::DigitalInput *limit;
-            frc::AnalogInput *triPot;
-            PID *angle;
 
-            bool GetLimit();
+            bool Zeroing();
+
+            bool zeroMode;
+            
+            frc::Encoder *encoder;
+        private:
+            frc::DigitalInput *limit;
+            PID *angle;
     };
 
     Tilt *tilt;

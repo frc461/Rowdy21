@@ -23,8 +23,8 @@
 #include "Arduino.h"
 #include <Math.h>
 
-#define ENCODER_INCH 111.0
-#define AUTONOMOUS_LENGTH 36.0
+#define ENCODER_INCH 54.2
+#define AUTONOMOUS_LENGTH 33.77
 #define PITCH_ENCODER_IDEAL 820
 /*
     Here is the autonomous preset value!!!
@@ -42,8 +42,12 @@ public:
     void TestPeriodic() override;
     void DisabledInit() override;
 
+    void RunForward(double numInch);
+    void TurnRight(double degrees);
+    void TurnLeft(double degrees);
+
 private:
-    DriveTrain* driveTrain;
+    DriveTrain *driveTrain;
     Control *control;
     Intake *intake;
     Limelight *limelight;
@@ -54,9 +58,12 @@ private:
     Arduino *arduino;
 
     PID *autoPIDLeft, *autoPIDRight;
+    PID *autoPIDLeftForward, *autoPIDRightForward;
     int completeness;
     double autoStart;
     int autoDelay;
     int delayStart;
     bool autoDirection;
+
+    double gyroInitReading;
 };
