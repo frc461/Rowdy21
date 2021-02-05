@@ -12,6 +12,8 @@
 #include "networktables/NetworkTable.h"
 #include "networkTables/NetworkTableEntry.h"
 
+#include "AutoInfo.h"
+
 #include "DriveTrain.h"
 #include "Intake.h"
 #include "Limelight.h"
@@ -22,6 +24,10 @@
 #include "PID.h"
 #include "Arduino.h"
 #include <Math.h>
+#include <vector>
+#include <sstream>
+#include <string>
+#include <fstream>
 
 #define ENCODER_INCH 54.2
 #define AUTONOMOUS_LENGTH 33.77
@@ -42,9 +48,11 @@ public:
     void TestPeriodic() override;
     void DisabledInit() override;
 
-    void RunForward(double numInch);
-    void TurnRight(double degrees);
-    void TurnLeft(double degrees);
+    bool RunForward(double numInch);
+    bool TurnRight(double degrees);
+    bool TurnLeft(double degrees);
+
+    void ReadFromFile();
 
 private:
     DriveTrain *driveTrain;
@@ -66,4 +74,7 @@ private:
     bool autoDirection;
 
     double gyroInitReading;
+
+    AutoInfo *list;
+    int i;
 };
