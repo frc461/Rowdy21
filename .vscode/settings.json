@@ -98,7 +98,9 @@
     "memory_resource": "cpp",
     "string_view": "cpp",
     "cinttypes": "cpp",
-    "xmemory0": "cpp"
+    "xmemory0": "cpp",
+    "codecvt": "cpp",
+    "filesystem": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled"
 }

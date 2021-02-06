@@ -15,15 +15,13 @@ void Robot::RobotInit() {
     climber = new Climber(control);
     djSpinner = new DJ_Spinner(control);
     arduino = new Arduino();
-    //0.00023
-    //0.00064
-    autoPIDLeft = new PID(0.013, 0.0, 0.0, "autoTest_L");
-    autoPIDRight = new PID(0.013, 0.0, 0.0, "autoTest_R");
 
-    autoPIDRightForward = new PID(0.00064, 0.0, 0.0, "autoTest_R_F");
-    autoPIDLeftForward = new PID(0.00064, 0.0, 0.0, "autoTest_L_F");
+    autoPIDLeft = new PID(0.0142, 0.0, 0.0, "autoTest_L");
+    autoPIDRight = new PID(0.0142, 0.0, 0.0, "autoTest_R");
 
-    gyroInitReading = driveTrain->GetAngle();
+    autoPIDRightForward = new PID(0.0064, 0.0, 0.0, "autoTest_R_F");
+    autoPIDLeftForward = new PID(0.008, 0.0, 0.0, "autoTest_L_F");
+
     driveTrain->ResetGyro();
 
     climber->ClimberBrakeOff();
@@ -47,14 +45,23 @@ void Robot::AutonomousInit() {
     }
     driveTrain->EnableBreakMode();
 
-    driveTrain->ResetGyro();
-
     shooter->tilt->ZeroAlign();
+
+    driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
 
     autoStart = frc::Timer::GetFPGATimestamp();
     limelight->LimelightReset();
 
+    for (int j = 0; j < (int)list->list.size(); j++) {
+        if (list->list.at(j)->angle > 0) {
+            bool dir = list->list.at(j)->dir;
+            moves.push_back((!dir) ? &Robot::TurnLeft : &Robot::TurnRight);
+            moveVals.push_back(list->list.at(j)->angle);
+        }
+        moves.push_back(&Robot::RunForward);
+        moveVals.push_back(list->list.at(j)->distance/2.54);
+    }
     i = 0;
 }
 
@@ -63,50 +70,21 @@ void Robot::DisabledInit(){
 }
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
-    float dis = (list->list.at(i)->distance) / 2.54f;
-    float angle = list->list.at(i)->angle;
-    if (list->list.at(i)->dir){
-        if (angle == 0) {
-            if (RunForward(dis)){
-                driveTrain->ResetGyro();
-                driveTrain->ResetEncoders();
-                i++;
-            }
-        }
-        else if (TurnRight(angle)){
-            if (RunForward(dis)){
-                driveTrain->ResetGyro();
-                driveTrain->ResetEncoders();
-                i++;
-            }
-        }
-    }else{
-        if (angle == 0) {
-            if (RunForward(dis)){
-                driveTrain->ResetGyro();
-                driveTrain->ResetEncoders();
-                i++;
-            }
-        }
-        else if (TurnLeft(angle)){
-            if (RunForward(dis)){
-                driveTrain->ResetGyro();
-                driveTrain->ResetEncoders();
-                i++;
-            }
-        }
+    if ((this->*moves.at(i))(moveVals.at(i))) {
+        i++;
+        driveTrain->ResetEncoders();
+        driveTrain->ResetGyro();
     }
 }
 
 bool Robot::RunForward(double numInch) {
     if (driveTrain->GetEncoderValueL() > -numInch*ENCODER_INCH) {
-        double leftSpeed = std::min(1.0, autoPIDLeftForward->OutputPID(driveTrain->GetEncoderValueL(), numInch*ENCODER_INCH));
-        double rightSpeed = std::min(1.0, autoPIDRightForward->OutputPID(driveTrain->GetEncoderValueR(), numInch*ENCODER_INCH));
-        driveTrain->driveTrain->TankDrive(0.6, 0.6);
+        double left = std::min(1.0, autoPIDLeftForward->OutputPID(driveTrain->GetEncoderValueL(), numInch*ENCODER_INCH));
+        double right = std::min(1.0, autoPIDRightForward->OutputPID(driveTrain->GetEncoderValueR(), numInch*ENCODER_INCH));
+        driveTrain->driveTrain->TankDrive(left*0.6, right*0.6);
         return 0;
     }
     else {
-        std::cout << "end" << std::endl;
         return 1;
     }
 }
@@ -117,6 +95,7 @@ bool Robot::TurnRight(double degrees) {
         return 0;
     }
     else {
+        //driveTrain->driveTrain->TankDrive(-0.1, -0.1);
         return 1;
     }
 }
@@ -127,6 +106,7 @@ bool Robot::TurnLeft(double degrees) {
         return 0;
     }
     else {
+        //driveTrain->driveTrain->TankDrive(-0.1, -0.1);
         return 1;
     }
 }
@@ -145,7 +125,7 @@ void Robot::TeleopPeriodic() {
     conveyor->Periodic();
     climber->Periodic();
     djSpinner->Periodic();
-    std::cout << driveTrain->GetAngle() << std::endl;
+    //std::cout << driveTrain->GetAngle() << std::endl;
 }
 
 void Robot::TestPeriodic() {}

@@ -23,6 +23,7 @@
 #include "DJ_Spinner.h"
 #include "PID.h"
 #include "Arduino.h"
+
 #include <Math.h>
 #include <vector>
 #include <sstream>
@@ -73,8 +74,11 @@ private:
     int delayStart;
     bool autoDirection;
 
-    double gyroInitReading;
-
     AutoInfo *list;
     int i;
+
+    typedef bool (Robot::*Moves)(double);
+
+    std::vector<Moves> moves;
+    std::vector<double> moveVals;
 };
