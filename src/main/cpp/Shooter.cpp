@@ -203,6 +203,7 @@ void Shooter::Periodic() {
 
    if(tilt->zeroMode) {
        tilt->Zeroing();
+       tilt->SetAngle(0);
    } else {
        if(control->PresetPosition1()) {
             shooterPos = 653;
