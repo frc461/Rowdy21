@@ -54,8 +54,8 @@ void Robot::AutonomousInit() {
     autoPIDLeft = new PID(0.04, 0.0, 0.00008, "autoTest_L");
     autoPIDRight = new PID(0.04, 0.0, 0.00008, "autoTest_R");
     // 0.0064 (LEFT) | 0.008 (RIGHT) : FORWARD
-    autoPIDLeftForward = new PID(0.0045, 0.0, 0.0005, "autoTest_L_F");
-    autoPIDRightForward = new PID(0.0045, 0.0, 0.0005, "autoTest_R_F");
+    autoPIDLeftForward = new PID(0.0045, 0.0, 0.0, "autoTest_L_F");
+    autoPIDRightForward = new PID(0.01, 0.0, 0.0, "autoTest_R_F");
 
     frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
     frc::SmartDashboard::PutNumber("ideal angle", 35);
