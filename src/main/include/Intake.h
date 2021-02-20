@@ -15,6 +15,9 @@ public:
 
     void ToggleState();
 
+    void AutoInit();
+    void AutoRun();
+
     void Reset();
 
 private:

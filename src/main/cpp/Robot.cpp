@@ -16,13 +16,8 @@ void Robot::RobotInit() {
     djSpinner = new DJ_Spinner(control);
     arduino = new Arduino();
 
-    autoPIDLeft = new PID(0.0142, 0.0, 0.0, "autoTest_L");
-    autoPIDRight = new PID(0.0142, 0.0, 0.0, "autoTest_R");
-
-    autoPIDRightForward = new PID(0.0064, 0.0, 0.0, "autoTest_R_F");
-    autoPIDLeftForward = new PID(0.008, 0.0, 0.0, "autoTest_L_F");
-
     driveTrain->ResetGyro();
+    driveTrain->ResetEncoders();
 
     climber->ClimberBrakeOff();
     autoDirection = 0;
@@ -53,6 +48,20 @@ void Robot::AutonomousInit() {
     autoStart = frc::Timer::GetFPGATimestamp();
     limelight->LimelightReset();
 
+    intake->AutoInit();
+
+    // 0.02 | 0.0 | 0.05 (FOR FORWARD)
+    autoPIDLeft = new PID(0.04, 0.0, 0.00008, "autoTest_L");
+    autoPIDRight = new PID(0.04, 0.0, 0.00008, "autoTest_R");
+    // 0.0064 (LEFT) | 0.008 (RIGHT) : FORWARD
+    autoPIDLeftForward = new PID(0.0045, 0.0, 0.0005, "autoTest_L_F");
+    autoPIDRightForward = new PID(0.0045, 0.0, 0.0005, "autoTest_R_F");
+
+    frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
+    frc::SmartDashboard::PutNumber("ideal angle", 35);
+
+    frc::SmartDashboard::PutNumber("time", 0);
+
     for (int j = 0; j < (int)list->list.size(); j++) {
         if (list->list.at(j)->angle > 0) {
             bool dir = list->list.at(j)->dir;
@@ -60,9 +69,11 @@ void Robot::AutonomousInit() {
             moveVals.push_back(list->list.at(j)->angle);
         }
         moves.push_back(&Robot::RunForward);
-        moveVals.push_back(list->list.at(j)->distance/2.54);
+        moveVals.push_back(list->list.at(j)->distance / 2.54);
     }
     i = 0;
+
+    counter = 0;
 }
 
 void Robot::DisabledInit(){
@@ -70,18 +81,24 @@ void Robot::DisabledInit(){
 }
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
+    intake->AutoRun();
     if ((this->*moves.at(i))(moveVals.at(i))) {
+        counter = 0;
         i++;
         driveTrain->ResetEncoders();
         driveTrain->ResetGyro();
     }
+
+    frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
+    frc::SmartDashboard::PutNumber("ideal angle", 90);
+    frc::SmartDashboard::PutNumber("time", frc::Timer::GetFPGATimestamp());
 }
 
 bool Robot::RunForward(double numInch) {
-    if (driveTrain->GetEncoderValueL() > -numInch*ENCODER_INCH) {
+    if (driveTrain->GetEncoderValueL() < numInch*ENCODER_INCH) {
         double left = std::min(1.0, autoPIDLeftForward->OutputPID(driveTrain->GetEncoderValueL(), numInch*ENCODER_INCH));
         double right = std::min(1.0, autoPIDRightForward->OutputPID(driveTrain->GetEncoderValueR(), numInch*ENCODER_INCH));
-        driveTrain->driveTrain->TankDrive(left*0.6, right*0.6);
+        driveTrain->driveTrain->TankDrive(-left*0.6, -right*0.6);
         return 0;
     }
     else {
@@ -89,24 +106,24 @@ bool Robot::RunForward(double numInch) {
     }
 }
 bool Robot::TurnRight(double degrees) {
-    if(driveTrain->GetAngle() <= degrees){
+    counter++;
+    if(counter <= 70){
         double left = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetAngle(), degrees));
         driveTrain->driveTrain->TankDrive(left, -left);
         return 0;
     }
     else {
-        //driveTrain->driveTrain->TankDrive(-0.1, -0.1);
         return 1;
     }
 }
 bool Robot::TurnLeft(double degrees) {
-    if (driveTrain->GetAngle() >= -degrees) {
+    counter++;
+    if (counter <= 70) {
         double left = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetAngle(), -degrees));
         driveTrain->driveTrain->TankDrive(left, -left);
         return 0;
     }
     else {
-        //driveTrain->driveTrain->TankDrive(-0.1, -0.1);
         return 1;
     }
 }
@@ -118,7 +135,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
     arduino->SendData(TELEOP);
     driveTrain->Periodic();
-    //std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
+    std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
     intake->Periodic();
     limelight->Periodic();
     shooter->Periodic();
