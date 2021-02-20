@@ -53,6 +53,8 @@ public:
     bool TurnRight(double degrees);
     bool TurnLeft(double degrees);
 
+    double abs(double x);
+
     void ReadFromFile();
 
 private:
@@ -70,6 +72,7 @@ private:
     PID *autoPIDLeftForward, *autoPIDRightForward;
     int completeness;
     double autoStart;
+    double cp;
     int autoDelay;
     int delayStart;
     bool autoDirection;

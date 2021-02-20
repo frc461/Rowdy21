@@ -32,6 +32,8 @@ void Robot::RobotInit() {
     list = new AutoInfo();
 
     driveTrain->ResetEncoders();
+
+    cp = driveTrain->GetAngle();
 }
 
 void Robot::RobotPeriodic() {}
@@ -70,6 +72,7 @@ void Robot::DisabledInit(){
 }
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
+    cp = driveTrain->GetAngle();
     if ((this->*moves.at(i))(moveVals.at(i))) {
         i++;
         driveTrain->ResetEncoders();
@@ -78,10 +81,21 @@ void Robot::AutonomousPeriodic() {
 }
 
 bool Robot::RunForward(double numInch) {
+    double power = 0;
+    if (abs(cp) >= 5){
+        power = 1 + abs(cp) * 0.0075
+    }
+
     if (driveTrain->GetEncoderValueL() > -numInch*ENCODER_INCH) {
         double left = std::min(1.0, autoPIDLeftForward->OutputPID(driveTrain->GetEncoderValueL(), numInch*ENCODER_INCH));
         double right = std::min(1.0, autoPIDRightForward->OutputPID(driveTrain->GetEncoderValueR(), numInch*ENCODER_INCH));
-        driveTrain->driveTrain->TankDrive(left*0.6, right*0.6);
+        if (cp < 0){
+            driveTrain->driveTrain->TankDrive(left*0.6, right*0.6*power);
+        }else if (cp > 0){
+            driveTrain->driveTrain->TankDrive(left*0.6*power, right*0.6);
+        } else{
+            driveTrain->driveTrain->TankDrive(left*0.6, right*0.6);
+        }
         return 0;
     }
     else {
@@ -126,6 +140,14 @@ void Robot::TeleopPeriodic() {
     climber->Periodic();
     djSpinner->Periodic();
     //std::cout << driveTrain->GetAngle() << std::endl;
+}
+
+double abs(double x){
+    if (x >= 0){
+        return x;
+    } else {
+        return -x;
+    }
 }
 
 void Robot::TestPeriodic() {}
