@@ -14,9 +14,9 @@ float angle;
 float distance;
 };
 std::vector<MoveInfo*> list = {
-new MoveInfo(true,0,375),
-new MoveInfo(false,70,242),
-new MoveInfo(true,100,171),
-new MoveInfo(false,29,123),
+new MoveInfo(true,20,381),
+new MoveInfo(false,58,150),
+new MoveInfo(true,96,186),
+new MoveInfo(false,40,41),
 };
 };

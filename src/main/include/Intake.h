@@ -16,6 +16,7 @@ public:
     void ToggleState();
 
     void AutoInit();
+    void IntakeIn();
     void AutoRun();
 
     void Reset();
