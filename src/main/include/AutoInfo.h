@@ -3,7 +3,6 @@
 
 
 class AutoInfo {
-<<<<<<< HEAD
     public:
     class MoveInfo {
         public:
@@ -44,7 +43,7 @@ class AutoInfo {
         new MoveInfo(false,40,41),
     };
 
-    std::vector<MoveInfo*> getPath(int i){
+    static std::vector<MoveInfo*> getPath(int i){
         if(i==0){
             return ra;
         }
@@ -58,24 +57,4 @@ class AutoInfo {
             return bb;
         }
     };
-=======
-public:
-class MoveInfo {
-public:
-MoveInfo(bool dir, float angle, float distance) {
-this->dir = dir;
-this->angle = angle;
-this->distance = distance;
-}
-bool dir;
-float angle;
-float distance;
-};
-std::vector<MoveInfo*> list = {
-new MoveInfo(true,20,381),
-new MoveInfo(false,58,150),
-new MoveInfo(true,96,186),
-new MoveInfo(false,40,41),
-};
->>>>>>> 3c9183556d0cfc401a18aadc50801f61386322b1
 };
