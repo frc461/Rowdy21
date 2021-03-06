@@ -15,6 +15,14 @@ Intake::Intake(Control *control) {
     bIntake = false;
 }
 
+void Intake::AutoInit() {
+    push->Set(1);
+}
+
+void Intake::AutoRun() {
+    roller->Set(0.8);
+}
+
 void Intake::Periodic() {
     if (control->ConveyForward()) {
         rollerSpeed = 0.8;

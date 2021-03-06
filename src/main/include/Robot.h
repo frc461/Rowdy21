@@ -78,7 +78,8 @@ private:
     int i;
 
     typedef bool (Robot::*Moves)(double);
-
     std::vector<Moves> moves;
     std::vector<double> moveVals;
+
+    int counter;
 };
