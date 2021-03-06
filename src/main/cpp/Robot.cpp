@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include "cameraserver/CameraServer.h"
 
 void Robot::RobotInit() {
     control = new Control();
@@ -24,9 +25,15 @@ void Robot::RobotInit() {
     frc::SmartDashboard::PutNumber("auto delay", autoDelay);
     frc::SmartDashboard::PutBoolean("Front/Back Auto", autoDirection);
 
+    /*frc::CameraServer::GetInstance()->StartAutomaticCapture();
+    cs::CvSink cvSink = frc::CameraServer::GetInstance()->GetVideo();
+    cs::CvSource outputStream = frc::CameraServer::GetInstance()->PutVideo("WOW", 640, 480);*/
+
     list = new AutoInfo();
 
     driveTrain->ResetEncoders();
+
+    compareImg = new CompareImg();
 }
 
 void Robot::RobotPeriodic() {}
@@ -88,9 +95,7 @@ void Robot::AutonomousPeriodic() {
         i++;
     }
 
-    //RunForward(100);
-
-    std::cout << driveTrain->GetAngle() << std::endl;
+    //std::cout << driveTrain->GetAngle() << std::endl;
 
     //frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
     //frc::SmartDashboard::PutNumber("ideal angle", 90);
@@ -140,14 +145,15 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
     arduino->SendData(TELEOP);
     driveTrain->Periodic();
-    std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
+    //std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
     intake->Periodic();
     limelight->Periodic();
     shooter->Periodic();
     conveyor->Periodic();
     climber->Periodic();
     djSpinner->Periodic();
-    //std::cout << driveTrain->GetAngle() << std::endl;
+
+    std::cout << compareImg->Compare() << std::endl;
 }
 
 void Robot::TestPeriodic() {}
