@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include "cameraserver/CameraServer.h"
 
 void Robot::RobotInit() {
     control = new Control();
@@ -24,9 +25,15 @@ void Robot::RobotInit() {
     frc::SmartDashboard::PutNumber("auto delay", autoDelay);
     frc::SmartDashboard::PutBoolean("Front/Back Auto", autoDirection);
 
+    /*frc::CameraServer::GetInstance()->StartAutomaticCapture();
+    cs::CvSink cvSink = frc::CameraServer::GetInstance()->GetVideo();
+    cs::CvSource outputStream = frc::CameraServer::GetInstance()->PutVideo("WOW", 640, 480);*/
+
     list = new AutoInfo();
 
     driveTrain->ResetEncoders();
+
+    compareImg = new CompareImg();
 }
 
 void Robot::RobotPeriodic() {}
@@ -54,13 +61,11 @@ void Robot::AutonomousInit() {
     autoPIDLeft = new PID(0.04, 0.0, 0.00008, "autoTest_L");
     autoPIDRight = new PID(0.04, 0.0, 0.00008, "autoTest_R");
     // 0.0064 (LEFT) | 0.008 (RIGHT) : FORWARD
-    autoPIDLeftForward = new PID(0.0045, 0.0, 0.0, "autoTest_L_F");
-    autoPIDRightForward = new PID(0.01, 0.0, 0.0, "autoTest_R_F");
+    autoPIDLeftForward = new PID(0.004, 0.0, 0.0, "autoTest_L_F");
+    autoPIDRightForward = new PID(1.0, 0.0, 0.0, "autoTest_R_F");
 
     frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
     frc::SmartDashboard::PutNumber("ideal angle", 35);
-
-    frc::SmartDashboard::PutNumber("time", 0);
 
     for (int j = 0; j < (int)list->list.size(); j++) {
         if (list->list.at(j)->angle > 0) {
@@ -72,7 +77,6 @@ void Robot::AutonomousInit() {
         moveVals.push_back(list->list.at(j)->distance / 2.54);
     }
     i = 0;
-
     counter = 0;
 }
 
@@ -82,23 +86,29 @@ void Robot::DisabledInit(){
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
     intake->AutoRun();
+    if (i == moveVals.size() - 1) intake->IntakeIn();
     if ((this->*moves.at(i))(moveVals.at(i))) {
-        counter = 0;
-        i++;
         driveTrain->ResetEncoders();
         driveTrain->ResetGyro();
+
+        counter = 0;
+        i++;
     }
 
-    frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
-    frc::SmartDashboard::PutNumber("ideal angle", 90);
-    frc::SmartDashboard::PutNumber("time", frc::Timer::GetFPGATimestamp());
+    //std::cout << driveTrain->GetAngle() << std::endl;
+
+    //frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
+    //frc::SmartDashboard::PutNumber("ideal angle", 90);
+    //frc::SmartDashboard::PutNumber("time", frc::Timer::GetFPGATimestamp());
 }
 
 bool Robot::RunForward(double numInch) {
     if (driveTrain->GetEncoderValueL() < numInch*ENCODER_INCH) {
         double left = std::min(1.0, autoPIDLeftForward->OutputPID(driveTrain->GetEncoderValueL(), numInch*ENCODER_INCH));
         double right = std::min(1.0, autoPIDRightForward->OutputPID(driveTrain->GetEncoderValueR(), numInch*ENCODER_INCH));
-        driveTrain->driveTrain->TankDrive(-left*0.6, -right*0.6);
+        double val = (driveTrain->GetEncoderValueL() > numInch*ENCODER_INCH*0.9) ? 0 : 0.05;
+        if (driveTrain->GetAngle() < 0) driveTrain->driveTrain->TankDrive(-left*0.6, -right*0.6 - val);
+        else driveTrain->driveTrain->TankDrive(-left*0.6 - val, -right*0.6);
         return 0;
     }
     else {
@@ -107,7 +117,7 @@ bool Robot::RunForward(double numInch) {
 }
 bool Robot::TurnRight(double degrees) {
     counter++;
-    if(counter <= 70){
+    if(counter <= 50){
         double left = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetAngle(), degrees));
         driveTrain->driveTrain->TankDrive(left, -left);
         return 0;
@@ -118,7 +128,7 @@ bool Robot::TurnRight(double degrees) {
 }
 bool Robot::TurnLeft(double degrees) {
     counter++;
-    if (counter <= 70) {
+    if (counter <= 50) {
         double left = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetAngle(), -degrees));
         driveTrain->driveTrain->TankDrive(left, -left);
         return 0;
@@ -135,14 +145,15 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
     arduino->SendData(TELEOP);
     driveTrain->Periodic();
-    std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
+    //std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
     intake->Periodic();
     limelight->Periodic();
     shooter->Periodic();
     conveyor->Periodic();
     climber->Periodic();
     djSpinner->Periodic();
-    //std::cout << driveTrain->GetAngle() << std::endl;
+
+    std::cout << compareImg->Compare() << std::endl;
 }
 
 void Robot::TestPeriodic() {}

@@ -23,6 +23,10 @@ void Intake::AutoRun() {
     roller->Set(0.8);
 }
 
+void Intake::IntakeIn() {
+    push->Set(0);
+}
+
 void Intake::Periodic() {
     if (control->ConveyForward()) {
         rollerSpeed = 0.8;

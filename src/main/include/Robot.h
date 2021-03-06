@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <algorithm>
-
 #include "networkTables/NetworkTableInstance.h"
 #include "networktables/NetworkTable.h"
 #include "networkTables/NetworkTableEntry.h"
@@ -23,6 +22,7 @@
 #include "DJ_Spinner.h"
 #include "PID.h"
 #include "Arduino.h"
+#include "CompareImg.h"
 
 #include <Math.h>
 #include <vector>
@@ -65,6 +65,7 @@ private:
     Climber *climber;
     DJ_Spinner *djSpinner;
     Arduino *arduino;
+    CompareImg *compareImg;
 
     PID *autoPIDLeft, *autoPIDRight;
     PID *autoPIDLeftForward, *autoPIDRightForward;
