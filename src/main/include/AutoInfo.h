@@ -42,4 +42,19 @@ class AutoInfo {
         new MoveInfo(true,96,186),
         new MoveInfo(false,40,41),
     };
+
+    std::vector<MoveInfo*> getPath(int i){
+        if(i==0){
+            return ra;
+        }
+        if(i==1){
+            return rb;
+        }
+        if(i==2){
+            return ba;
+        }
+        if(i==3){
+            return bb;
+        }
+    };
 };
