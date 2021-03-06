@@ -5,7 +5,7 @@ CompareImg::CompareImg() {
     camera->SetResolution(4,3);
     camera->SetFPS(30);
 
-    output = frc::CameraServer::GetInstance()->PutVideo("cam", 4, 3);
+    output = frc::CameraServer::GetInstance()->PutVideo("cam", 40, 30);
     cvSink = new cs::CvSink("cvsink");
     cvSink->SetSource(*camera);
 

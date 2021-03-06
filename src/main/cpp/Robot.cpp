@@ -66,7 +66,7 @@ void Robot::AutonomousInit() {
 
     frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
     frc::SmartDashboard::PutNumber("ideal angle", 35);
-
+    //AutoInfo->getPath(compareImg->Compare());
     for (int j = 0; j < (int)list->list.size(); j++) {
         if (list->list.at(j)->angle > 0) {
             bool dir = list->list.at(j)->dir;
@@ -154,6 +154,7 @@ void Robot::TeleopPeriodic() {
     djSpinner->Periodic();
 
     std::cout << compareImg->Compare() << std::endl;
+
 }
 
 void Robot::TestPeriodic() {}
