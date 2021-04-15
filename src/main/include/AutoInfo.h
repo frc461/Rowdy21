@@ -3,7 +3,14 @@
 
 
 class AutoInfo {
-    public:
+public:
+    AutoInfo(int a){
+        if(a == 0) list = rb;
+        if(a == 1) list = ra;
+        if(a == 2) list = bb;
+        if(a == 3) list = ba;
+    }
+
     class MoveInfo {
         public:
         MoveInfo(bool dir, float angle, float distance) {
@@ -15,46 +22,34 @@ class AutoInfo {
         float angle;
         float distance;
     };
-    std::vector<MoveInfo*> ra = {
+    std::vector<MoveInfo*> list = {};
+
+private:
+    std::vector<MoveInfo*> ra = { // GOOD
         new MoveInfo(false,0,150),
-        new MoveInfo(true,23,130),
-        new MoveInfo(false,97,242),
-        new MoveInfo(true,71,240),
+        new MoveInfo(true,23,95),
+        new MoveInfo(false,95,200),
+        new MoveInfo(true,75,275),
     };
 
-    std::vector<MoveInfo*> rb = {
-        new MoveInfo(false,23,170),
-        new MoveInfo(true,65,190),
-        new MoveInfo(false,95,213),
-        new MoveInfo(true,45,229),
+    std::vector<MoveInfo*> rb = { // GOOD
+        new MoveInfo(false,22,170),
+        new MoveInfo(true,61,190),
+        new MoveInfo(false,100,213),
+        new MoveInfo(true,49,229),
     };
 
-    std::vector<MoveInfo*> ba = {
-        new MoveInfo(true,23.5,380),
-        new MoveInfo(false,94,222),
+    std::vector<MoveInfo*> ba = { // GOOD
+        new MoveInfo(true,24,360),
+        new MoveInfo(false,90,222),
         new MoveInfo(true,110,150),
-        new MoveInfo(false,40,50),
+        new MoveInfo(false,40,70),
     };
 
-    std::vector<MoveInfo*> bb = {
+    std::vector<MoveInfo*> bb = { // GOOD
         new MoveInfo(true,20,381),
-        new MoveInfo(false,58,150),
-        new MoveInfo(true,96,186),
-        new MoveInfo(false,40,41),
-    };
-
-    static std::vector<MoveInfo*> getPath(int i){
-        if(i==0){
-            return ra;
-        }
-        if(i==1){
-            return rb;
-        }
-        if(i==2){
-            return ba;
-        }
-        if(i==3){
-            return bb;
-        }
+        new MoveInfo(false,53,140),
+        new MoveInfo(true,97,186),
+        new MoveInfo(false,40,50),
     };
 };

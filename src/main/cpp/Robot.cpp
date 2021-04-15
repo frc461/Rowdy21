@@ -15,7 +15,7 @@ void Robot::RobotInit() {
     conveyor = new Conveyor(control);
     climber = new Climber(control);
     djSpinner = new DJ_Spinner(control);
-    arduino = new Arduino();
+    //arduino = new Arduino();
 
     driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
@@ -25,38 +25,22 @@ void Robot::RobotInit() {
     frc::SmartDashboard::PutNumber("auto delay", autoDelay);
     frc::SmartDashboard::PutBoolean("Front/Back Auto", autoDirection);
 
-    /*frc::CameraServer::GetInstance()->StartAutomaticCapture();
-    cs::CvSink cvSink = frc::CameraServer::GetInstance()->GetVideo();
-    cs::CvSource outputStream = frc::CameraServer::GetInstance()->PutVideo("WOW", 640, 480);*/
-
-    list = new AutoInfo();
-
-    driveTrain->ResetEncoders();
-
     compareImg = new CompareImg();
+    runComp = true;
+    startGetImage = false;
+    
+    i = 0;
+    counter = camCnt = 0;
+    store = false;
 }
 
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
-    autoDelay = frc::SmartDashboard::GetNumber("auto delay", autoDelay);
-    //dont fkng move
-    delayStart = frc::Timer::GetFPGATimestamp();
-    while(frc::Timer::GetFPGATimestamp() - delayStart < autoDelay){
-        //do absolutley nothing  
-    }
     driveTrain->EnableBreakMode();
 
-    shooter->tilt->ZeroAlign();
-
-    driveTrain->ResetGyro();
-    driveTrain->ResetEncoders();
-
-    autoStart = frc::Timer::GetFPGATimestamp();
-    limelight->LimelightReset();
-
     intake->AutoInit();
-
+    
     // 0.02 | 0.0 | 0.05 (FOR FORWARD)
     autoPIDLeft = new PID(0.04, 0.0, 0.00008, "autoTest_L");
     autoPIDRight = new PID(0.04, 0.0, 0.00008, "autoTest_R");
@@ -64,42 +48,66 @@ void Robot::AutonomousInit() {
     autoPIDLeftForward = new PID(0.004, 0.0, 0.0, "autoTest_L_F");
     autoPIDRightForward = new PID(1.0, 0.0, 0.0, "autoTest_R_F");
 
-    frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
-    frc::SmartDashboard::PutNumber("ideal angle", 35);
-    //AutoInfo->getPath(compareImg->Compare());
-    for (int j = 0; j < (int)list->list.size(); j++) {
-        if (list->list.at(j)->angle > 0) {
-            bool dir = list->list.at(j)->dir;
-            moves.push_back((!dir) ? &Robot::TurnLeft : &Robot::TurnRight);
-            moveVals.push_back(list->list.at(j)->angle);
-        }
-        moves.push_back(&Robot::RunForward);
-        moveVals.push_back(list->list.at(j)->distance / 2.54);
-    }
-    i = 0;
-    counter = 0;
+    //frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
+    //frc::SmartDashboard::PutNumber("ideal angle", 35);
+    
+    //list = new AutoInfo(2);
+
+    driveTrain->ResetGyro();
 }
 
 void Robot::DisabledInit(){
+    driveTrain->ResetGyro();
+    driveTrain->ResetEncoders();
     intake->Reset();
+
+    counter = camCnt = 0;
+    runComp = true;
+    store = false;
+    startGetImage = false;
+    compareImg->ResetImage();
+    compareImg->SetImageGrabbed(false);
 }
+
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
-    intake->AutoRun();
-    if (i == moveVals.size() - 1) intake->IntakeIn();
-    if ((this->*moves.at(i))(moveVals.at(i))) {
-        driveTrain->ResetEncoders();
-        driveTrain->ResetGyro();
-
-        counter = 0;
-        i++;
+    if (!startGetImage) {
+        // compareImg->StartPutImage();
+        compareImg->StartGetImage();
+        startGetImage = true;
     }
+    if (runComp && compareImg->GetImageGrabbed()) {
+        int n = compareImg->Compare();
+        std::cout << n << std::endl;
+        list = new AutoInfo(n);
+        runComp = false;
+    }
+    if (!runComp) camCnt++;
+    if (!store && !runComp && camCnt >= 30) {
+        for (int j = 0; j < (int)list->list.size(); j++) {
+            if (list->list.at(j)->angle > 0) {
+                bool dir = list->list.at(j)->dir;
+                moves.push_back((!dir) ? &Robot::TurnLeft : &Robot::TurnRight);
+                moveVals.push_back(list->list.at(j)->angle);
+            }
+            moves.push_back(&Robot::RunForward);
+            moveVals.push_back(list->list.at(j)->distance / 2.54);
+            std::cout << moveVals.at(j) << std::endl;
+        }
+        store = true;
+    }
+    if (store) {
+        intake->AutoRun();
+        if (i == (int)moveVals.size() - 1) intake->IntakeIn();
+        if ((this->*moves.at(i))(moveVals.at(i))) {
+            driveTrain->ResetEncoders();
+            driveTrain->ResetGyro();
 
-    //std::cout << driveTrain->GetAngle() << std::endl;
-
-    //frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
-    //frc::SmartDashboard::PutNumber("ideal angle", 90);
-    //frc::SmartDashboard::PutNumber("time", frc::Timer::GetFPGATimestamp());
+            counter = 0;
+            i++;
+        }
+    }
+    std::cout << "A" << std::endl;
 }
 
 bool Robot::RunForward(double numInch) {
@@ -143,18 +151,14 @@ void Robot::TeleopInit() {
 } 
 
 void Robot::TeleopPeriodic() {
-    arduino->SendData(TELEOP);
+    //arduino->SendData(TELEOP);
     driveTrain->Periodic();
-    //std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
     intake->Periodic();
     limelight->Periodic();
     shooter->Periodic();
     conveyor->Periodic();
     climber->Periodic();
     djSpinner->Periodic();
-
-    std::cout << compareImg->Compare() << std::endl;
-
 }
 
 void Robot::TestPeriodic() {}
@@ -164,45 +168,3 @@ int main() { return frc::StartRobot<Robot>(); }
 #endif
 
 
-    //arduino->SendData(AUTO);
-    // autoPIDLeft->getPIDvalues();
-    // autoPIDRight->getPIDvalues();
-    // if(frc::Timer::GetFPGATimestamp() - autoStart < 5){
-    //     //limelight->AutoLimelight();
-    //     shooter->RunAtVelocity(13000);
-    //     std::cout << fabs((shooter->tilt->GetPotVal() - shooter->tilt->baseVal)) << std::endl;
-    //     if (fabs((shooter->tilt->GetPotVal() - shooter->tilt->baseVal) - PITCH_POT_IDEAL) <= 0.01) {
-    //         conveyor->Lift();
-    //         shooter->tilt->RunSafe(0);
-    //     }
-    //     /*if(shooter->tilt->GetPotVal() < PITCH_POT_IDEAL){
-    //         shooter->tilt->SetAngle(PITCH_POT_IDEAL);
-    //     }*/
-    //     else {
-    //         shooter->tilt->SetAngle(PITCH_POT_IDEAL);
-    //     }
-    // }
-    // else if(frc::Timer::GetFPGATimestamp() - autoStart > 5) {
-    //     double targetLeft;
-    //     double targetRight;
-    //     if(frc::SmartDashboard::GetBoolean("Front/Back Auto", autoDirection)) {
-    //         targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), AUTONOMOUS_LENGTH*ENCODER_INCH));
-    //         targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
-    //     } else {
-    //         targetLeft = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetEncoderValueL(), -AUTONOMOUS_LENGTH*ENCODER_INCH));
-    //         targetRight = std::min(1.0, autoPIDRight->OutputPID(driveTrain->GetEncoderValueR(), AUTONOMOUS_LENGTH*ENCODER_INCH));
-    //     }
-    //     driveTrain->driveTrain->TankDrive(targetLeft, targetRight);
-    //     //std::cout << "Right Target" << targetRight << std::endl;
-    //     shooter->RunAtVelocity(0);
-    //     //limelight->LimelightReset();
-    //     conveyor->Stop(); 
-    // }
-    /*if(driveTrain->GetAngle()<90){
-        //std::cout << driveTrain->GetAngle() << std::endl;
-        double left = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetAngle(), 90.0));
-        std::cout << left << std::endl;
-        driveTrain->driveTrain->TankDrive(left, -left);
-    }*/
-    //RunForward(30);
-    //TurnLeft(90);

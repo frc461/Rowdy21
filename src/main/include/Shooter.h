@@ -20,9 +20,8 @@
 
 #define LIMIT_SW 6
 
-#define MAX_ANGLE 0.314
-// #define MAX_ANGLE 
-
+#define MAX_ANGLE 0.34
+//0.314
 /*
     HERE ARE THE PRESETS!!!!
 */
@@ -31,7 +30,7 @@
 #define DISCO .1//angle is shy of target 0.6 power
 #define THIRD_PRESET 0.3
 
-#define ENC_MAX 897
+#define ENC_MAX 1150//897
 
 
 #define ON_INIT_LINE 1012

@@ -157,7 +157,7 @@ void Shooter::Tilt::SetAngle(double val) {
 
 void Shooter::Tilt::ZeroAlign() {
     // std::cout << "Zeroing" << std::endl;
-    double time = frc::Timer::GetFPGATimestamp();
+    //double time = frc::Timer::GetFPGATimestamp();
     // && frc::Timer::GetFPGATimestamp() - time < 5
     while(GetLimit()) {
         RunSafe(-0.3);

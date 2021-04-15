@@ -8,12 +8,24 @@
 #include "cameraserver/CameraServer.h"
 
 #include <iostream>
+#include <thread>
 
 class CompareImg {
 public:
     CompareImg();
     
     int Compare();
+
+    void StartGetImage();
+    void GetImage();
+
+    void SetImageGrabbed(bool a);
+    bool GetImageGrabbed();
+
+    void ResetImage();
+
+    void StartPutImage();
+    void PutImageToSDB();
 
 private:
     cs::UsbCamera *camera;
@@ -22,9 +34,10 @@ private:
     cs::CvSink *cvSink;
 
     cv::Mat image;
-    cv::VideoCapture cam;
 
     bool can;
+    bool imageGrabbed;
 
-    int counter;
+    std::thread getImage;
+    std::thread putImage;
 };

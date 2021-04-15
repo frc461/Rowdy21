@@ -53,8 +53,6 @@ public:
     bool TurnRight(double degrees);
     bool TurnLeft(double degrees);
 
-    void ReadFromFile();
-
 private:
     DriveTrain *driveTrain;
     Control *control;
@@ -64,7 +62,7 @@ private:
     Conveyor *conveyor;
     Climber *climber;
     DJ_Spinner *djSpinner;
-    Arduino *arduino;
+    //Arduino *arduino;
     CompareImg *compareImg;
 
     PID *autoPIDLeft, *autoPIDRight;
@@ -83,4 +81,12 @@ private:
     std::vector<double> moveVals;
 
     int counter;
+
+    int camC = 0;
+
+    bool runComp;
+    bool startGetImage;
+    bool store;
+
+    int camCnt;
 };
