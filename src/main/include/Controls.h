@@ -20,6 +20,7 @@ public:
         int timeout;
     };
 
+    //as a note, most (if not all) of the buttons have been changed. Eugene or some other freshman should change the header file
     bool ShooterLoadUp(); // right bumper
     bool ConveyForward(); // Left bumper
     bool ConveyReverse(); // X
@@ -33,11 +34,11 @@ public:
     bool ClimberBrake();
     bool IntakeIn(); // Up D-Pad
     bool IntakeOut(); // Down D-Pad  
-    bool JustIntakeMotor(); // TODO: JUST THE INTAKE MROORT AM  
+    //bool JustIntakeMotor(); // TODO: JUST THE INTAKE MROORT AM  
     double IntakeControl(); // y Axix left ohystikv
-    double WheelOfFortune(); // X-axis left joyist
-    bool ToggleIntake();
-    bool AutoSelect(); // left & right D=Pad
+    //double WheelOfFortune(); // X-axis left joyist
+    //bool ToggleIntake();
+    //bool AutoSelect(); // left & right D=Pad
     bool ShooterReset();//start
 
     double leftJoystickX();

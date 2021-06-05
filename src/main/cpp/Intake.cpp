@@ -32,10 +32,18 @@ void Intake::Periodic() {
         rollerSpeed = 0.8;
     }
     else if (control->IntakeIn()){
+        bIntake = !bIntake
+        if(!push->Get()){
+            push->Set(1);
+        }
         rollerSpeed = -0.8;
     }
     else if (control->IntakeOut()){
         rollerSpeed = 0.8;
+        bIntake = !bIntake
+        if(push->Get()){
+            push->Set(0);
+        }
     }
     else if (!bIntake && retractionLimit->Get()){
         rollerSpeed = -0.8;
@@ -50,18 +58,18 @@ void Intake::Periodic() {
     roller->Set(rollerSpeed);
 }
 
-void Intake::ToggleState() {
-    bIntake = !bIntake;
-    if (!push->Get()) { 
-        push->Set(1);
-    }
-    else if (push->Get()) {
-        push->Set(0);
-    }
-    else {
-        push->Set(0);
-    }
-}
+// void Intake::ToggleState() {
+//     bIntake = !bIntake;
+//     if (!push->Get()) { 
+//         push->Set(1);
+//     }
+//     else if (push->Get()) {
+//         push->Set(0);
+//     }
+//     else {
+//         push->Set(0);
+//     }
+// }
 
 void Intake::Reset(){
     bIntake = false;
