@@ -250,13 +250,7 @@ void Shooter::Periodic() {
 
     if(control->ShooterLoadUp()) {
         SetFlashlight(1);
-        if(shooterPos == 575) {
-            RunAtVelocity(VelocityTarget + 2000);
-        } else if(shooterPos == 425) {
-            RunAtVelocity(VelocityTarget + 3000);
-        } else {
-            RunAtVelocity(VelocityTarget);
-        }
+        RunAtVelocity(VelocityTarget);
     } else {
         SetFlashlight(0);
         RunAtSpeed(0);

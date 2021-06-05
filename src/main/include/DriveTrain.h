@@ -7,6 +7,7 @@
 #define DTL2 2
 
 #include <frc/drive/DifferentialDrive.h>
+
 #include <frc/SpeedControllerGroup.h>
 #include <ctre/Phoenix.h>
 #include <cmath>
@@ -56,6 +57,9 @@ public:
     double GetEncoderValueL();
     double GetEncoderValueR();
 
+    double GetLeftPower();
+    double GetRightPower();
+
     void Periodic();
     void AutonomousPeriodic(int movenum);
 
@@ -72,10 +76,6 @@ private:
     frc::SpeedControllerGroup *left;
     frc::SpeedControllerGroup *right;
 
-    nt::NetworkTableEntry leftSide;
-    nt::NetworkTableEntry rightSide;
-    nt::NetworkTableEntry ntTick;
-
     frc::SmartDashboard *smartDashboard;
 
     PID *autoPIDLeft, *autoPIDRight;
@@ -90,4 +90,6 @@ private:
     float fDistance;
     double throttleCap;
     int direction;
+
+    double leftPower, rightPower;
 };

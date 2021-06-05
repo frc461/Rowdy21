@@ -38,6 +38,9 @@ bool Control::ToggleIntake() { return BToggleIntake->Get(xboxController->GetRawB
 bool Control::AutoSelect() { return 0; } // left & right dpad 
 bool Control::ShooterReset() { return xboxController->GetRawButton(XboxButtonStart); }
 
+bool Control::BeginStore() { return rightJoystick->GetRawButton(3); }
+bool Control::EndStore() { return rightJoystick->GetRawButton(4); }
+
 Control::ButtonDebounce::ButtonDebounce() {
     latest = 0;
 }

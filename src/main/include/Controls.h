@@ -48,6 +48,9 @@ public:
     bool LimelightAiming();
     bool LimelightLightActivate();
 
+    bool BeginStore();
+    bool EndStore();
+
     Control::ButtonDebounce *BToggleIntake;
     Control::ButtonDebounce *BPresetPos1, *BPresetPos2, *BPresetPos3;
     Control::ButtonDebounce *BClimberBrake;

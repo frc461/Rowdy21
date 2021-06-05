@@ -20,6 +20,8 @@ DriveTrain::DriveTrain(Control *control){
     autoPIDLeft = new PID(-0.0003, 0, 0, "D: autoTest_L");
     autoPIDRight = new PID(0.0003 , 0, 0, "D: autoTest_R");
 
+    leftPower = rightPower = 0.0;
+
     ResetEncoders();
 
     direction = -1;
@@ -60,8 +62,6 @@ double DriveTrain::GetEncoderValueR() {
 }
 
 void DriveTrain::Periodic() {
-    //std::cout << "left en: " << left1->GetSelectedSensorPosition() << std::endl;
-    //std::cout << "right en: " << right1->GetSelectedSensorPosition() << std::endl;
     throttleCap = 1;
     if(frc::SmartDashboard::GetBoolean("Arcade", false)) {
         driveMode = DriveMode::Arcade;
@@ -69,13 +69,23 @@ void DriveTrain::Periodic() {
         driveMode = DriveMode::Tank;
     }
     if(driveMode == DriveMode::Tank){
-        driveTrain->TankDrive(direction * throttleCap*control->leftJoystickY(), direction * throttleCap*control->rightJoystickY());
+        double l = direction * throttleCap*control->leftJoystickY();
+        double r =  direction * throttleCap*control->rightJoystickY();
+        leftPower = l;
+        rightPower = r;
+        driveTrain->TankDrive(l,r);
     } else if(driveMode == DriveMode::Arcade) {
         driveTrain->ArcadeDrive(direction * throttleCap*control->rightJoystickY(), throttleCap*control->leftJoystickX());
     } else if(driveMode == DriveMode::Disabled){
         driveTrain->TankDrive(0,0);
     }
-    //std::cout << gyro->GetAngle() << std::endl;
+}
+
+double DriveTrain::GetLeftPower() {
+    return leftPower;
+}
+double DriveTrain::GetRightPower() {
+    return rightPower;
 }
 
 void DriveTrain::SetDriveMode(DriveMode mode) {

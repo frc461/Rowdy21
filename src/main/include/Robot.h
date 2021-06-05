@@ -11,8 +11,6 @@
 #include "networktables/NetworkTable.h"
 #include "networkTables/NetworkTableEntry.h"
 
-#include "AutoInfo.h"
-
 #include "DriveTrain.h"
 #include "Intake.h"
 #include "Limelight.h"
@@ -22,13 +20,16 @@
 #include "DJ_Spinner.h"
 #include "PID.h"
 #include "Arduino.h"
-#include "CompareImg.h"
+#include "DrivenPathStore.h"
 
 #include <Math.h>
 #include <vector>
 #include <sstream>
-#include <string>
+#include <ctime>
 #include <fstream>
+
+#define p1(s) std::cout << s << std::endl;
+#define p2(a,b) std::cout << a << " " << b << std::endl;
 
 #define ENCODER_INCH 54.2
 #define AUTONOMOUS_LENGTH 33.77
@@ -49,10 +50,6 @@ public:
     void TestPeriodic() override;
     void DisabledInit() override;
 
-    bool RunForward(double numInch);
-    bool TurnRight(double degrees);
-    bool TurnLeft(double degrees);
-
 private:
     DriveTrain *driveTrain;
     Control *control;
@@ -63,7 +60,8 @@ private:
     Climber *climber;
     DJ_Spinner *djSpinner;
     //Arduino *arduino;
-    CompareImg *compareImg;
+
+    DrivenPathStore *drivenPathStore;
 
     PID *autoPIDLeft, *autoPIDRight;
     PID *autoPIDLeftForward, *autoPIDRightForward;
@@ -73,20 +71,29 @@ private:
     int delayStart;
     bool autoDirection;
 
-    AutoInfo *list;
     int i;
+    int j;
 
     typedef bool (Robot::*Moves)(double);
     std::vector<Moves> moves;
     std::vector<double> moveVals;
 
+    std::clock_t start;
+    bool startTimer;
+
     int counter;
 
-    int camC = 0;
+    std::vector<std::pair<int,int>> info;
 
-    bool runComp;
-    bool startGetImage;
-    bool store;
+    clock_t startTime;
+    int lastTime;
+    bool openFile;
+    bool storeInArray;
+    int l, r;
 
-    int camCnt;
+    bool beginStore;
+    bool endStore;
+    bool done;
+
+    std::ifstream reader;
 };

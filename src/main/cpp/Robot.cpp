@@ -5,6 +5,17 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "cameraserver/CameraServer.h"
 
+//
+//
+//
+//
+//
+//      DO      NOT     PUSH    THIS    CODE
+//
+//
+//
+//
+
 void Robot::RobotInit() {
     control = new Control();
 
@@ -22,16 +33,16 @@ void Robot::RobotInit() {
 
     climber->ClimberBrakeOff();
     autoDirection = 0;
-    frc::SmartDashboard::PutNumber("auto delay", autoDelay);
-    frc::SmartDashboard::PutBoolean("Front/Back Auto", autoDirection);
 
-    compareImg = new CompareImg();
-    runComp = true;
-    startGetImage = false;
-    
+    frc::SmartDashboard::PutNumber("leftPOWER", 0.0);
+    frc::SmartDashboard::PutNumber("rightPOWER", 0.0);
+
+    drivenPathStore = new DrivenPathStore();
+
     i = 0;
-    counter = camCnt = 0;
-    store = false;
+    counter = 0;
+
+    beginStore = endStore = false;
 }
 
 void Robot::RobotPeriodic() {}
@@ -39,21 +50,22 @@ void Robot::RobotPeriodic() {}
 void Robot::AutonomousInit() {
     driveTrain->EnableBreakMode();
 
-    intake->AutoInit();
+    //intake->AutoInit();
     
     // 0.02 | 0.0 | 0.05 (FOR FORWARD)
     autoPIDLeft = new PID(0.04, 0.0, 0.00008, "autoTest_L");
     autoPIDRight = new PID(0.04, 0.0, 0.00008, "autoTest_R");
     // 0.0064 (LEFT) | 0.008 (RIGHT) : FORWARD
-    autoPIDLeftForward = new PID(0.004, 0.0, 0.0, "autoTest_L_F");
-    autoPIDRightForward = new PID(1.0, 0.0, 0.0, "autoTest_R_F");
+    autoPIDLeftForward = new PID(0.008, 0.0, 0.0, "autoTest_L_F");
+    autoPIDRightForward = new PID(0.008, 0.0, 0.0, "autoTest_R_F");
 
     //frc::SmartDashboard::PutNumber("actual angle", driveTrain->GetAngle());
     //frc::SmartDashboard::PutNumber("ideal angle", 35);
-    
-    //list = new AutoInfo(2);
+    j = 0;
 
     driveTrain->ResetGyro();
+
+    openFile =false;
 }
 
 void Robot::DisabledInit(){
@@ -61,96 +73,61 @@ void Robot::DisabledInit(){
     driveTrain->ResetEncoders();
     intake->Reset();
 
-    counter = camCnt = 0;
-    runComp = true;
-    store = false;
-    startGetImage = false;
-    compareImg->ResetImage();
-    compareImg->SetImageGrabbed(false);
+    counter = 0;
+    beginStore = endStore = done = openFile = storeInArray = false;
 }
 
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
-    if (!startGetImage) {
-        // compareImg->StartPutImage();
-        compareImg->StartGetImage();
-        startGetImage = true;
+    if (!openFile) {
+        reader.open("home/lvuser/info.txt");
+        openFile = true;
+        startTime = clock();
     }
-    if (runComp && compareImg->GetImageGrabbed()) {
-        int n = compareImg->Compare();
-        std::cout << n << std::endl;
-        list = new AutoInfo(n);
-        runComp = false;
+    
+    double temp =  (clock() - startTime) / CLOCKS_PER_SEC;
+    int t = (int)temp;
+    if (t - lastTime > 0) {
+        reader >> l >> r;
     }
-    if (!runComp) camCnt++;
-    if (!store && !runComp && camCnt >= 30) {
-        for (int j = 0; j < (int)list->list.size(); j++) {
-            if (list->list.at(j)->angle > 0) {
-                bool dir = list->list.at(j)->dir;
-                moves.push_back((!dir) ? &Robot::TurnLeft : &Robot::TurnRight);
-                moveVals.push_back(list->list.at(j)->angle);
-            }
-            moves.push_back(&Robot::RunForward);
-            moveVals.push_back(list->list.at(j)->distance / 2.54);
-            std::cout << moveVals.at(j) << std::endl;
-        }
-        store = true;
-    }
-    if (store) {
-        intake->AutoRun();
-        if (i == (int)moveVals.size() - 1) intake->IntakeIn();
-        if ((this->*moves.at(i))(moveVals.at(i))) {
-            driveTrain->ResetEncoders();
-            driveTrain->ResetGyro();
-
-            counter = 0;
-            i++;
-        }
-    }
-    std::cout << "A" << std::endl;
-}
-
-bool Robot::RunForward(double numInch) {
-    if (driveTrain->GetEncoderValueL() < numInch*ENCODER_INCH) {
-        double left = std::min(1.0, autoPIDLeftForward->OutputPID(driveTrain->GetEncoderValueL(), numInch*ENCODER_INCH));
-        double right = std::min(1.0, autoPIDRightForward->OutputPID(driveTrain->GetEncoderValueR(), numInch*ENCODER_INCH));
-        double val = (driveTrain->GetEncoderValueL() > numInch*ENCODER_INCH*0.9) ? 0 : 0.05;
-        if (driveTrain->GetAngle() < 0) driveTrain->driveTrain->TankDrive(-left*0.6, -right*0.6 - val);
-        else driveTrain->driveTrain->TankDrive(-left*0.6 - val, -right*0.6);
-        return 0;
-    }
-    else {
-        return 1;
-    }
-}
-bool Robot::TurnRight(double degrees) {
-    counter++;
-    if(counter <= 50){
-        double left = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetAngle(), degrees));
-        driveTrain->driveTrain->TankDrive(left, -left);
-        return 0;
-    }
-    else {
-        return 1;
-    }
-}
-bool Robot::TurnLeft(double degrees) {
-    counter++;
-    if (counter <= 50) {
-        double left = std::min(1.0, autoPIDLeft->OutputPID(driveTrain->GetAngle(), -degrees));
-        driveTrain->driveTrain->TankDrive(left, -left);
-        return 0;
-    }
-    else {
-        return 1;
-    }
+    lastTime = t;
+    
+    double lp = std::min(autoPIDLeftForward->OutputPID(driveTrain->GetEncoderValueL(), l), 1.0);
+    double rp = std::min(autoPIDRightForward->OutputPID(driveTrain->GetEncoderValueR(), r), 1.0);
+    
+    driveTrain->driveTrain->TankDrive(-lp,rp);
 }
 
 void Robot::TeleopInit() {
     climber->ClimberBrakeOff();
-} 
+}
 
 void Robot::TeleopPeriodic() {
+    // if (control->BeginStore() && !beginStore && !done) {
+    //     beginStore = true;
+    //     startTimer = clock();
+    //     endStore = false;
+    //     std::cout << "store" << std::endl;
+    // }
+    // if (control->EndStore() && !endStore && !done) {
+    //     endStore = true;
+    //     beginStore = false;
+    //     std::cout << "end" << std::endl;
+    // }
+
+    // if (beginStore) {
+    //     double temp =  (clock() - startTime) / CLOCKS_PER_SEC;
+    //     int t = (int)temp;
+    //     if (t - lastTime > 0) {
+    //         drivenPathStore->Store(driveTrain->GetEncoderValueL(), driveTrain->GetEncoderValueR());
+    //     }
+    //     lastTime = t;
+    // }
+    // if (endStore) {
+    //     drivenPathStore->End();
+    //     endStore = false;
+    //     done = true;
+    // }
     //arduino->SendData(TELEOP);
     driveTrain->Periodic();
     intake->Periodic();
@@ -166,5 +143,3 @@ void Robot::TestPeriodic() {}
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
 #endif
-
-
