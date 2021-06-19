@@ -41,8 +41,6 @@ void Limelight::AutoLimelight(){
         drTrain->driveTrain->ArcadeDrive(0, Output);
 }
 
-
-
 void Limelight::LimelightActivate() {
     if(control->LimelightLightActivate()) {
         SetLimelightLight(1);

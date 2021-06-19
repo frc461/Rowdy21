@@ -13,13 +13,8 @@ public:
 
     void Periodic();
 
-    void ToggleState();
-
     void AutoInit();
-    void IntakeIn();
     void AutoRun();
-
-    void Reset();
 
 private:
     Control *control;
@@ -29,5 +24,4 @@ private:
     frc::DigitalInput *retractionLimit;
 
     double rollerSpeed;
-    bool bIntake;
 };

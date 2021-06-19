@@ -28,9 +28,6 @@
 #include <ctime>
 #include <fstream>
 
-#define p1(s) std::cout << s << std::endl;
-#define p2(a,b) std::cout << a << " " << b << std::endl;
-
 #define ENCODER_INCH 54.2
 #define AUTONOMOUS_LENGTH 33.77
 #define PITCH_ENCODER_IDEAL 820
@@ -50,6 +47,10 @@ public:
     void TestPeriodic() override;
     void DisabledInit() override;
 
+    bool RunForward(double numInch);
+    bool TurnRight(double degrees);
+    bool TurnLeft(double degrees);
+
 private:
     DriveTrain *driveTrain;
     Control *control;
@@ -61,39 +62,6 @@ private:
     DJ_Spinner *djSpinner;
     //Arduino *arduino;
 
-    DrivenPathStore *drivenPathStore;
-
     PID *autoPIDLeft, *autoPIDRight;
     PID *autoPIDLeftForward, *autoPIDRightForward;
-    int completeness;
-    double autoStart;
-    int autoDelay;
-    int delayStart;
-    bool autoDirection;
-
-    int i;
-    int j;
-
-    typedef bool (Robot::*Moves)(double);
-    std::vector<Moves> moves;
-    std::vector<double> moveVals;
-
-    std::clock_t start;
-    bool startTimer;
-
-    int counter;
-
-    std::vector<std::pair<int,int>> info;
-
-    clock_t startTime;
-    int lastTime;
-    bool openFile;
-    bool storeInArray;
-    int l, r;
-
-    bool beginStore;
-    bool endStore;
-    bool done;
-
-    std::ifstream reader;
 };

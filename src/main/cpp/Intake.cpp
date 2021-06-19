@@ -5,14 +5,13 @@
 #define LIMIT_SWITCH 2
 
 Intake::Intake(Control *control) {
-    push = new frc::Solenoid(INTAKE_SOLENOID_CHANNEL);
+    push = new frc::Solenoid(INTAKE_SOLENOID_CHANNEL); //false is in, true is all the way out
     this->control = control;
     roller = new WPI_VictorSPX(ROLLER_PORT);
 
     retractionLimit = new frc::DigitalInput(LIMIT_SWITCH);
 
     rollerSpeed = 0;
-    bIntake = false;
 }
 
 void Intake::AutoInit() {
@@ -23,55 +22,15 @@ void Intake::AutoRun() {
     roller->Set(0.8);
 }
 
-void Intake::IntakeIn() {
-    push->Set(0);
-}
-
 void Intake::Periodic() {
-    if (control->ConveyForward()) {
-        rollerSpeed = 0.8;
+    rollerSpeed = (fabs(control->IntakeControl()) > 0.2) ? control->IntakeControl() : 0.0;
+
+    if (control->IntakeMotorIn()){
+        push->Set(1);
     }
-    else if (control->IntakeIn()){
-        bIntake = !bIntake
-        if(!push->Get()){
-            push->Set(1);
-        }
-        rollerSpeed = -0.8;
-    }
-    else if (control->IntakeOut()){
-        rollerSpeed = 0.8;
-        bIntake = !bIntake
-        if(push->Get()){
-            push->Set(0);
-        }
-    }
-    else if (!bIntake && retractionLimit->Get()){
-        rollerSpeed = -0.8;
-    }
-    else {
-        rollerSpeed = 0;
+    else if (control->IntakeMotorOut()){ 
+        push->Set(0);
     }
 
-    if(control->ToggleIntake()){
-        ToggleState();
-    }
     roller->Set(rollerSpeed);
-}
-
-// void Intake::ToggleState() {
-//     bIntake = !bIntake;
-//     if (!push->Get()) { 
-//         push->Set(1);
-//     }
-//     else if (push->Get()) {
-//         push->Set(0);
-//     }
-//     else {
-//         push->Set(0);
-//     }
-// }
-
-void Intake::Reset(){
-    bIntake = false;
-    push->Set(0);
 }

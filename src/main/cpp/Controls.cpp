@@ -22,7 +22,7 @@ bool Control::LimelightLightActivate() { return rightJoystick->GetRawButton(9); 
 
 bool Control::ShooterLoadUp() { return xboxController->GetRawAxis(XboxAxisRightTrigger) > 0.2; } //might need to be changed later; ready
 bool Control::ConveyForward() { return xboxController->GetRawAxis(XboxAxisLeftTrigger) > 0.2; } //might need to be changed later; ready
-bool Control::ConveyReverse() { return xboxController->GetPOV() == XboxDPadDown; } //might need to be changed later; ready
+bool Control::ConveyReverse() { return xboxController->GetRawButton(XboxButtonBack); } //might need to be changed later; ready
 
 double Control::ManualShooterAdjustment() { return xboxController->GetRawAxis(XboxAxisRightStickY); } //ready
 bool Control::PresetPosition1() { return BPresetPos1->Get(xboxController->GetRawButton(XboxButtonY)); } //high position; ready
@@ -30,23 +30,18 @@ bool Control::PresetPosition2() { return BPresetPos2->Get(xboxController->GetRaw
 bool Control::PresetPosition3() { return BPresetPos3->Get(xboxController->GetRawButton(XboxButtonA)); } //low position; ready
 bool Control::ShooterReset() { return xboxController->GetRawButton(XboxButtonB); } //re-zero; ready
 
-double Control::ClimberUp() { return xboxController->GetRawAxis(xboxController->GetRawAxis(XboxAxisLeftStickY)) < -0.2; } //now on operator; ready
-double Control::ClimberDown() { return xboxController->GetRawAxis(xboxController->GetRawAxis(XboxAxisLeftStickY)) > 0.2; } //now on operator; ready
-bool Control::ClimberBrake() { return BClimberBrake->Get(xboxController->GetRawButton(XboxButtonBack)); } //doesn't need to be changed; ready
+double Control::ClimberUp() { return rightJoystick->GetRawButton(thumbSwitch); } //all on driver (because that is a GREAT idea); ready
+double Control::ClimberDown() { return leftJoystick->GetRawButton(thumbSwitch); } //all on driver (because that is a GREAT idea); ready
+bool Control::ClimberBrake() { return BClimberBrake->Get(leftJoystick->GetRawButton(flipOffTop)); } //all on driver (I guess it was supposed to be?); ready
 
-//re-written
-// bool Control::IntakeIn() { return (xboxController->GetPOV() == XboxDPadUp); }
-// bool Control::IntakeOut() { return (xboxController->GetPOV() == XboxDPadDown); }
-// bool Control::JustIntakeMotor() { return (xboxController->GetRawAxis(XboxAxisLeftStickY) < -0.1 || xboxController->GetRawAxis(XboxAxisLeftStickY) > 0.1); }
-// bool Control::ToggleIntake() { return BToggleIntake->Get(xboxController->GetRawButton(XboxButtonA));} //needs to be changed
+bool Control::IntakeIn() { return xboxController->GetPOV(XboxDPadDown); } //puts roller out and runs intake; ready
+bool Control::IntakeOut() { return xboxController->GetPOV(XboxDPadUp); } //pulls roller in and runs intake; ready
+bool Control::IntakeMotorIn() { return xboxController->GetRawButton(XboxButtonLeftBumper); } 
+bool Control::IntakeMotorOut() { return xboxController->GetRawButton(XboxButtonRightBumper); }
+double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); }
 
-bool Control::IntakeIn() { return xboxController->GetRawButton(XboxButtonRightBumper); } //puts roller out and runs intake; ready
-bool Control::IntakeOut() { return xboxController->GetRawButton(XboxButtonLeftBumper); } //pulls roller in and runs intake; ready
-// bool Control::JustIntakeMotor() {  } //just intake motor; if this is important then fill it out yourself!
-
-
-// double Control::WheelOfFortune() {  } //if this is important then fill it out yourself! X-axis left joystick
-// bool Control::AutoSelect() { return 0; } //if this is important then fill it out yourself! left & right dpad 
+double Control::WheelOfFortune() { return 0.0; } //this is needed for the rest of the code... so it isn't important and goes into the dpad
+bool Control::AutoSelect() { return false; } //this is needed for the rest of the code... so it isn't important and goes into the dpad
 
 bool Control::BeginStore() { return rightJoystick->GetRawButton(3); }
 bool Control::EndStore() { return rightJoystick->GetRawButton(4); }

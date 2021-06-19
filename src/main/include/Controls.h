@@ -34,11 +34,12 @@ public:
     bool ClimberBrake();
     bool IntakeIn(); // Up D-Pad
     bool IntakeOut(); // Down D-Pad  
-    //bool JustIntakeMotor(); // TODO: JUST THE INTAKE MROORT AM  
+    bool IntakeMotorIn(); // TODO: JUST THE INTAKE MROORT AM
+    bool IntakeMotorOut();
     double IntakeControl(); // y Axix left ohystikv
-    //double WheelOfFortune(); // X-axis left joyist
-    //bool ToggleIntake();
-    //bool AutoSelect(); // left & right D=Pad
+    double WheelOfFortune(); // X-axis left joyist
+    bool ToggleIntake();
+    bool AutoSelect(); // left & right D=Pad
     bool ShooterReset();//start
 
     double leftJoystickX();
