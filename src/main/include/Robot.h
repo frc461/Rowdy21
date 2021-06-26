@@ -61,6 +61,7 @@ private:
 
     bool shot;
     bool step1;
+    bool setAngle;
 
     int counter;
     

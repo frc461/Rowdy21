@@ -145,7 +145,7 @@ void Shooter::Tilt::SetAngle(double val) {
 
 void Shooter::Tilt::ZeroAlign() {
     while(GetLimit()) {
-        RunSafe(-0.3);
+        RunSafe(-0.5);
     }
     RunSafe(0);
 }

@@ -31,8 +31,10 @@ void Robot::DisabledInit() {
 }
 
 void Robot::Go(bool dir, int inches) {
-    double l = drivePID->OutputPID(driveTrain->GetEncoderValueL(), inches*ENCODER_INCH * ((dir) ? 1 : -1));
-    double r = drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH * ((dir) ? 1 : -1));
+    int dis = inches*ENCODER_INCH;
+    dis *= (dir) ? 1 : -1;
+    double l = drivePID->OutputPID(driveTrain->GetEncoderValueL(), dis);
+    double r = drivePID->OutputPID(driveTrain->GetEncoderValueR(), dis);
     driveTrain->driveTrain->TankDrive(l,r);
 }
 
@@ -50,6 +52,7 @@ void Robot::AutonomousInit() {
 
     counter = 0;
     step1 = true;
+    setAngle = false;
 }
 
 //( ͡° ͜ʖ ͡°)
@@ -64,14 +67,15 @@ void Robot::AutonomousPeriodic() {
             counter = 0;
         }
         else {
-            shooter->tilt->SetAngle(653);
-            shooter->RunAtVelocity(18000);
+            if (!setAngle) shooter->tilt->SetAngle(653);
+            shooter->RunAtVelocity(12000);
 
             int passed = StartCounter();
-            if (passed >= 2 && passed <= 7) {
+            if (passed >= 2 && passed <= 5) {
                 conveyor->Up();
+                setAngle = true;
             }
-            else if (passed > 7) {
+            else if (passed > 5) {
                 conveyor->No();
                 shot = true;
             }
