@@ -84,5 +84,4 @@ public:
    
 private:
     double VelocityTarget;
-
 };

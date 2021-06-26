@@ -140,32 +140,14 @@ void Shooter::Tilt::SetAngle(double val) {
                 RunSafe(velocity);
             }         
         }
-        // if((triPot->GetVoltage() - (val + baseVal)) < 0.07) {
-        //     std::cout << "up" << std::endl;
-        //     RunSafe(0.2);
-        // }
-        // else if((triPot->GetVoltage() - (val + baseVal)) > 0.07) {
-        //     std::cout << "down" << std::endl;
-        //     RunSafe(-0.2);
-        // }else {
-        //     RunSafe(0);
-        // }
-        // bool speed = ));
-        // frc::SmartDashboard::PutBoolean("Shooter at Setpoint", (fabs(speed) > 0) ?  false : true );
     }
 }
 
 void Shooter::Tilt::ZeroAlign() {
-    // std::cout << "Zeroing" << std::endl;
-    //double time = frc::Timer::GetFPGATimestamp();
-    // && frc::Timer::GetFPGATimestamp() - time < 5
     while(GetLimit()) {
         RunSafe(-0.3);
     }
     RunSafe(0);
-    // std::cout << "Zeroed" << baseVal << std::endl;
-    // encoder->Reset();
-    // frc::SmartDashboard::PutNumber("pitch Val", encoder->Get());
 }
 
 
@@ -224,25 +206,6 @@ void Shooter::Periodic() {
        }
        tilt->SetAngle(shooterPos);
    }
-
-   //std::cout << "Encoder: " << tilt->encoder->Get() << " | Target: " << shooterPos << std::endl;
-   
-//    else {
-//        if(control->PresetPosition1()) {
-//             VelocityTarget = frc::SmartDashboard::GetNumber("Shoot V Preset 1", 16000);
-//             shooterPos = HALF_IN_TRENCH;
-//         } else if (control->PresetPosition2()) {
-//             VelocityTarget = frc::SmartDashboard::GetNumber("Shooter V Preset 2", 16000);
-//             shooterPos = DISCO;
-//         } else if(control->PresetPosition3()) {
-//             VelocityTarget = frc::SmartDashboard::GetNumber("Shooter V Preset 3", 16000);
-//             shooterPos = THIRD_PRESET;
-//         } else if(fabs(control->ManualShooterAdjustment())>0.2) {
-//             //tilt->RunSafe(control->ManualShooterAdjustment()*PITCH_SPEED_CONTROL);
-//             shooterPos += (-control->ManualShooterAdjustment() * 0.007);
-//         }
-//          tilt->SetAngle(shooterPos);
-//     }
 
     /* 
         Running Shooter Motors

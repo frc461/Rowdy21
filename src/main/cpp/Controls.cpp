@@ -34,14 +34,14 @@ double Control::ClimberUp() { return rightJoystick->GetRawButton(thumbSwitch); }
 double Control::ClimberDown() { return leftJoystick->GetRawButton(thumbSwitch); } //all on driver (because that is a GREAT idea); ready
 bool Control::ClimberBrake() { return BClimberBrake->Get(leftJoystick->GetRawButton(flipOffTop)); } //all on driver (I guess it was supposed to be?); ready
 
-bool Control::IntakeIn() { return xboxController->GetPOV(XboxDPadDown); } //puts roller out and runs intake; ready
-bool Control::IntakeOut() { return xboxController->GetPOV(XboxDPadUp); } //pulls roller in and runs intake; ready
+// bool Control::IntakeIn() { return xboxController->GetPOV(XboxDPadDown); } //puts roller out and runs intake; ready
+// bool Control::IntakeOut() { return xboxController->GetPOV(XboxDPadUp); } //pulls roller in and runs intake; ready
 bool Control::IntakeMotorIn() { return xboxController->GetRawButton(XboxButtonLeftBumper); } 
 bool Control::IntakeMotorOut() { return xboxController->GetRawButton(XboxButtonRightBumper); }
 double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); }
 
-double Control::WheelOfFortune() { return 0.0; } //this is needed for the rest of the code... so it isn't important and goes into the dpad
-bool Control::AutoSelect() { return false; } //this is needed for the rest of the code... so it isn't important and goes into the dpad
+double Control::WheelOfFortune() { return 0.0; } //this is needed for the rest of the code... so it isn't important and just returns something
+bool Control::AutoSelect() { return false; } //this is needed for the rest of the code... so it isn't important and just returns something
 
 bool Control::BeginStore() { return rightJoystick->GetRawButton(3); }
 bool Control::EndStore() { return rightJoystick->GetRawButton(4); }

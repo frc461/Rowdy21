@@ -8,17 +8,20 @@
 #define HOPPER_MOTOR 9
 
 class Conveyor {
-    public: 
-        Conveyor(Control *control);
-        ~Conveyor();
+public: 
+    Conveyor(Control *control);
+    ~Conveyor();
 
-        void Periodic();
-        
-        void Lift();
+    void Periodic();
+    
+    void Lift();
 
-        void Stop();
-    private:
-        Control *control;
-        WPI_VictorSPX *hopper;
-        WPI_VictorSPX *tower;
+    void Up();
+    void No();
+
+    void Stop();
+private:
+    Control *control;
+    WPI_VictorSPX *hopper;
+    WPI_VictorSPX *tower;
 };

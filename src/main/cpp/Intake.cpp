@@ -14,16 +14,12 @@ Intake::Intake(Control *control) {
     rollerSpeed = 0;
 }
 
-void Intake::AutoInit() {
-    push->Set(1);
-}
-
 void Intake::AutoRun() {
     roller->Set(0.8);
 }
 
 void Intake::Periodic() {
-    rollerSpeed = (fabs(control->IntakeControl()) > 0.2) ? control->IntakeControl() : 0.0;
+    rollerSpeed = (fabs(control->IntakeControl()) > 0.2) ? 0.8 : 0.0;
 
     if (control->IntakeMotorIn()){
         push->Set(1);

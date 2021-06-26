@@ -21,20 +21,15 @@ public:
     void Periodic();
 
     void SetLimelightLight(bool state);
-
     void AutoLimelight();
-
     void LimelightReset();
+
 private:
     std::shared_ptr<nt::NetworkTable> table;
 
-    float tx;
-    float ta;
+    float tx, ty, ta;
 
-    double Output;
-    double Forward;
-
-    PID *forwardPID;
+    double output;
     PID *outputPID;
 
     Control *control;

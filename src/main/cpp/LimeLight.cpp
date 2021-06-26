@@ -7,10 +7,9 @@ Limelight::Limelight(Control *control, DriveTrain *driveTrain) {
     auto instance = nt::NetworkTableInstance::GetDefault();
     table = instance.GetTable("limelight");
     table->PutNumber("ledMode", 1);
+    
+    output = 0;
 
-    Output = Forward = 0;
-
-    forwardPID = new PID(-0.07, 0.0, 0.0, "LL fd");
     outputPID = new PID(-0.071, -0.002, -0.0003, "LL aim");
 }
 
@@ -19,9 +18,8 @@ void Limelight::Periodic() {
         drTrain->driveMode = drTrain->DriveMode::Disabled;
         SetLimelightLight(1);
         LimelightAiming();
-        drTrain->driveTrain->ArcadeDrive(0, Output);
-
-    } else if(control->LimelightLightActivate()){
+    }
+    else if(control->LimelightLightActivate()){
         SetLimelightLight(1);
         outputPID->ResetSum();
     }
@@ -36,9 +34,9 @@ void Limelight::LimelightReset(){
 }
 
 void Limelight::AutoLimelight(){
-        SetLimelightLight(1);
-        LimelightAiming();
-        drTrain->driveTrain->ArcadeDrive(0, Output);
+    SetLimelightLight(1);
+    LimelightAiming();
+    drTrain->driveTrain->ArcadeDrive(0, output);
 }
 
 void Limelight::LimelightActivate() {
@@ -52,18 +50,16 @@ void Limelight::LimelightActivate() {
 void Limelight::LimelightAiming() {
     tx = table->GetNumber("tx", 0.0);
     ta = table->GetNumber("ta", 0.0);
+    ty = table->GetNumber("ty", 0.0);
 
-    outputPID->getPIDvalues();
-
-    Output = outputPID->OutputPID(tx, 0.0);
-    Forward = forwardPID->OutputPID(ta, 0.9);
+    drTrain->driveTrain->ArcadeDrive(0, outputPID->OutputPID(tx, 0.0));
 }
 
 void Limelight::SetLimelightLight(bool state) {
-    if(state) {
+    if(state) { // On
         table->PutNumber("ledMode", 3);
         table->PutNumber("camMode", 0);
-    } else {
+    } else {    // Off
         table->PutNumber("ledMode", 1);
         table->PutNumber("camMode", 1);
     }

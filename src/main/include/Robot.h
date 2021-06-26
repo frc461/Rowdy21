@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
@@ -22,14 +20,11 @@
 #include "Arduino.h"
 #include "DrivenPathStore.h"
 
-#include <Math.h>
 #include <vector>
-#include <sstream>
+#include <string>
 #include <ctime>
-#include <fstream>
 
 #define ENCODER_INCH 54.2
-#define AUTONOMOUS_LENGTH 33.77
 #define PITCH_ENCODER_IDEAL 820
 /*
     Here is the autonomous preset value!!!
@@ -47,9 +42,9 @@ public:
     void TestPeriodic() override;
     void DisabledInit() override;
 
-    bool RunForward(double numInch);
-    bool TurnRight(double degrees);
-    bool TurnLeft(double degrees);
+    void Go(bool dir, int inches);
+
+    int StartCounter();
 
 private:
     DriveTrain *driveTrain;
@@ -62,6 +57,12 @@ private:
     DJ_Spinner *djSpinner;
     //Arduino *arduino;
 
-    PID *autoPIDLeft, *autoPIDRight;
-    PID *autoPIDLeftForward, *autoPIDRightForward;
+    PID *drivePID;
+
+    bool shot;
+    bool step1;
+
+    int counter;
+    
+    std::thread counterThread;
 };

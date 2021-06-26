@@ -10,17 +10,24 @@ void Conveyor::Lift(){
 }
 void Conveyor::Periodic(){
     if(control->ConveyForward()){
-        hopper->Set(-1);
-        tower->Set(1);
+        Up();
     }
     else if(control->ConveyReverse()){
         hopper->Set(1);
         tower->Set(-1);
     }
     else{
-        hopper->Set(0);
-        tower->Set(0);
+        No();
     }
+}
+
+void Conveyor::Up() {
+    hopper->Set(-1);
+    tower->Set(1);
+}
+void Conveyor::No() {
+    hopper->Set(0);
+    tower->Set(0);
 }
 
 void Conveyor::Stop(){

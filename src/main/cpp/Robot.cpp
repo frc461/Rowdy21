@@ -21,31 +21,65 @@ void Robot::RobotInit() {
     driveTrain->ResetEncoders();
 
     climber->ClimberBrakeOff();
-
-    frc::SmartDashboard::PutNumber("leftPOWER", 0.0);
-    frc::SmartDashboard::PutNumber("rightPOWER", 0.0);
 }
 
 void Robot::RobotPeriodic() {}
 
-void Robot::AutonomousInit() {
-    driveTrain->EnableBreakMode();
-    
-    // 0.02 | 0.0 | 0.05 (FOR FORWARD)
-    autoPIDLeft = new PID(0.04, 0.0, 0.00008, "autoTest_L");
-    autoPIDRight = new PID(0.04, 0.0, 0.00008, "autoTest_R");
-    autoPIDLeftForward = new PID(0.008, 0.0, 0.0, "autoTest_L_F");
-    autoPIDRightForward = new PID(0.008, 0.0, 0.0, "autoTest_R_F");
-}
-
-void Robot::DisabledInit(){
+void Robot::DisabledInit() {
     driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
 }
 
+void Robot::Go(bool dir, int inches) {
+    double l = drivePID->OutputPID(driveTrain->GetEncoderValueL(), inches*ENCODER_INCH * ((dir) ? 1 : -1));
+    double r = drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH * ((dir) ? 1 : -1));
+    driveTrain->driveTrain->TankDrive(l,r);
+}
+
+int Robot::StartCounter() {
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    counter++;
+    std::cout << "wow" << std::endl;
+    return counter;
+}
+
+void Robot::AutonomousInit() {
+    drivePID = new PID(0.005, 0.0, 0.0, "lmao ok");
+
+    counterThread = std::thread(&Robot::StartCounter, this);
+
+    counter = 0;
+    step1 = true;
+}
+
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
+    if (!shot) {
+        limelight->SetLimelightLight(1);
+        limelight->LimelightAiming();
 
+        if (step1) {
+            shooter->tilt->ZeroAlign();
+            step1 = false;
+            counter = 0;
+        }
+        else {
+            shooter->tilt->SetAngle(653);
+            shooter->RunAtVelocity(18000);
+
+            int passed = StartCounter();
+            if (passed >= 2 && passed <= 7) {
+                conveyor->Up();
+            }
+            else if (passed > 7) {
+                conveyor->No();
+                shot = true;
+            }
+        }
+    }
+    else {
+        Go(false, 40);
+    }
 }
 
 void Robot::TeleopInit() {
