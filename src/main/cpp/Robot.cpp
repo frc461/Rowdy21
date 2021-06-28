@@ -28,20 +28,21 @@ void Robot::RobotPeriodic() {}
 void Robot::DisabledInit() {
     driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
+
+    step1 = true;
+    setAngle = false;
 }
 
 void Robot::Go(bool dir, int inches) {
-    int dis = inches*ENCODER_INCH;
-    dis *= (dir) ? 1 : -1;
-    double l = drivePID->OutputPID(driveTrain->GetEncoderValueL(), dis);
-    double r = drivePID->OutputPID(driveTrain->GetEncoderValueR(), dis);
+    double l = drivePID->OutputPID(driveTrain->GetEncoderValueL(), inches*ENCODER_INCH * ((dir) ? -1 : 1));
+    double r = drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH * ((dir) ? 1 : -1));
     driveTrain->driveTrain->TankDrive(l,r);
 }
 
 int Robot::StartCounter() {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     counter++;
-    std::cout << "wow" << std::endl;
+    std::cout << counter << std::endl;
     return counter;
 }
 
@@ -49,10 +50,12 @@ void Robot::AutonomousInit() {
     drivePID = new PID(0.005, 0.0, 0.0, "lmao ok");
 
     counterThread = std::thread(&Robot::StartCounter, this);
+    counterThread.detach();
 
     counter = 0;
     step1 = true;
     setAngle = false;
+    shooterSpeed = 12000;
 }
 
 //( ͡° ͜ʖ ͡°)
@@ -63,20 +66,21 @@ void Robot::AutonomousPeriodic() {
 
         if (step1) {
             shooter->tilt->ZeroAlign();
-            step1 = false;
             counter = 0;
+            step1 = false;
         }
         else {
             if (!setAngle) shooter->tilt->SetAngle(653);
-            shooter->RunAtVelocity(12000);
+            shooter->RunAtVelocity(shooterSpeed);
 
             int passed = StartCounter();
-            if (passed >= 2 && passed <= 5) {
+            if (passed >= 2 && passed <= 4) {
                 conveyor->Up();
                 setAngle = true;
             }
-            else if (passed > 5) {
+            else if (passed > 4) {
                 conveyor->No();
+                shooterSpeed = 0;
                 shot = true;
             }
         }
