@@ -42,9 +42,9 @@ public:
     void TestPeriodic() override;
     void DisabledInit() override;
 
-    void Go(bool dir, int inches);
+    void Go(int inches);
 
-    int StartCounter();
+    void StartCounter();
 
 private:
     DriveTrain *driveTrain;
@@ -63,8 +63,14 @@ private:
     bool step1;
     bool setAngle;
     int shooterSpeed;
+    int encVal;
 
     int counter;
+    
+    bool sCount;
+    int startCount;
+
+    bool s;
     
     std::thread counterThread;
 };

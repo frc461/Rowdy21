@@ -30,7 +30,7 @@
 #define DISCO .1//angle is shy of target 0.6 power
 #define THIRD_PRESET 0.3
 
-#define ENC_MAX 1150//897
+#define ENC_MAX 758//897
 
 
 #define ON_INIT_LINE 1012
@@ -62,7 +62,7 @@ public:
 
             void ZeroAlign();
             void RunSafe(double speed);
-            void SetAngle(double speed);
+            bool SetAngle(double speed);
 
             double GetEncoder();
             bool GetLimit();

@@ -125,7 +125,7 @@ void Shooter::Tilt::RunSafe(double speed) {
     NOTE: Needs to be repeated
 */
 
-void Shooter::Tilt::SetAngle(double val) {
+bool Shooter::Tilt::SetAngle(double val) {
     if(val <= ENC_MAX && val >= 0) {
         double velocity = angle->OutputPID(encoder->Get(), val);
         // std::cout << velocity << std::endl;
@@ -145,7 +145,7 @@ void Shooter::Tilt::SetAngle(double val) {
 
 void Shooter::Tilt::ZeroAlign() {
     while(GetLimit()) {
-        RunSafe(-0.5);
+        RunSafe(-0.8);
     }
     RunSafe(0);
 }
@@ -182,6 +182,9 @@ void Shooter::Periodic() {
             tilt->zeroMode = true;
         }
     }
+
+    if(control -> ManualShooterAdjustment() < -0.2 && shooterPos < ENC_MAX){
+           shooterPos += (-control -> ManualShooterAdjustment() * 10);}
 
    if(tilt->zeroMode) {
        tilt->Zeroing();

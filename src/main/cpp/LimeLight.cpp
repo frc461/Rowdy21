@@ -10,7 +10,7 @@ Limelight::Limelight(Control *control, DriveTrain *driveTrain) {
     
     output = 0;
 
-    outputPID = new PID(-0.071, -0.002, -0.0003, "LL aim");
+    outputPID = new PID(-0.03, -0.00175, 0.19, "LL aim");
 }
 
 void Limelight::Periodic() {
@@ -27,6 +27,7 @@ void Limelight::Periodic() {
         SetLimelightLight(0);
         outputPID->ResetSum();
     }
+    SetLimelightLight(1);
 }
 
 void Limelight::LimelightReset(){
@@ -52,7 +53,9 @@ void Limelight::LimelightAiming() {
     ta = table->GetNumber("ta", 0.0);
     ty = table->GetNumber("ty", 0.0);
 
-    drTrain->driveTrain->ArcadeDrive(0, outputPID->OutputPID(tx, 0.0));
+    if (fabs(tx) > 0.5) {
+        drTrain->driveTrain->ArcadeDrive(0, outputPID->OutputPID(tx, 0.0));
+    }
 }
 
 void Limelight::SetLimelightLight(bool state) {

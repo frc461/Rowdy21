@@ -21,41 +21,46 @@ void Robot::RobotInit() {
     driveTrain->ResetEncoders();
 
     climber->ClimberBrakeOff();
+
+    drivePID = new PID(0.0003, 0.0, 0.0, "lmao ok");
 }
 
 void Robot::RobotPeriodic() {}
 
 void Robot::DisabledInit() {
-    driveTrain->ResetGyro();
-    driveTrain->ResetEncoders();
-
-    step1 = true;
-    setAngle = false;
+    counter = 0;
 }
 
-void Robot::Go(bool dir, int inches) {
-    double l = drivePID->OutputPID(driveTrain->GetEncoderValueL(), inches*ENCODER_INCH * ((dir) ? -1 : 1));
-    double r = drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH * ((dir) ? 1 : -1));
-    driveTrain->driveTrain->TankDrive(l,r);
+void Robot::Go(int inches) {
+    double l = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueL(), -inches*ENCODER_INCH));
+    double r = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH));
+    //std::cout << l << " " << r << std::endl;
+    //std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
+    driveTrain->driveTrain->TankDrive(-l,r);
 }
 
-int Robot::StartCounter() {
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    counter++;
-    std::cout << counter << std::endl;
-    return counter;
+void Robot::StartCounter() {
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        counter++;
+    }
 }
 
 void Robot::AutonomousInit() {
-    drivePID = new PID(0.005, 0.0, 0.0, "lmao ok");
-
     counterThread = std::thread(&Robot::StartCounter, this);
     counterThread.detach();
 
+    driveTrain->ResetGyro();
+    driveTrain->ResetEncoders();
+
     counter = 0;
+    shot = false;
     step1 = true;
     setAngle = false;
     shooterSpeed = 12000;
+
+    sCount = true;
+    s= true;
 }
 
 //( ͡° ͜ʖ ͡°)
@@ -66,27 +71,38 @@ void Robot::AutonomousPeriodic() {
 
         if (step1) {
             shooter->tilt->ZeroAlign();
-            counter = 0;
-            step1 = false;
+            if (sCount) startCount = counter; 
+            sCount = false;
+
+            if (counter - startCount == 1) {
+                step1 = false;
+                sCount = false;
+            }
         }
         else {
-            if (!setAngle) shooter->tilt->SetAngle(653);
+            if (!setAngle) encVal = shooter->tilt->GetEncoder();
+            setAngle = true;
+
+            if (shooter->tilt->GetEncoder() < encVal+720) shooter->tilt->RunSafe(0.7);
+            else shooter->tilt->RunSafe(0.0);
+
             shooter->RunAtVelocity(shooterSpeed);
 
-            int passed = StartCounter();
-            if (passed >= 2 && passed <= 4) {
+            if (sCount) startCount = counter; 
+            sCount = false;
+            int passed = counter - startCount;
+            if (passed >= 4 && passed <= 6) {
                 conveyor->Up();
-                setAngle = true;
             }
-            else if (passed > 4) {
+            else if (passed > 6) {
                 conveyor->No();
-                shooterSpeed = 0;
+                shooter->RunAtVelocity(0);
                 shot = true;
             }
         }
     }
     else {
-        Go(false, 40);
+        Go(55);
     }
 }
 
