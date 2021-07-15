@@ -23,4 +23,6 @@ private:
     frc::Solenoid *brake;
 
     double speed;
+
+    bool enter, hold, up, down;
 };

@@ -40,7 +40,7 @@ bool Control::IntakeMotorIn() { return xboxController->GetRawButton(XboxButtonLe
 bool Control::IntakeMotorOut() { return xboxController->GetRawButton(XboxButtonRightBumper); }
 double Control::IntakeControl() { return xboxController->GetRawAxis(XboxAxisLeftStickY); }
 
-double Control::WheelOfFortune() { return 0.0; } //this is needed for the rest of the code... so it isn't important and just returns something
+double Control::WheelOfFortune() { return xboxController->GetRawAxis(XboxAxisRightStickX); } //this is needed for the rest of the code... so it isn't important and just returns something
 bool Control::AutoSelect() { return false; } //this is needed for the rest of the code... so it isn't important and just returns something
 
 bool Control::BeginStore() { return rightJoystick->GetRawButton(3); }

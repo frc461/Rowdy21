@@ -71,6 +71,7 @@ private:
     int startCount;
 
     bool s;
+    bool finished;
     
     std::thread counterThread;
 };

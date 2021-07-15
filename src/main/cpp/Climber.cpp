@@ -9,25 +9,42 @@ Climber::Climber(Control *control) {
     brake = new frc::Solenoid(0);
 
     speed = 0.6;
+
+    enter = hold = true;
+    up = down = false;
 }
 
 void Climber::Periodic() {
     frc::SmartDashboard::PutBoolean("BreakStatus", brake->Get());
-    if(brake->Get()) {
-        if(control->ClimberUp() > 0.1 && control->ClimberDown() > 0.1){
+
+    if (control->ClimberUp() || control->ClimberDown()) {
+        if (enter) {
+            brake->Set(1);
+            enter = false;
+            hold = true;
         }
-        else if(control->ClimberUp() && limitTop->Get()){
-            lifter1->Set(-speed*0.5);
-            lifter2->Set(-speed*0.5);
+    }
+    else {
+        if (hold) {
+            brake->Set(0);
+            hold = false;
+            enter = true;
         }
-        else if(control->ClimberDown() && limitDown->Get()){
-            lifter1->Set(speed);
-            lifter2->Set(speed);
-        }
-        else {
-            lifter1->Set(0);
-            lifter2->Set(0);
-        }
+    }
+    
+    if(control->ClimberUp() && limitTop->Get()){
+        lifter1->Set(-speed*0.5);
+        lifter2->Set(-speed*0.5);
+        //up = true;
+    }
+    else if(control->ClimberDown() && limitDown->Get()){
+        lifter1->Set(speed);
+        lifter2->Set(speed);
+        //down = true;
+    }
+    else {
+        lifter1->Set(0);
+        lifter2->Set(0);
     }
 
     if (control->ClimberBrake()) {

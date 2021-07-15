@@ -131,9 +131,11 @@ bool Shooter::Tilt::SetAngle(double val) {
         // std::cout << velocity << std::endl;
         if(velocity > 1) {
             RunSafe(1);
-        } else if(velocity < -1) {
+        } 
+        else if(velocity < -1) {
             RunSafe(-1);
-        } else {
+        } 
+        else {
             if(velocity < 0.1) {
                 RunSafe(0);
             } else {

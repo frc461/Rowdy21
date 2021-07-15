@@ -34,8 +34,6 @@ void Robot::DisabledInit() {
 void Robot::Go(int inches) {
     double l = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueL(), -inches*ENCODER_INCH));
     double r = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH));
-    //std::cout << l << " " << r << std::endl;
-    //std::cout << driveTrain->GetEncoderValueL() << " " << driveTrain->GetEncoderValueR() << std::endl;
     driveTrain->driveTrain->TankDrive(-l,r);
 }
 
@@ -60,6 +58,7 @@ void Robot::AutonomousInit() {
     shooterSpeed = 12000;
 
     sCount = true;
+    finished = true;
     s= true;
 }
 
@@ -97,12 +96,20 @@ void Robot::AutonomousPeriodic() {
             else if (passed > 6) {
                 conveyor->No();
                 shooter->RunAtVelocity(0);
-                shot = true;
+                shot = sCount = true;
             }
         }
     }
     else {
         Go(55);
+
+        /*if (sCount) startCount = counter;
+        sCount = false;
+        int passed = counter - startCount;
+        if (passed > 3) {
+            counterThread.join();
+            finished = true;
+        }*/
     }
 }
 
