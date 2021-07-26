@@ -20,9 +20,11 @@ void Robot::RobotInit() {
     driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
 
-    climber->ClimberBrakeOff();
+    climber->ClimberBrakeOn();
 
     drivePID = new PID(0.0003, 0.0, 0.0, "lmao ok");
+
+    frc::SmartDashboard::PutBoolean("AUTO_VISION_TRACK", true);
 }
 
 void Robot::RobotPeriodic() {}
@@ -38,7 +40,7 @@ void Robot::Go(int inches) {
 }
 
 void Robot::StartCounter() {
-    while (true) {
+    while (!finished) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         counter++;
     }
@@ -58,15 +60,18 @@ void Robot::AutonomousInit() {
     shooterSpeed = 12000;
 
     sCount = true;
-    finished = true;
+    finished = false;
     s= true;
 }
 
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
     if (!shot) {
-        limelight->SetLimelightLight(1);
-        limelight->LimelightAiming();
+        if (frc::SmartDashboard::GetBoolean("AUTO_VISION_TRACK", true)) {
+            //std::cout << "TRACC ON" << std::endl;
+            //limelight->SetLimelightLight(1);
+            //limelight->LimelightAiming();
+        }
 
         if (step1) {
             shooter->tilt->ZeroAlign();
@@ -101,15 +106,14 @@ void Robot::AutonomousPeriodic() {
         }
     }
     else {
-        Go(55);
+        Go(70);
 
-        /*if (sCount) startCount = counter;
+        if (sCount) startCount = counter;
         sCount = false;
-        int passed = counter - startCount;
-        if (passed > 3) {
-            counterThread.join();
+        if (counter - startCount > 3 && !joined) {
             finished = true;
-        }*/
+            std::cout << "END" << std::endl;
+        } 
     }
 }
 

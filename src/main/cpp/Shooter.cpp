@@ -160,7 +160,7 @@ double Shooter::Tilt::GetEncoder() {
 bool Shooter::Tilt::Zeroing() {
     if(GetLimit()) {
         RunSafe(-0.3);
-        std::cout << "run to zero" << std::endl;
+       // std::cout << "run to zero" << std::endl;
     } else {
         encoder->Reset();
         RunSafe(0);
@@ -171,8 +171,8 @@ bool Shooter::Tilt::Zeroing() {
 
 void Shooter::Periodic() {
 
-    frc::SmartDashboard::PutNumber("Shooter Tilt Val", shooterPos);
-    frc::SmartDashboard::PutNumber("Shooter Speed", VelocityTarget);
+    //frc::SmartDashboard::PutNumber("Shooter Tilt Val", shooterPos);
+    //frc::SmartDashboard::PutNumber("Shooter Speed", VelocityTarget);
 
     /*
         Control Portion

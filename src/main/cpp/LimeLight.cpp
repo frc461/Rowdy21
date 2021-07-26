@@ -27,7 +27,7 @@ void Limelight::Periodic() {
         SetLimelightLight(0);
         outputPID->ResetSum();
     }
-    SetLimelightLight(1);
+    //SetLimelightLight(1);
 }
 
 void Limelight::LimelightReset(){

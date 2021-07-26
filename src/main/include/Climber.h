@@ -25,4 +25,6 @@ private:
     double speed;
 
     bool enter, hold, up, down;
+
+    int counter;
 };

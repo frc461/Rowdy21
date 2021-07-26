@@ -19,7 +19,7 @@ void Intake::AutoRun() {
 }
 
 void Intake::Periodic() {
-    rollerSpeed = (control->IntakeControl() > 0.2) ? 0.8 : (control->IntakeControl() < -0.2) ? -0.8 : 0.0;
+    rollerSpeed = (control->IntakeControl() > 0.2) ? 0.95 : (control->IntakeControl() < -0.2) ? -0.95 : 0.0;
 
     if (control->IntakeMotorIn()){
         push->Set(1);
