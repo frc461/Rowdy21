@@ -12,9 +12,10 @@ public:
     ~Intake();
 
     void Periodic();
-
+    void SetPosition(bool pushDirection);
     void AutoInit();
     void AutoRun();
+    void IntakeOff();
 
 private:
     Control *control;

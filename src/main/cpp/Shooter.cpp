@@ -23,7 +23,7 @@ Shooter::Shooter(Control *control) {
 
     motor1->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
     motor2->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
-
+//lul
     motor1->SetSensorPhase(true);
     motor2->SetSensorPhase(true);
 

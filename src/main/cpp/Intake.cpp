@@ -18,6 +18,18 @@ void Intake::AutoRun() {
     roller->Set(0.8);
 }
 
+void Intake::IntakeOff() {
+    roller->Set(0);
+}
+
+void Intake::SetPosition(bool pushDirection) {
+    if(!pushDirection){
+        push->Set(0);
+    }else{
+        push->Set(1);
+    }
+}
+
 void Intake::Periodic() {
     rollerSpeed = (control->IntakeControl() > 0.2) ? 0.95 : (control->IntakeControl() < -0.2) ? -0.95 : 0.0;
 

@@ -22,7 +22,8 @@ void Robot::RobotInit() {
 
     climber->ClimberBrakeOn();
 
-    drivePID = new PID(0.0003, 0.0, 0.0, "lmao ok");
+    drivePID = new PID(0.0005, 0.0, 0.0, "dpid");
+    turnPID = new PID(0.075, 0.0, 0.0, "tpid");
 
     frc::SmartDashboard::PutBoolean("AUTO_VISION_TRACK", true);
 }
@@ -33,10 +34,28 @@ void Robot::DisabledInit() {
     counter = 0;
 }
 
-void Robot::Go(int inches) {
+bool Robot::Go(int inches) {
     double l = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueL(), -inches*ENCODER_INCH));
     double r = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH));
     driveTrain->driveTrain->TankDrive(-l,r);
+
+    sumGo += abs(driveTrain->GetEncoderValueR());
+    nGo++;
+    int avg = sumGo / nGo;
+
+    return (abs(abs(inches*ENCODER_INCH) - avg) < 100);
+}
+
+bool Robot::Turn(int degs) {
+    double p = std::min(1.0, turnPID->OutputPID(driveTrain->GetAngle(), degs));
+    std::cout << driveTrain->GetAngle() << " " << degs << std::endl;
+    driveTrain->driveTrain->TankDrive(p, -p);
+
+    sumTurn += abs(driveTrain->GetAngle());
+    nTurn++;
+    int avg = sumTurn / nTurn;
+
+    return (abs(abs(degs) - avg) < 2);
 }
 
 void Robot::StartCounter() {
@@ -53,25 +72,31 @@ void Robot::AutonomousInit() {
     driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
 
-    counter = 0;
-    shot = false;
+    counter = sumGo = nGo = sumTurn = nTurn = 0;
+    shot = true;
+    secondShoot = false;
     step1 = true;
     setAngle = false;
     shooterSpeed = 12000;
+    
+    driveTrain->EnableBreakMode();
 
     sCount = true;
     finished = false;
+    comeBack = false;
+    turnedOnce = false;
     s= true;
+    reset = false;
 }
 
 //( ͡° ͜ʖ ͡°)
 void Robot::AutonomousPeriodic() {
-    if (!shot) {
-        if (frc::SmartDashboard::GetBoolean("AUTO_VISION_TRACK", true)) {
-            //std::cout << "TRACC ON" << std::endl;
+    if (!shot){
+        /*if (frc::SmartDashboard::GetBoolean("AUTO_VISION_TRACK", true)) {
+            std::cout << "TRACC ON" << std::endl;
             //limelight->SetLimelightLight(1);
             //limelight->LimelightAiming();
-        }
+        }*/
 
         if (step1) {
             shooter->tilt->ZeroAlign();
@@ -105,23 +130,59 @@ void Robot::AutonomousPeriodic() {
             }
         }
     }
+    else if (shot && secondShoot) {
+        finished = true;
+    }
     else {
-        Go(70);
+        while(!turnedOnce && driveTrain->GetAngle() < ROTATE_ANGLE){
+            driveTrain->driveTrain->TankDrive(0.5,-0.5);
+        }
+        turnedOnce = true;
+        
+        if (!reset){
+            intake->AutoRun();
+            
+            intake->SetPosition(true);
+            
+            driveTrain->ResetEncoders();
+            reset = true;
 
-        if (sCount) startCount = counter;
-        sCount = false;
-        if (counter - startCount > 3 && !joined) {
-            finished = true;
-            std::cout << "END" << std::endl;
-        } 
+            timer.Reset();
+            timer.Start();
+        }
+        else if (reset && timer.Get() > 0.5 && !comeBack) {
+            if (Go(-GO_DISTANCE)) {
+                comeBack = true;
+                driveTrain->ResetEncoders();
+
+                timer.Reset();
+                timer.Start();
+
+                intake->IntakeOff();
+                intake->SetPosition(false);
+            }
+        }
+
+        if (comeBack) {
+            if(Go(GO_DISTANCE) && timer.Get() > 0.5) {
+                while(driveTrain->GetAngle() > 0){
+                    driveTrain->driveTrain->TankDrive(-0.5,0.5);
+                }
+                shot = false;
+                secondShoot = true;
+            }
+        }
     }
 }
 
 void Robot::TeleopInit() {
     climber->ClimberBrakeOff();
+    driveTrain->ResetEncoders();
+    driveTrain->ResetGyro();
 }
 
 void Robot::TeleopPeriodic() {
+    std::cout << driveTrain->GetAngle() << std::endl;
     driveTrain->Periodic();
     intake->Periodic();
     limelight->Periodic();
