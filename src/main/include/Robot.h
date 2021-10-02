@@ -27,8 +27,8 @@
 #define ENCODER_INCH 54.2
 #define PITCH_ENCODER_IDEAL 820
 
-#define ROTATE_ANGLE 18
-#define GO_DISTANCE 70
+#define ROTATE_ANGLE 19
+#define GO_DISTANCE 150
 /*
     Here is the autonomous preset value!!!
 */
@@ -45,8 +45,8 @@ public:
     void TestPeriodic() override;
     void DisabledInit() override;
 
-    bool Go(int inches);
-    bool Turn(int degs);
+    bool Go(int inches, int dir);
+    bool Turn(double degs);
 
     void StartCounter();
 
@@ -76,15 +76,16 @@ private:
 
     bool s;
     bool finished;
+
+    frc::Timer *timer;
     
     std::thread counterThread;
-    frc::Timer timer;
     bool reset;
 
     bool turnedOnce;
     bool comeBack;
 
     int sumGo, nGo;
-    int sumTurn, nTurn;
+    double sumTurn, nTurn;
     bool secondShoot;
 };

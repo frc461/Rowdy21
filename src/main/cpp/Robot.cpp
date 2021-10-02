@@ -22,8 +22,8 @@ void Robot::RobotInit() {
 
     climber->ClimberBrakeOn();
 
-    drivePID = new PID(0.0005, 0.0, 0.0, "dpid");
-    turnPID = new PID(0.075, 0.0, 0.0, "tpid");
+    drivePID = new PID(0.0003, 0.0, 0.0, "dpid");
+    turnPID = new PID(0.085, 0.0, 0.0, "tpid");
 
     frc::SmartDashboard::PutBoolean("AUTO_VISION_TRACK", true);
 }
@@ -34,28 +34,29 @@ void Robot::DisabledInit() {
     counter = 0;
 }
 
-bool Robot::Go(int inches) {
-    double l = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueL(), -inches*ENCODER_INCH));
-    double r = std::min(1.0, drivePID->OutputPID(driveTrain->GetEncoderValueR(), inches*ENCODER_INCH));
-    driveTrain->driveTrain->TankDrive(-l,r);
+bool Robot::Go(int inches, int dir) {
+    double l = std::min(0.7, drivePID->OutputPID(abs(driveTrain->GetEncoderValueL()), inches*ENCODER_INCH));
+    double r = std::min(0.7, drivePID->OutputPID(abs(driveTrain->GetEncoderValueR()), inches*ENCODER_INCH));
+    driveTrain->driveTrain->TankDrive(dir*l,dir*r);
 
     sumGo += abs(driveTrain->GetEncoderValueR());
     nGo++;
     int avg = sumGo / nGo;
+    //std::cout << avg << " " << abs(inches*ENCODER_INCH) << std::endl;
 
     return (abs(abs(inches*ENCODER_INCH) - avg) < 100);
 }
 
-bool Robot::Turn(int degs) {
+bool Robot::Turn(double degs) {
     double p = std::min(1.0, turnPID->OutputPID(driveTrain->GetAngle(), degs));
-    std::cout << driveTrain->GetAngle() << " " << degs << std::endl;
+    //std::cout << driveTrain->GetAngle() << " " << degs << std::endl;
     driveTrain->driveTrain->TankDrive(p, -p);
 
     sumTurn += abs(driveTrain->GetAngle());
     nTurn++;
-    int avg = sumTurn / nTurn;
-
-    return (abs(abs(degs) - avg) < 2);
+    double avg = sumTurn / nTurn;
+    //std::cout<<abs(degs)<<" "<< avg << std::endl;
+    return (abs(abs(degs) - avg) < 3);
 }
 
 void Robot::StartCounter() {
@@ -66,9 +67,7 @@ void Robot::StartCounter() {
 }
 
 void Robot::AutonomousInit() {
-    counterThread = std::thread(&Robot::StartCounter, this);
-    counterThread.detach();
-
+    timer = new frc::Timer();
     driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
 
@@ -77,7 +76,7 @@ void Robot::AutonomousInit() {
     secondShoot = false;
     step1 = true;
     setAngle = false;
-    shooterSpeed = 12000;
+    shooterSpeed = 10000;
     
     driveTrain->EnableBreakMode();
 
@@ -100,13 +99,7 @@ void Robot::AutonomousPeriodic() {
 
         if (step1) {
             shooter->tilt->ZeroAlign();
-            if (sCount) startCount = counter; 
-            sCount = false;
-
-            if (counter - startCount == 1) {
-                step1 = false;
-                sCount = false;
-            }
+            step1 = false;
         }
         else {
             if (!setAngle) encVal = shooter->tilt->GetEncoder();
@@ -117,13 +110,12 @@ void Robot::AutonomousPeriodic() {
 
             shooter->RunAtVelocity(shooterSpeed);
 
-            if (sCount) startCount = counter; 
+            if (sCount) { timer->Reset(); timer->Start(); } 
             sCount = false;
-            int passed = counter - startCount;
-            if (passed >= 4 && passed <= 6) {
+            if (timer->Get() >= 3.0 && timer->Get() <= 4.0) {
                 conveyor->Up();
             }
-            else if (passed > 6) {
+            else if (timer->Get() > 4.0) {
                 conveyor->No();
                 shooter->RunAtVelocity(0);
                 shot = sCount = true;
@@ -134,44 +126,46 @@ void Robot::AutonomousPeriodic() {
         finished = true;
     }
     else {
-        while(!turnedOnce && driveTrain->GetAngle() < ROTATE_ANGLE){
-            driveTrain->driveTrain->TankDrive(0.5,-0.5);
-        }
-        turnedOnce = true;
+        while(!Turn(ROTATE_ANGLE)){}
         
         if (!reset){
-            intake->AutoRun();
+            nTurn = 0;
+            //intake->AutoRun();
             
-            intake->SetPosition(true);
+            //intake->SetPosition(true);
             
             driveTrain->ResetEncoders();
+
+            timer->Reset();
+            timer->Start();
+
             reset = true;
-
-            timer.Reset();
-            timer.Start();
         }
-        else if (reset && timer.Get() > 0.5 && !comeBack) {
-            if (Go(-GO_DISTANCE)) {
-                comeBack = true;
-                driveTrain->ResetEncoders();
+        std::cout << timer->Get() << std::endl;
+        // else if (reset && timer->Get() > 1 && !comeBack) {
+        //     if (Go(GO_DISTANCE,-1)) {
+        //         nGo = 0;
+        //         driveTrain->ResetEncoders();
 
-                timer.Reset();
-                timer.Start();
+        //         timer.Reset();
+        //         timer.Start();
 
-                intake->IntakeOff();
-                intake->SetPosition(false);
-            }
-        }
+        //         intake->IntakeOff();
+        //         intake->SetPosition(false);
 
-        if (comeBack) {
-            if(Go(GO_DISTANCE) && timer.Get() > 0.5) {
-                while(driveTrain->GetAngle() > 0){
-                    driveTrain->driveTrain->TankDrive(-0.5,0.5);
-                }
-                shot = false;
-                secondShoot = true;
-            }
-        }
+        //         comeBack = true;
+        //     }
+        // }
+
+        // if (comeBack) {
+        //     if(Go(GO_DISTANCE,1) && timer.Get() > 0.5) {
+        //         while(driveTrain->GetAngle() > 0){
+        //             driveTrain->driveTrain->TankDrive(-0.5,0.5);
+        //         }
+        //         shot = false;
+        //         secondShoot = true;
+        //     }
+        // }
     }
 }
 
