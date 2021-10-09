@@ -22,8 +22,8 @@ void Robot::RobotInit() {
 
     climber->ClimberBrakeOn();
 
-    drivePID = new PID(0.0003, 0.0, 0.0, "dpid");
-    turnPID = new PID(0.085, 0.0, 0.0, "tpid");
+    drivePID = new PID(0.001, 0.0, 0.0, "dpid");
+    turnPID = new PID(0.15, 0.0, 0.0, "tpid");
 
     frc::SmartDashboard::PutBoolean("AUTO_VISION_TRACK", true);
 }
@@ -35,28 +35,34 @@ void Robot::DisabledInit() {
 }
 
 bool Robot::Go(int inches, int dir) {
-    double l = std::min(0.7, drivePID->OutputPID(abs(driveTrain->GetEncoderValueL()), inches*ENCODER_INCH));
-    double r = std::min(0.7, drivePID->OutputPID(abs(driveTrain->GetEncoderValueR()), inches*ENCODER_INCH));
+    double l = std::min(0.6, drivePID->OutputPID(abs(driveTrain->GetEncoderValueL()), inches*ENCODER_INCH));
+    double r = std::min(0.6, drivePID->OutputPID(abs(driveTrain->GetEncoderValueR()), inches*ENCODER_INCH));
     driveTrain->driveTrain->TankDrive(dir*l,dir*r);
+    
+    if (abs(driveTrain->GetEncoderValueR()) >= inches*ENCODER_INCH) goCrossed = true;
 
-    sumGo += abs(driveTrain->GetEncoderValueR());
-    nGo++;
-    int avg = sumGo / nGo;
-    //std::cout << avg << " " << abs(inches*ENCODER_INCH) << std::endl;
-
-    return (abs(abs(inches*ENCODER_INCH) - avg) < 100);
+    if (goCrossed) {
+        sumGo += abs(driveTrain->GetEncoderValueR());
+        nGo++;
+        goAvg = sumGo / nGo;
+    }
+    //std::cout << goAvg << " " << abs(inches*ENCODER_INCH) << std::endl;
+    return (abs(abs(inches*ENCODER_INCH) - goAvg) < 100);
 }
 
-bool Robot::Turn(double degs) {
-    double p = std::min(1.0, turnPID->OutputPID(driveTrain->GetAngle(), degs));
-    //std::cout << driveTrain->GetAngle() << " " << degs << std::endl;
-    driveTrain->driveTrain->TankDrive(p, -p);
+bool Robot::Turn(double degs, int dir) {
+    double p = std::min(0.6, turnPID->OutputPID(fabs(driveTrain->GetAngle()), fabs(degs)));
+    driveTrain->driveTrain->TankDrive(dir*p, -dir*p);
 
-    sumTurn += abs(driveTrain->GetAngle());
-    nTurn++;
-    double avg = sumTurn / nTurn;
-    //std::cout<<abs(degs)<<" "<< avg << std::endl;
-    return (abs(abs(degs) - avg) < 3);
+    if (fabs(driveTrain->GetAngle()) > fabs(degs)) turnCrossed = true;
+
+    if (turnCrossed) {
+        sumTurn += fabs(driveTrain->GetAngle());
+        nTurn++;
+        turnAvg = sumTurn / nTurn;
+    }
+    //std::cout<<abs(degs)<<" "<< turnAvg << std::endl;
+    return (abs(abs(degs) - turnAvg) < 3);
 }
 
 void Robot::StartCounter() {
@@ -67,11 +73,13 @@ void Robot::StartCounter() {
 }
 
 void Robot::AutonomousInit() {
-    timer = new frc::Timer();
+    //timer = new frc::Timer();
+    counterThread = std::thread(&Robot::StartCounter, this);
     driveTrain->ResetGyro();
     driveTrain->ResetEncoders();
 
-    counter = sumGo = nGo = sumTurn = nTurn = 0;
+    counter = sumGo = nGo = sumTurn = nTurn = goAvg = turnAvg = 0;
+    goCrossed = turnCrossed = false;
     shot = true;
     secondShoot = false;
     step1 = true;
@@ -80,6 +88,7 @@ void Robot::AutonomousInit() {
     
     driveTrain->EnableBreakMode();
 
+    turned = false;
     sCount = true;
     finished = false;
     comeBack = false;
@@ -110,12 +119,12 @@ void Robot::AutonomousPeriodic() {
 
             shooter->RunAtVelocity(shooterSpeed);
 
-            if (sCount) { timer->Reset(); timer->Start(); } 
+            if (sCount) startCount = counter; 
             sCount = false;
-            if (timer->Get() >= 3.0 && timer->Get() <= 4.0) {
+            if (counter-startCount >= 3 && counter-startCount <= 5) {
                 conveyor->Up();
             }
-            else if (timer->Get() > 4.0) {
+            else if (counter-startCount > 5) {
                 conveyor->No();
                 shooter->RunAtVelocity(0);
                 shot = sCount = true;
@@ -126,46 +135,49 @@ void Robot::AutonomousPeriodic() {
         finished = true;
     }
     else {
-        while(!Turn(ROTATE_ANGLE)){}
-        
-        if (!reset){
-            nTurn = 0;
+        if (!Turn(ROTATE_ANGLE,1)) {}
+        else turned = true; 
+
+        if (!reset && !turned){
             //intake->AutoRun();
-            
             //intake->SetPosition(true);
             
             driveTrain->ResetEncoders();
 
-            timer->Reset();
-            timer->Start();
-
+            startCount = counter;
+            finished = true;
             reset = true;
         }
-        std::cout << timer->Get() << std::endl;
-        // else if (reset && timer->Get() > 1 && !comeBack) {
-        //     if (Go(GO_DISTANCE,-1)) {
-        //         nGo = 0;
-        //         driveTrain->ResetEncoders();
+        else if (reset && counter-startCount >= 1 && !comeBack) {
+            if (Go(GO_DISTANCE,-1)) {
+                driveTrain->ResetEncoders();
+                driveTrain->ResetGyro();
 
-        //         timer.Reset();
-        //         timer.Start();
+                nGo = sumGo = 0;
+                nTurn = sumTurn = 0;
+                turnAvg = goAvg = 0;
+                turnCrossed = goCrossed = false;
 
-        //         intake->IntakeOff();
-        //         intake->SetPosition(false);
+                //intake->IntakeOff();
+                //intake->SetPosition(false);
 
-        //         comeBack = true;
-        //     }
-        // }
+                startCount = counter;
+                comeBack = true;
+            }
+        }
 
-        // if (comeBack) {
-        //     if(Go(GO_DISTANCE,1) && timer.Get() > 0.5) {
-        //         while(driveTrain->GetAngle() > 0){
-        //             driveTrain->driveTrain->TankDrive(-0.5,0.5);
-        //         }
-        //         shot = false;
-        //         secondShoot = true;
-        //     }
-        // }
+        if (comeBack) {
+            if (counter - startCount >= 2) {
+                if(Go(GO_DISTANCE,1)) {
+                    std::cout << "idawfi"; //Turn(ROTATE_ANGLE, -1) << std::endl;
+                    // if (Turn(-ROTATE_ANGLE)) {
+                    //     shot = false;
+                    //     secondShoot = true;
+                    //     finished = true;
+                    // }
+                }
+            }
+        }
     }
 }
 
@@ -176,7 +188,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-    std::cout << driveTrain->GetAngle() << std::endl;
+    //std::cout << driveTrain->GetAngle() << std::endl;
     driveTrain->Periodic();
     intake->Periodic();
     limelight->Periodic();

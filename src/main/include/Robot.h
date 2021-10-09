@@ -3,8 +3,11 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
+#include <frc/Timer.h>
+
 #include <iostream>
 #include <algorithm>
+#include <thread>
 #include "networkTables/NetworkTableInstance.h"
 #include "networktables/NetworkTable.h"
 #include "networkTables/NetworkTableEntry.h"
@@ -28,7 +31,7 @@
 #define PITCH_ENCODER_IDEAL 820
 
 #define ROTATE_ANGLE 19
-#define GO_DISTANCE 150
+#define GO_DISTANCE 140
 /*
     Here is the autonomous preset value!!!
 */
@@ -46,7 +49,7 @@ public:
     void DisabledInit() override;
 
     bool Go(int inches, int dir);
-    bool Turn(double degs);
+    bool Turn(double degs, int dir);
 
     void StartCounter();
 
@@ -76,16 +79,18 @@ private:
 
     bool s;
     bool finished;
-
-    frc::Timer *timer;
     
     std::thread counterThread;
     bool reset;
 
+    bool turned;
+
     bool turnedOnce;
     bool comeBack;
 
-    int sumGo, nGo;
-    double sumTurn, nTurn;
+    int sumGo, nGo, goAvg;
+    bool goCrossed;
+    double sumTurn, nTurn, turnAvg;
+    bool turnCrossed;
     bool secondShoot;
 };
